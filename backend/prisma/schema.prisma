@@ -1,0 +1,449 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  phone     String?
+  email     String?  @unique
+  apiToken  String?  @unique
+  passwordHash String?
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leads             Lead[]                  @relation("LeadResponsible")
+  deals             Deal[]                  @relation("DealResponsible")
+  tasks             Task[]                  @relation("TaskResponsible")
+  notes             Note[]                  @relation("NoteAuthor")
+  communications    Communication[]         @relation("CommunicationResponsible")
+  implementation    ImplementationProject[] @relation("ImplementationResponsible")
+  supportTickets    SupportTicket[]         @relation("SupportResponsible")
+  notifications     Notification[]          @relation("NotificationRecipient")
+  authSessions      AuthSession[]
+}
+
+model Lead {
+  id                String   @id @default(cuid())
+  name              String
+  direction         String
+  niche             String
+  city              String?
+  phone             String
+  whatsapp          String?
+  instagram         String?
+  source            String?
+  decisionMaker     String?
+  currentAccounting String?
+  pain              String?  @db.Text
+  status            String
+  responsibleId     String?
+  deletedAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  responsible   User?           @relation("LeadResponsible", fields: [responsibleId], references: [id])
+  client        Client?
+  deals         Deal[]
+  tasks         Task[]
+  diagnostics   Diagnostic[]
+  notes         Note[]
+  communications Communication[]
+
+  @@index([status, updatedAt])
+  @@index([niche, city])
+}
+
+model Client {
+  id                 String   @id @default(cuid())
+  leadId             String?  @unique
+  name               String
+  direction          String
+  niche              String
+  city               String?
+  phone              String?
+  contacts           Json     @default("{}")
+  status             String
+  subscriptionStatus String?
+  activeSections     Json     @default("[]")
+  deletedAt          DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  lead           Lead?                   @relation(fields: [leadId], references: [id])
+  deals          Deal[]
+  tasks          Task[]
+  payments       Payment[]
+  subscriptions  Subscription[]
+  debts          Debt[]
+  dataCollection DataCollectionRequest[]
+  projects       ImplementationProject[]
+  supportTickets SupportTicket[]
+  notes          Note[]
+  communications Communication[]
+
+  @@index([status, subscriptionStatus])
+}
+
+model Deal {
+  id               String   @id @default(cuid())
+  leadId           String
+  clientId         String?
+  direction        String
+  niche            String
+  stage            String
+  amount           Int      @default(0)
+  packageId        String
+  selectedSections Json     @default("[]")
+  probability      Int      @default(0)
+  nextActionAt     DateTime?
+  responsibleId    String?
+  objections       Json     @default("[]")
+  lostReason       String?
+  deletedAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  lead            Lead                    @relation(fields: [leadId], references: [id])
+  client          Client?                 @relation(fields: [clientId], references: [id])
+  responsible     User?                   @relation("DealResponsible", fields: [responsibleId], references: [id])
+  tasks           Task[]
+  notes           Note[]
+  communications  Communication[]
+  diagnostics     Diagnostic[]
+  proposals       Proposal[]
+  payments        Payment[]
+  implementation  ImplementationProject?
+
+  @@index([stage, nextActionAt])
+  @@index([responsibleId, updatedAt])
+}
+
+model Task {
+  id                String   @id @default(cuid())
+  type              String
+  title             String
+  dueAt             DateTime?
+  status            String   @default("open")
+  priority          String   @default("medium")
+  responsibleId     String?
+  leadId            String?
+  clientId          String?
+  dealId            String?
+  projectId         String?
+  ticketId          String?
+  createdById       String?
+  result            String?  @db.Text
+  rescheduleComment String?  @db.Text
+  completedAt       DateTime?
+  deletedAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  responsible User?                  @relation("TaskResponsible", fields: [responsibleId], references: [id])
+  lead        Lead?                  @relation(fields: [leadId], references: [id])
+  client      Client?                @relation(fields: [clientId], references: [id])
+  deal        Deal?                  @relation(fields: [dealId], references: [id])
+  project     ImplementationProject? @relation(fields: [projectId], references: [id])
+  ticket      SupportTicket?         @relation(fields: [ticketId], references: [id])
+
+  @@index([responsibleId, status, dueAt])
+}
+
+model Note {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  type       String
+  text       String   @db.Text
+  authorId   String?
+  leadId     String?
+  clientId   String?
+  dealId     String?
+  ticketId   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  author User?          @relation("NoteAuthor", fields: [authorId], references: [id])
+  lead   Lead?          @relation(fields: [leadId], references: [id])
+  client Client?        @relation(fields: [clientId], references: [id])
+  deal   Deal?          @relation(fields: [dealId], references: [id])
+  ticket SupportTicket? @relation(fields: [ticketId], references: [id])
+
+  @@index([entityType, entityId])
+}
+
+model Communication {
+  id            String   @id @default(cuid())
+  leadId        String?
+  clientId      String?
+  dealId        String?
+  taskId        String?
+  channel       String
+  result        String
+  text          String   @db.Text
+  responsibleId String?
+  happenedAt    DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  lead        Lead?   @relation(fields: [leadId], references: [id])
+  client      Client? @relation(fields: [clientId], references: [id])
+  deal        Deal?   @relation(fields: [dealId], references: [id])
+  responsible User?   @relation("CommunicationResponsible", fields: [responsibleId], references: [id])
+
+  @@index([responsibleId, happenedAt])
+  @@index([leadId, happenedAt])
+  @@index([dealId, happenedAt])
+}
+
+model Diagnostic {
+  id                  String   @id @default(cuid())
+  leadId              String
+  dealId              String?
+  niche               String
+  answers             Json     @default("{}")
+  problems            Json     @default("[]")
+  recommendedSections Json     @default("[]")
+  summary             String?  @db.Text
+  authorId            String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  lead Lead  @relation(fields: [leadId], references: [id])
+  deal Deal? @relation(fields: [dealId], references: [id])
+}
+
+model Material {
+  id        String   @id @default(cuid())
+  direction String
+  niche     String
+  type      String
+  title     String
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([direction, niche, type])
+}
+
+model Proposal {
+  id        String   @id @default(cuid())
+  dealId    String
+  packageId String
+  amount    Int
+  sections  Json     @default("[]")
+  status    String
+  fileUrl   String?
+  validUntil DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deal Deal @relation(fields: [dealId], references: [id])
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  dealId    String
+  clientId  String
+  amount    Int
+  method    String
+  paidAt    DateTime
+  status    String
+  note      String?  @db.Text
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deal   Deal   @relation(fields: [dealId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@index([clientId, paidAt])
+}
+
+model Subscription {
+  id                  String   @id @default(cuid())
+  clientId            String
+  packageId           String
+  amount              Int
+  status              String
+  startsAt            DateTime
+  endsAt              DateTime?
+  renewalPeriodMonths Int      @default(1)
+  lastRenewedAt       DateTime?
+  renewalComment      String?  @db.Text
+  note                String?  @db.Text
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id])
+  debts  Debt[]
+
+  @@index([clientId, status])
+  @@index([status, endsAt])
+}
+
+model Debt {
+  id             String   @id @default(cuid())
+  clientId       String
+  subscriptionId String?
+  amount         Int
+  reason         String   @db.Text
+  status         String
+  dueAt          DateTime
+  paidAt         DateTime?
+  comment        String?  @db.Text
+  paidComment    String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  client       Client        @relation(fields: [clientId], references: [id])
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([clientId, status])
+  @@index([status, dueAt])
+}
+
+model ImplementationProject {
+  id               String   @id @default(cuid())
+  clientId         String
+  dealId           String   @unique
+  niche            String
+  packageId        String
+  sections         Json     @default("[]")
+  status           String
+  checklist        Json     @default("[]")
+  supportFreeUntil DateTime?
+  responsibleId    String?
+  deletedAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  client      Client          @relation(fields: [clientId], references: [id])
+  deal        Deal            @relation(fields: [dealId], references: [id])
+  responsible User?           @relation("ImplementationResponsible", fields: [responsibleId], references: [id])
+  tasks       Task[]
+  tickets     SupportTicket[]
+  dataCollection DataCollectionRequest[]
+}
+
+model DataCollectionRequest {
+  id        String   @id @default(cuid())
+  projectId String
+  clientId  String
+  niche     String
+  status    String
+  items     Json     @default("[]")
+  dueAt     DateTime?
+  sentTo    String?
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project ImplementationProject @relation(fields: [projectId], references: [id])
+  client  Client                @relation(fields: [clientId], references: [id])
+
+  @@index([projectId, status])
+  @@index([clientId, status])
+}
+
+model SupportTicket {
+  id            String   @id @default(cuid())
+  clientId      String
+  projectId     String?
+  type          String
+  title         String
+  description   String   @db.Text
+  status        String
+  priority      String
+  responsibleId String?
+  dueAt         DateTime?
+  paidAmount    Int      @default(0)
+  paymentStatus String?
+  startedAt     DateTime?
+  closedAt      DateTime?
+  result        String?  @db.Text
+  lastComment   String?  @db.Text
+  deletedAt     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  client      Client                 @relation(fields: [clientId], references: [id])
+  project     ImplementationProject? @relation(fields: [projectId], references: [id])
+  responsible User?                  @relation("SupportResponsible", fields: [responsibleId], references: [id])
+  tasks       Task[]
+  notes       Note[]
+
+  @@index([status, priority, dueAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  actorId    String?
+  details    Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId, createdAt])
+  @@index([action, createdAt])
+}
+
+model Notification {
+  id          String    @id @default(cuid())
+  recipientId String
+  type        String
+  title       String
+  body        String?   @db.Text
+  entityType  String?
+  entityId    String?
+  status      String    @default("unread")
+  readAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  recipient User @relation("NotificationRecipient", fields: [recipientId], references: [id])
+
+  @@index([recipientId, status, createdAt])
+  @@index([entityType, entityId])
+}
+
+model ReferenceItem {
+  id        String   @id @default(cuid())
+  group     String
+  key       String
+  label     String
+  value     Json     @default("{}")
+  status    String   @default("active")
+  sortOrder Int      @default(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([group, key])
+  @@index([group, status, sortOrder])
+}
+
+model AuthSession {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  status    String    @default("active")
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
+  @@index([token, status])
+}

@@ -1,0 +1,152 @@
+const { loadEnv } = require('./config/env');
+const { createDefaultStore, EMPTY_DB } = require('./store/jsonStore');
+const { ROLES } = require('./domain/constants');
+const { hashPassword } = require('./lib/password');
+
+loadEnv();
+
+const store = createDefaultStore();
+const seedPassword = process.env.CRM_SEED_PASSWORD || 'change-this-local-seed-password';
+const devPasswordHash = hashPassword(seedPassword, process.env.CRM_SEED_SALT || undefined);
+
+store.replaceAll({
+  ...structuredClone(EMPTY_DB),
+  users: [
+    {
+      id: 'usr_owner',
+      name: 'Vladislav',
+      role: ROLES.OWNER,
+      phone: '+7',
+      email: 'owner@edudev.local',
+      status: 'active',
+      apiToken: 'dev-owner-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_manager',
+      name: 'Менеджер',
+      role: ROLES.MANAGER,
+      phone: '+7',
+      email: 'sales@edudev.local',
+      status: 'active',
+      apiToken: 'dev-manager-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_supervisor',
+      name: 'Управляющий',
+      role: ROLES.SUPERVISOR,
+      phone: '+7',
+      email: 'supervisor@edudev.local',
+      status: 'active',
+      apiToken: 'dev-supervisor-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_developer',
+      name: 'Программист',
+      role: ROLES.DEVELOPER,
+      phone: '+7',
+      email: 'developer@edudev.local',
+      status: 'active',
+      apiToken: 'dev-developer-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_impl',
+      name: 'Implementation',
+      role: ROLES.IMPLEMENTATION,
+      phone: '+7',
+      email: 'implementation@edudev.local',
+      status: 'active',
+      apiToken: 'dev-implementation-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_support',
+      name: 'Support',
+      role: ROLES.SUPPORT,
+      phone: '+7',
+      email: 'support@edudev.local',
+      status: 'active',
+      apiToken: 'dev-support-token',
+      passwordHash: devPasswordHash,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ],
+  materials: [
+    {
+      id: 'mat_autotech_first_message',
+      direction: 'autotech',
+      niche: 'all',
+      type: 'first_message',
+      title: 'Первое сообщение AutoTech',
+      body: 'Здравствуйте. Мы внедряем систему учета для ПЗМ, шиномонтажа, СТО и автомоек: клиенты, авто, заказы, склад, касса и напоминания.',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'mat_oil_diagnostics',
+      direction: 'autotech',
+      niche: 'oil_change',
+      type: 'diagnostics_questions',
+      title: 'Диагностика ПЗМ',
+      body: 'Как фиксируете масло и фильтры? Ставите ли напоминание через 3-4 месяца? Видите ли остатки и маржу?',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'mat_tire_diagnostics',
+      direction: 'autotech',
+      niche: 'tire_service',
+      type: 'diagnostics_questions',
+      title: 'Диагностика шиномонтажа',
+      body: 'Как ведете сезонную запись, размеры шин, хранение комплектов и напоминания о переобувке?',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'mat_edutech_first_message',
+      direction: 'edutech',
+      niche: 'all',
+      type: 'first_message',
+      title: 'Первое сообщение EduTech',
+      body: 'Здравствуйте. Мы внедряем CRM для учебных центров: заявки, ученики и родители, тарифы, расписание, посещаемость, оплаты, долги и задачи преподавателям.',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'mat_music_school_diagnostics',
+      direction: 'edutech',
+      niche: 'music_school',
+      type: 'diagnostics_questions',
+      title: 'Диагностика музыкальной школы',
+      body: 'Как ведете учеников и родителей? Где хранятся тарифы, расписание, посещаемость, оплаты, долги и задачи преподавателей?',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'mat_language_school_diagnostics',
+      direction: 'edutech',
+      niche: 'language_school',
+      type: 'diagnostics_questions',
+      title: 'Диагностика языковой школы',
+      body: 'Как формируете группы и уровни? Видите ли продления, заморозки, пропуски, долги и загрузку преподавателей?',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ],
+});
+
+console.log('Seeded backend/data/db.json');

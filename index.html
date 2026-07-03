@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduDev - учет и управление автосервисом</title>
+    <meta
+      name="description"
+      content="Настройка учета для пунктов замены масла, шиномонтажек, СТО и автомоек в Казахстане."
+    />
+    <link rel="stylesheet" href="styles.css?v=8" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="EduDev">
+        <span class="brand-mark" aria-hidden="true">e›</span>
+        <span>
+          <strong>EduDev</strong>
+          <small>Учет сервиса</small>
+        </span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="main-nav" data-nav>
+        <a href="#suite">Возможности</a>
+        <a href="#solution">Разделы</a>
+        <a href="#segments">Для кого</a>
+        <a href="#implementation">Внедрение</a>
+        <a href="#pricing">Тарифы</a>
+        <a class="nav-cta" href="#contact" data-callback-open>Разобрать учет</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Решения для бизнеса · Казахстан</p>
+          <div class="hero-brand" aria-label="EduDev">
+            <span class="brand-mark hero-mark" aria-hidden="true">e›</span>
+            <span><b>edu</b><strong>dev</strong></span>
+          </div>
+          <h1>Система управления для пунктов замены масла, шиномонтажек, СТО и автомоек</h1>
+          <p class="hero-lead">
+            Наводим порядок в клиентах, автомобилях, заказах, складе, деньгах,
+            сотрудниках и повторных визитах. Настраиваем систему под ваш
+            реальный процесс и запускаем команду без лишней сложности.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#contact" data-callback-open>Получить разбор учета</a>
+            <a class="button secondary" href="#suite">Посмотреть возможности</a>
+          </div>
+          <div class="proof-row" aria-label="Ключевые преимущества">
+            <span>Внедрение под процесс</span>
+            <span>Обучение команды</span>
+            <span>4 месяца поддержки бесплатно</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Место под главный скриншот системы">
+          <div class="hero-image-card">
+            <img src="assets/hero-auto-crm.png" alt="Экран учета с графиками и таблицами в автосервисе" />
+            <div class="hero-image-badge">
+              <strong>Учет для автосервиса</strong>
+              <span>заказы · склад · деньги · клиенты</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics-strip" aria-label="Ключевые условия и результаты">
+        <article>
+          <strong>4 месяца</strong>
+          <span>поддержки бесплатно после запуска</span>
+        </article>
+        <article>
+          <strong>1-5 дней</strong>
+          <span>на первичную настройку простого сервиса</span>
+        </article>
+        <article>
+          <strong>1 кабинет</strong>
+          <span>для клиентов, заказов, склада и денег</span>
+        </article>
+        <article>
+          <strong>Казахстан</strong>
+          <span>локальное внедрение и обучение команды</span>
+        </article>
+      </section>
+
+      <section class="suite-section" id="suite">
+        <div class="section-head">
+          <p class="eyebrow">Все процессы сервиса</p>
+          <h2>От записи клиента до отчета владельца — в одной рабочей системе</h2>
+          <p>
+            Система должна быть понятной администратору, полезной мастеру и
+            достаточно прозрачной для владельца. Поэтому показываем не “много
+            кнопок”, а ежедневные рабочие экраны.
+          </p>
+        </div>
+        <div class="suite-grid">
+          <article class="suite-card large">
+            <div>
+              <span class="suite-kicker">Администратор</span>
+              <h3>Оформляет визит без тетради и лишних сообщений</h3>
+              <p>Клиент, автомобиль, услуги, товары, мастер, скидка и оплата собираются в один заказ.</p>
+            </div>
+            <div class="ui-mock order-mock" aria-label="Макет экрана заказа">
+              <div class="ui-top">
+                <strong>Заказ #1842</strong>
+                <span>В работе</span>
+              </div>
+              <div class="order-client">
+                <b>Toyota Camry · А 777 КЗ</b>
+                <small>Клиент: Ерлан · пробег 84 200 км</small>
+              </div>
+              <div class="ui-columns">
+                <span><b>Мастер</b><small>Азамат</small></span>
+                <span><b>Оплата</b><small>24 500 ₸</small></span>
+                <span><b>Скидка</b><small>0 ₸</small></span>
+              </div>
+              <div class="ui-table">
+                <div><span>Замена масла</span><b>8 000 ₸</b></div>
+                <div><span>Масло 5W-30 · 4 л</span><b>14 000 ₸</b></div>
+                <div><span>Фильтр масляный</span><b>2 500 ₸</b></div>
+                <div><span>Напоминание через 4 месяца</span><b class="ok">создано</b></div>
+              </div>
+            </div>
+          </article>
+          <article class="suite-card">
+            <span class="suite-kicker">Склад</span>
+            <h3>Остатки списываются из заказа</h3>
+            <p>Масла, фильтры, запчасти, химия и расходники перестают жить отдельно от продаж.</p>
+            <div class="stock-widget">
+              <div><span>Масло 5W-30</span><b>18 л</b></div>
+              <div><span>Фильтр Toyota</span><b>7 шт</b></div>
+              <div><span>Химия мойка</span><b>12 л</b></div>
+              <div class="low"><span>Грузики</span><b>мало</b></div>
+            </div>
+          </article>
+          <article class="suite-card">
+            <span class="suite-kicker">Повторные визиты</span>
+            <h3>Клиентов возвращают вовремя</h3>
+            <p>После замены масла, ремонта, мойки или сезона шин система ставит задачу напомнить клиенту.</p>
+            <div class="reminder-stack">
+              <b><span>Замена масла</span><small>через 4 месяца</small></b>
+              <b><span>Сезон шин</span><small>15 октября</small></b>
+              <b><span>Повторная мойка</span><small>через 14 дней</small></b>
+            </div>
+          </article>
+          <article class="suite-card wide">
+            <div>
+              <span class="suite-kicker">Владелец</span>
+              <h3>Видит деньги, склад и работу сотрудников</h3>
+              <p>Выручка, скидки, средний чек, популярные услуги, товары и действия команды доступны без ручных сводок.</p>
+            </div>
+            <div class="ui-mock analytics-mock" aria-label="Макет экрана отчетов">
+              <div class="donut"><strong>72%</strong><small>план</small></div>
+              <div>
+                <div class="analytics-numbers">
+                  <span><b>1.8 млн ₸</b><small>выручка</small></span>
+                  <span><b>128</b><small>заказов</small></span>
+                </div>
+                <div class="line-chart"><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="pain-band" id="problems">
+        <div class="section-head">
+          <p class="eyebrow">Почему владельцу трудно расти</p>
+          <h2>Когда учет держится в тетради, таблицах и переписках, бизнес теряет деньги незаметно</h2>
+        </div>
+        <div class="pain-grid">
+          <article>
+            <span class="icon">₸</span>
+            <h3>Не видно реальную прибыль</h3>
+            <p>Выручка есть, но непонятно, какие услуги, товары, мастера и смены действительно приносят деньги.</p>
+          </article>
+          <article>
+            <span class="icon">▦</span>
+            <h3>Склад живет отдельно</h3>
+            <p>Масла, фильтры, химия, шины и запчасти считаются “на глаз”, поэтому появляются потери и зависшие остатки.</p>
+          </article>
+          <article>
+            <span class="icon">↻</span>
+            <h3>Клиенты не возвращаются</h3>
+            <p>После замены масла, ремонта, мойки или сезона шин клиенту никто вовремя не пишет.</p>
+          </article>
+          <article>
+            <span class="icon">✓</span>
+            <h3>Сотрудники работают по памяти</h3>
+            <p>Скидки, отмены, изменения цен и задачи остаются без прозрачной истории действий.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="solution-section" id="solution">
+        <div class="section-head narrow">
+          <p class="eyebrow">Система под ваш процесс</p>
+          <h2>Сначала закрываем главные проблемы, потом расширяем систему по мере роста</h2>
+          <p>
+            Мы не продаем абстрактную программу и не грузим вас лишними возможностями.
+            Сначала разбираем, где теряются клиенты, склад, деньги и время
+            сотрудников, а затем настраиваем понятный порядок работы под ваш сервис.
+          </p>
+        </div>
+        <div class="module-builder">
+          <div class="builder-summary">
+            <span class="summary-label">Выбор разделов</span>
+            <h3>Начинаем с того, что реально нужно вашему сервису</h3>
+            <p>
+              На разборе учета мы не продаем “все сразу”. Сначала выбираем
+              рабочий набор под ваш формат, команду и текущие проблемы.
+            </p>
+            <div class="package-stack">
+              <article>
+                <strong>Легкий старт</strong>
+                <span>клиенты · авто · заказы · оплата</span>
+              </article>
+              <article>
+                <strong>Сервис со складом</strong>
+                <span>остатки · списания · закупки · отчеты</span>
+              </article>
+              <article>
+                <strong>Рост и контроль</strong>
+                <span>напоминания · отчеты · доступы · 2+ точки</span>
+              </article>
+            </div>
+          </div>
+          <div class="module-picker" aria-label="Разделы системы" data-module-picker>
+            <article class="module-card selected locked" data-module="Клиенты, авто и заказы">
+              <span>База</span>
+              <h3>Клиенты, авто и заказы</h3>
+              <p>Чтобы администратор быстро оформлял визит, а история клиента и автомобиля не терялась.</p>
+            </article>
+            <article class="module-card" data-module="Склад и остатки">
+              <span>Товары</span>
+              <h3>Склад и остатки</h3>
+              <p>Чтобы масла, фильтры, запчасти, химия и расходники списывались из заказов и сходились по остаткам.</p>
+            </article>
+            <article class="module-card" data-module="Напоминания клиентам">
+              <span>Возврат</span>
+              <h3>Напоминания клиентам</h3>
+              <p>Чтобы клиенту вовремя напомнили о замене масла, сезоне шин, повторной мойке или следующем ремонте.</p>
+            </article>
+            <article class="module-card" data-module="Деньги и отчеты">
+              <span>Контроль</span>
+              <h3>Деньги и отчеты</h3>
+              <p>Чтобы владелец видел выручку, средний чек, скидки, сотрудников, популярные услуги и товары.</p>
+            </article>
+            <article class="module-card" data-module="Замена масла, СТО, шины или мойка">
+              <span>Отрасль</span>
+              <h3>Замена масла, СТО, шины или мойка</h3>
+              <p>Подбор масла, заказ-наряды, хранение шин, запись по боксам и другой порядок работы под ваш сервис.</p>
+            </article>
+            <article class="module-card quiet" data-module="Расширение позже">
+              <span>Позже</span>
+              <h3>Расширение</h3>
+              <p>Запись через сайт, сообщения клиентам, перенос таблиц, фото до/после, несколько точек и дополнительные отчеты.</p>
+            </article>
+            <div class="module-request">
+              <div>
+                <span>Выбранный набор</span>
+                <strong data-selected-modules>Клиенты, авто и заказы</strong>
+              </div>
+              <a class="button primary" href="#contact" data-module-cta data-callback-open>Оставить заявку с этим набором</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="segments-section" id="segments">
+        <div class="section-head">
+          <p class="eyebrow">Под разные форматы</p>
+          <h2>Экраны и порядок работы подстраиваются под ваш сервис</h2>
+        </div>
+        <div class="tabs" data-tabs>
+          <div class="tab-buttons" role="tablist" aria-label="Типы бизнеса">
+            <button class="active" type="button" data-tab="oil">Замена масла</button>
+            <button type="button" data-tab="tires">Шиномонтаж</button>
+            <button type="button" data-tab="repair">СТО</button>
+            <button type="button" data-tab="wash">Автомойка</button>
+          </div>
+          <div class="tab-panel active" data-panel="oil">
+            <div>
+              <h3>Пункт замены масла</h3>
+              <p>Система запоминает автомобиль, масло, фильтры, пробег, сумму и дату следующего визита.</p>
+              <ul>
+                <li>Склад масел, фильтров и расходников</li>
+                <li>Подбор товара под автомобиль</li>
+                <li>Напоминания клиенту о повторной замене</li>
+              </ul>
+            </div>
+            <div class="niche-screen oil-screen" aria-label="Экран пункта замены масла">
+              <div class="screen-bar"><strong>Замена масла · Быстрый заказ</strong><span>Повторный визит</span></div>
+              <div class="screen-body">
+                <div class="vehicle-card">
+                  <span>Toyota Camry</span>
+                  <strong>5W-30 · 4 л</strong>
+                  <small>следующая замена через 4 месяца</small>
+                </div>
+                <div class="product-list">
+                  <div><span>Масло Shell 5W-30</span><b>18 л</b></div>
+                  <div><span>Фильтр Toyota</span><b>7 шт</b></div>
+                  <div><span>Работа мастера</span><b>8 000 ₸</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="tires">
+            <div>
+              <h3>Шиномонтаж и шинный центр</h3>
+              <p>Удобная сезонная запись, история комплектов, хранение шин и напоминания о переобувке.</p>
+              <ul>
+                <li>Размеры шин и комплекты клиентов</li>
+                <li>Учет хранения и расходников</li>
+                <li>Загрузка мастеров и постов</li>
+              </ul>
+            </div>
+            <div class="niche-screen tires-screen" aria-label="Экран шиномонтажа">
+              <div class="screen-bar"><strong>Шиномонтаж · Сезонная запись</strong><span>12 постов</span></div>
+              <div class="calendar-grid">
+                <div><b>09:00</b><span>R17 · хранение</span></div>
+                <div><b>10:30</b><span>R16 · переобувка</span></div>
+                <div><b>12:00</b><span>R18 · балансировка</span></div>
+                <div><b>14:00</b><span>R15 · ремонт</span></div>
+              </div>
+              <div class="tire-storage">
+                <span>Комплект клиента</span>
+                <strong>205/55 R16 · склад A-12</strong>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="repair">
+            <div>
+              <h3>СТО и смешанный сервис</h3>
+              <p>Заказ-наряд ведет клиента от жалобы и диагностики до работ, запчастей, оплаты и отчета владельцу.</p>
+              <ul>
+                <li>Работы и запчасти отдельно</li>
+                <li>Статусы ремонта и ответственные мастера</li>
+                <li>Прибыль по заказам, работам и товарам</li>
+              </ul>
+            </div>
+            <div class="niche-screen repair-screen" aria-label="Экран СТО">
+              <div class="screen-bar"><strong>СТО · Заказ-наряд</strong><span>Диагностика</span></div>
+              <div class="repair-layout">
+                <div class="status-rail">
+                  <span class="done">Принят</span>
+                  <span class="active">В ремонте</span>
+                  <span>Готов</span>
+                </div>
+                <div class="work-list">
+                  <div><span>Жалоба клиента</span><b>стук подвески</b></div>
+                  <div><span>Работа</span><b>замена стойки</b></div>
+                  <div><span>Запчасть</span><b>2 шт · склад</b></div>
+                  <div><span>Итого</span><b>46 000 ₸</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel" data-panel="wash">
+            <div>
+              <h3>Автомойка и детейлинг</h3>
+              <p>Запись по времени, боксы, услуги, абонементы, постоянные клиенты и контроль смен.</p>
+              <ul>
+                <li>Календарь записей и загрузка боксов</li>
+                <li>Пакеты, абонементы и акции</li>
+                <li>Отчеты по услугам и сотрудникам</li>
+              </ul>
+            </div>
+            <div class="niche-screen wash-screen" aria-label="Экран автомойки">
+              <div class="screen-bar"><strong>Автомойка · Запись по боксам</strong><span>сегодня</span></div>
+              <div class="wash-lanes">
+                <div><b>Бокс 1</b><span>10:00 комплекс</span><span>11:00 свободно</span></div>
+                <div><b>Бокс 2</b><span>10:30 детейлинг</span><span>12:00 химчистка</span></div>
+                <div><b>Бокс 3</b><span>09:30 экспресс</span><span>11:30 абонемент</span></div>
+              </div>
+              <div class="wash-total"><span>Выручка смены</span><strong>185 000 ₸</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow-section" id="demo">
+        <div class="section-head narrow">
+          <p class="eyebrow">Реальный день сервиса</p>
+          <h2>Один заказ проходит через клиента, склад, оплату и повторный визит</h2>
+        </div>
+        <div class="workflow-showcase">
+          <div class="timeline" aria-label="Как проходит заказ">
+          <article class="workflow-step">
+            <span class="step-number">01</span>
+            <span class="step-chip">Поиск</span>
+            <h3>Клиент приехал</h3>
+            <p>Администратор находит клиента по телефону или госномеру и сразу видит историю автомобиля.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">02</span>
+            <span class="step-chip">Заказ</span>
+            <h3>Создан заказ</h3>
+            <p>В заказ добавляются услуги, товары, мастер, скидка и комментарии по работе.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">03</span>
+            <span class="step-chip">Склад</span>
+            <h3>Склад списался</h3>
+            <p>Масло, фильтр, химия или запчасть уходят со склада без ручных пересчетов в конце дня.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">04</span>
+            <span class="step-chip">Оплата</span>
+            <h3>Оплата и напоминание</h3>
+            <p>Система фиксирует оплату и ставит задачу вернуть клиента в нужный срок.</p>
+          </article>
+          <article class="workflow-step">
+            <span class="step-number">05</span>
+            <span class="step-chip">Отчет</span>
+            <h3>Владелец видит отчет</h3>
+            <p>Выручка, прибыль, склад, сотрудники, скидки и повторные клиенты доступны в одном кабинете.</p>
+          </article>
+          </div>
+          <div class="service-day-board" aria-label="Пример рабочего экрана сервиса">
+            <div class="board-top">
+              <strong>Сегодня · Замена масла</strong>
+              <span>12 заказов</span>
+            </div>
+            <div class="board-client">
+              <span>Toyota Camry · Ерлан</span>
+              <strong>Заказ #1842 · В работе</strong>
+            </div>
+            <div class="board-status">
+              <span class="done">Принят</span>
+              <span class="active">Работа идет</span>
+              <span>Оплата</span>
+              <span>Напомнить</span>
+            </div>
+            <div class="board-grid">
+              <div><span>Услуги</span><b>8 000 ₸</b></div>
+              <div><span>Товары</span><b>16 500 ₸</b></div>
+              <div><span>Склад</span><b>списано</b></div>
+              <div><span>Следующий визит</span><b>через 4 месяца</b></div>
+            </div>
+            <div class="board-reminder">
+              <span>Задача администратору</span>
+              <strong>Напомнить клиенту о следующей замене масла 3 ноября</strong>
+            </div>
+            <div class="board-total">
+              <span>Итого по заказу</span>
+              <strong>24 500 ₸</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="implementation-section" id="implementation">
+        <div class="section-head">
+          <p class="eyebrow">Личный запуск</p>
+          <h2>Помогаем не просто подключить систему, а довести ее до ежедневного использования</h2>
+          <p>Первые 4 месяца поддержки бесплатны: за это время команда привыкает к новому порядку, а мы помогаем довести все до удобной работы.</p>
+        </div>
+        <div class="steps-grid launch-roadmap">
+          <article>
+            <span class="launch-number">01</span>
+            <span class="launch-icon">Учет</span>
+            <h3>Разбор учета</h3>
+            <p>Смотрим, как сейчас идут клиенты, заказы, склад, оплаты, ответственность сотрудников и отчеты.</p>
+          </article>
+          <article>
+            <span class="launch-number">02</span>
+            <span class="launch-icon">Набор</span>
+            <h3>Выбор разделов</h3>
+            <p>Определяем, какие разделы нужны на старте, а что можно спокойно подключить позже.</p>
+          </article>
+          <article>
+            <span class="launch-number">03</span>
+            <span class="launch-icon">Порядок</span>
+            <h3>Настройка</h3>
+            <p>Загружаем услуги, товары, сотрудников, доступы, пробные заказы и оформление компании.</p>
+          </article>
+          <article>
+            <span class="launch-number">04</span>
+            <span class="launch-icon">Команда</span>
+            <h3>Обучение</h3>
+            <p>Показываем владельцу, администратору и мастерам их ежедневный порядок работы.</p>
+          </article>
+          <article>
+            <span class="launch-number">05</span>
+            <span class="launch-icon">Запуск</span>
+            <h3>Запуск</h3>
+            <p>Сопровождаем первые смены, поправляем неудобные места и остаемся на поддержке.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="pricing-section" id="pricing">
+        <div class="section-head">
+          <p class="eyebrow">Варианты запуска</p>
+          <h2>Стоимость зависит от размера сервиса, склада и нужных разделов</h2>
+        </div>
+        <div class="support-offer">
+          <span>Стартовое условие</span>
+          <strong>Первые 4 месяца поддержки бесплатно</strong>
+          <p>После запуска мы остаемся рядом: помогаем команде привыкнуть к системе, отвечаем на вопросы и доводим настройки до рабочего состояния.</p>
+        </div>
+        <div class="pricing-grid">
+          <article>
+            <h3>Старт</h3>
+            <p>Маленькая шиномонтажка, мойка или небольшой сервис.</p>
+            <strong>80 000 - 150 000 ₸</strong>
+            <small>разовая настройка</small>
+            <div class="monthly-price">20 000 ₸/мес после 4 месяцев</div>
+            <ul>
+              <li>Клиенты, заказы, услуги</li>
+              <li>Оплаты и базовые отчеты</li>
+              <li>1 точка, до 3 сотрудников</li>
+            </ul>
+          </article>
+          <article class="featured">
+            <h3>Бизнес</h3>
+            <p>Пункт замены масла, шиномонтаж или небольшое СТО с регулярным потоком.</p>
+            <strong>180 000 - 350 000 ₸</strong>
+            <small>разовая настройка</small>
+            <div class="monthly-price">30 000 ₸/мес после 4 месяцев</div>
+            <ul>
+              <li>Клиенты, авто, заказы, склад</li>
+              <li>Напоминания, доступы, отчеты</li>
+              <li>До 7 сотрудников</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Контроль</h3>
+            <p>СТО или пункт замены масла с активным складом и управлением командой.</p>
+            <strong>400 000 - 700 000 ₸</strong>
+            <small>разовая настройка</small>
+            <div class="monthly-price">50 000 ₸/мес после 4 месяцев</div>
+            <ul>
+              <li>Расширенный склад и закупки</li>
+              <li>Касса, сотрудники, отчеты</li>
+              <li>До 15 сотрудников</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Сеть</h3>
+            <p>Две и более точки, сеть или индивидуальный процесс.</p>
+            <strong>от 800 000 ₸</strong>
+            <small>разовая настройка</small>
+            <div class="monthly-price">80 000 - 150 000 ₸/мес после 4 месяцев</div>
+            <ul>
+              <li>Несколько точек и складов</li>
+              <li>Сравнение филиалов</li>
+              <li>Индивидуальная настройка</li>
+            </ul>
+          </article>
+        </div>
+        <div class="calculator" aria-label="Калькулятор ориентировочного бюджета">
+          <div>
+            <h3>Быстрый ориентир по бюджету</h3>
+            <p>Выберите формат и нужные разделы. Итог покажет примерную стоимость запуска. Первые 4 месяца поддержки бесплатны, дальше поддержка считается по выбранному варианту.</p>
+          </div>
+          <form data-calculator>
+            <label>
+              Вариант
+              <select name="base">
+                <option value="start">Старт</option>
+                <option value="business" selected>Бизнес</option>
+                <option value="pro">Контроль</option>
+                <option value="network">Сеть</option>
+              </select>
+            </label>
+            <label class="check"><input type="checkbox" name="warehouse" checked /> Склад</label>
+            <label class="check"><input type="checkbox" name="reminders" checked /> Напоминания</label>
+            <label class="check"><input type="checkbox" name="analytics" /> Подробные отчеты</label>
+            <label class="check"><input type="checkbox" name="multi" /> Несколько точек</label>
+            <output data-total>от 330 000 ₸ разовая настройка</output>
+          </form>
+        </div>
+      </section>
+
+      <section class="trust-section">
+        <div class="section-head">
+          <p class="eyebrow">Надежный запуск</p>
+          <h2>Вы получаете не просто программу, а внедрение под ваш реальный сервис</h2>
+        </div>
+        <div class="trust-layout">
+          <div class="launch-plan" aria-label="Пример плана запуска">
+            <span class="brand-mark launch-plan-mark" aria-hidden="true">e›</span>
+            <div class="launch-plan-top">
+              <span>План запуска</span>
+              <strong>14 дней до рабочего учета</strong>
+            </div>
+            <div class="launch-progress">
+              <span style="width: 68%"></span>
+            </div>
+            <div class="launch-calendar">
+              <article>
+                <span>День 1</span>
+                <strong>Разбор текущего учета</strong>
+                <small>клиенты · заказы · склад · деньги</small>
+              </article>
+              <article>
+                <span>День 3</span>
+                <strong>Загрузка услуг и товаров</strong>
+                <small>цены · остатки · сотрудники</small>
+              </article>
+              <article>
+                <span>День 7</span>
+                <strong>Обучение команды</strong>
+                <small>администратор · мастера · владелец</small>
+              </article>
+              <article>
+                <span>День 14</span>
+                <strong>Первые смены в системе</strong>
+                <small>проверка заказов и отчетов</small>
+              </article>
+            </div>
+            <div class="launch-owner">
+              <div>
+                <span>Ответственный</span>
+                <strong>Внедренец EduDev</strong>
+              </div>
+              <div>
+                <span>После запуска</span>
+                <strong>4 месяца поддержки</strong>
+              </div>
+            </div>
+          </div>
+          <div class="trust-points">
+            <article>
+              <h3>Локальное внедрение</h3>
+              <p>Можно созвониться, приехать, обучить команду и разобрать процесс на месте.</p>
+            </article>
+            <article>
+              <h3>Показ на вашем процессе</h3>
+              <p>Перед запуском показываем, как система будет работать именно для замены масла, шиномонтажа, СТО или мойки.</p>
+            </article>
+            <article>
+              <h3>Контроль сотрудников</h3>
+              <p>Владелец видит заказы, оплаты, скидки, изменения склада и действия команды.</p>
+            </article>
+            <article>
+              <h3>Поддержка после запуска</h3>
+              <p>После внедрения остаемся на связи: помогаем с вопросами, настройками и доработками.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section">
+        <div class="section-head narrow">
+          <p class="eyebrow">Вопросы</p>
+          <h2>Коротко о том, что обычно спрашивают</h2>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>Это просто программа для клиентов?</summary>
+            <p>Нет. Здесь ведутся клиенты, автомобили, заказы, склад, деньги и повторные визиты.</p>
+          </details>
+          <details>
+            <summary>Если у нас маленький сервис?</summary>
+            <p>Для небольших точек есть простой старт: учет заказов, клиентов, оплат и отчетов без лишней сложности.</p>
+          </details>
+          <details>
+            <summary>Сотрудники будут пользоваться?</summary>
+            <p>Экраны настраиваются под реальный процесс, а запуск включает обучение владельца, администратора и мастеров.</p>
+          </details>
+          <details>
+            <summary>Сообщения клиентам входят в стоимость?</summary>
+            <p>Тексты и порядок отправки можно подготовить сразу, а подключение мессенджеров считается отдельно после выбора сервиса отправки.</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="contact-copy">
+          <p class="eyebrow">Следующий шаг</p>
+          <h2>Разберем ваш учет и покажем, что нужно подключить</h2>
+          <p>
+            Оставьте контакты, тип бизнеса и город. Мы зададим 10-15 вопросов по
+            клиентам, заказам, складу, деньгам и сотрудникам, после чего дадим
+            понятный план внедрения.
+          </p>
+        </div>
+        <form class="lead-form">
+          <input type="hidden" name="selected_modules" data-selected-modules-input value="Клиенты, авто и заказы" />
+          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" /></label>
+          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" /></label>
+          <label>
+            Тип бизнеса
+            <select name="business">
+              <option>Пункт замены масла</option>
+              <option>Шиномонтаж</option>
+              <option>СТО</option>
+              <option>Автомойка</option>
+              <option>Смешанный сервис</option>
+            </select>
+          </label>
+          <label>Город <input type="text" name="city" placeholder="Ваш город" /></label>
+          <label class="wide">Что хотите навести в порядок?
+            <textarea name="message" rows="4" placeholder="Например: склад, заказы, записи, касса, сотрудники или повторные клиенты"></textarea>
+          </label>
+          <button class="button primary wide" type="button" data-form-button>Получить разбор учета</button>
+          <p class="form-note wide" data-form-note aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>EduDev</strong>
+        <p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p>
+      </div>
+      <a href="#top">Наверх</a>
+    </footer>
+
+    <button class="callback-float" type="button" data-callback-open aria-label="Заказать обратный звонок">
+      <span>Звонок</span>
+    </button>
+
+    <div class="callback-modal" data-callback-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="callback-title">
+      <div class="callback-backdrop" data-callback-close></div>
+      <div class="callback-panel" role="document">
+        <button class="callback-close" type="button" data-callback-close aria-label="Закрыть окно">×</button>
+        <p class="eyebrow">Обратный звонок</p>
+        <h2 id="callback-title">Перезвоним и разберем ваш учет</h2>
+        <p>
+          Оставьте имя, телефон и удобное время. Мы уточним, как сейчас идут
+          клиенты, заказы, склад и оплаты, а затем подскажем следующий шаг.
+        </p>
+        <form class="callback-form" data-callback-form>
+          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
+          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
+          <label>
+            Когда удобно
+            <select name="time">
+              <option>Сегодня</option>
+              <option>Завтра</option>
+              <option>В первой половине дня</option>
+              <option>После обеда</option>
+            </select>
+          </label>
+          <label>
+            Тип сервиса
+            <select name="business">
+              <option>Пункт замены масла</option>
+              <option>Шиномонтаж</option>
+              <option>СТО</option>
+              <option>Автомойка</option>
+              <option>Смешанный сервис</option>
+            </select>
+          </label>
+          <button class="button primary wide" type="submit">Жду звонка</button>
+          <p class="form-note wide" data-callback-note aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js?v=3"></script>
+  </body>
+</html>

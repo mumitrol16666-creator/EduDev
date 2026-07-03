@@ -1,0 +1,134 @@
+.form-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+  background: #ffffff;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  min-height: 44px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--green);
+  outline: 3px solid rgba(18, 135, 103, 0.12);
+}
+
+.field-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-error {
+  background: #fff3f3;
+  border: 1px solid #e7b8b8;
+  border-radius: var(--radius);
+  color: var(--red);
+  font-weight: 800;
+  padding: 10px 12px;
+}
+
+.filter-bar {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  margin-bottom: 14px;
+  padding: 14px;
+}
+
+.filter-actions {
+  align-items: end;
+  display: flex;
+  gap: 8px;
+}
+
+.inline-form {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 150px 190px minmax(0, 1fr) auto;
+  margin: -4px 0 14px;
+  padding-bottom: 14px;
+}
+
+.inline-form.two-columns {
+  grid-template-columns: 160px minmax(0, 1fr) auto;
+}
+
+.inline-form input,
+.inline-form select {
+  background: #ffffff;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  min-height: 40px;
+  padding: 9px 10px;
+}
+
+.check-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.check-row {
+  align-items: center;
+  background: var(--panel-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: flex;
+  gap: 10px;
+  min-height: 46px;
+  padding: 10px 12px;
+}
+
+.check-row input {
+  accent-color: var(--green);
+  height: 18px;
+  width: 18px;
+}
+
+.check-row span {
+  color: var(--text);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .filter-bar,
+  .field-grid,
+  .inline-form,
+  .inline-form.two-columns,
+  .check-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

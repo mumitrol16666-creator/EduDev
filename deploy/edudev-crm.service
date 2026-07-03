@@ -1,0 +1,18 @@
+[Unit]
+Description=EduDev CRM backend
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=edudev
+Group=edudev
+WorkingDirectory=/opt/edudev-crm/backend
+EnvironmentFile=/opt/edudev-crm/backend/.env
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

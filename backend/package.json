@@ -1,0 +1,27 @@
+{
+  "name": "edudev-crm-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MVP backend for EduDev / Yedu CRM operations.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "seed": "node src/seed.js",
+    "bootstrap:admin": "node src/bootstrap-admin.js",
+    "smoke": "node test/smoke.js",
+    "prisma:generate": "prisma generate",
+    "prisma:validate": "prisma validate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
