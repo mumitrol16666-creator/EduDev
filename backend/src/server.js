@@ -13,6 +13,7 @@ loadEnv();
 const PORT = Number(process.env.PORT || 4100);
 const HOST = process.env.HOST || '127.0.0.1';
 const CORS_ORIGIN = process.env.CORS_ORIGIN || '';
+const CORS_ORIGINS = CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean);
 const store = createStore();
 const crm = new CrmService(store);
 const auth = new AuthService(store);
@@ -22,7 +23,7 @@ const server = http.createServer(async (req, res) => {
     const requestOrigin = req.headers.origin || '';
     if (!CORS_ORIGIN) {
       res.setHeader('access-control-allow-origin', requestOrigin || '*');
-    } else if (CORS_ORIGIN === requestOrigin) {
+    } else if (CORS_ORIGINS.includes(requestOrigin)) {
       res.setHeader('access-control-allow-origin', requestOrigin);
     }
     res.setHeader('vary', 'Origin');
@@ -52,6 +53,11 @@ const server = http.createServer(async (req, res) => {
         ...body,
         userAgent: req.headers['user-agent'] || null,
       }) });
+    }
+
+    if (method === 'POST' && url.pathname === '/api/public/leads') {
+      const body = await readJson(req);
+      return sendJson(res, 201, { success: true, lead: await crm.createLead(publicLeadPayload(body)) });
     }
 
     const user = await auth.authenticate(req);
@@ -367,4 +373,41 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 function bearerToken(req) {
   const match = String(req.headers.authorization || '').match(/^Bearer\s+(.+)$/i);
   return match ? match[1].trim() : null;
+}
+
+function publicLeadPayload(body = {}) {
+  const business = String(body.business || '').trim();
+  const name = String(body.name || '').trim();
+  const phone = String(body.phone || '').trim();
+  const city = String(body.city || '').trim() || 'Не указан';
+  const message = String(body.message || '').trim();
+  const selectedModules = String(body.selectedModules || body.selected_modules || '').trim();
+  const preferredTime = String(body.preferredTime || body.time || '').trim();
+
+  return {
+    name: name ? `${name}${business ? ` - ${business}` : ''}` : business || 'Заявка с сайта',
+    direction: 'autotech',
+    niche: nicheFromBusiness(business),
+    city,
+    phone,
+    whatsapp: phone,
+    source: body.source || 'website',
+    decisionMaker: name || null,
+    currentAccounting: 'Заявка с сайта EduDev',
+    pain: [
+      message,
+      selectedModules ? `Выбранные разделы: ${selectedModules}` : '',
+      preferredTime ? `Удобное время: ${preferredTime}` : '',
+      business ? `Тип бизнеса: ${business}` : '',
+    ].filter(Boolean).join('\n'),
+  };
+}
+
+function nicheFromBusiness(value) {
+  const normalized = String(value || '').toLowerCase();
+  if (normalized.includes('шин')) return 'tire_service';
+  if (normalized.includes('сто') || normalized.includes('ремонт')) return 'repair_shop';
+  if (normalized.includes('мой')) return 'car_wash';
+  if (normalized.includes('смеш')) return 'mixed_service';
+  return 'oil_change';
 }

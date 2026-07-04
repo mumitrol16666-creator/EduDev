@@ -685,10 +685,10 @@
             понятный план внедрения.
           </p>
         </div>
-        <form class="lead-form">
+        <form class="lead-form" data-lead-form>
           <input type="hidden" name="selected_modules" data-selected-modules-input value="Клиенты, авто и заказы" />
-          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" /></label>
-          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" /></label>
+          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
+          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
           <label>
             Тип бизнеса
             <select name="business">
@@ -703,7 +703,7 @@
           <label class="wide">Что хотите навести в порядок?
             <textarea name="message" rows="4" placeholder="Например: склад, заказы, записи, касса, сотрудники или повторные клиенты"></textarea>
           </label>
-          <button class="button primary wide" type="button" data-form-button>Получить разбор учета</button>
+          <button class="button primary wide" type="submit" data-form-button>Получить разбор учета</button>
           <p class="form-note wide" data-form-note aria-live="polite"></p>
         </form>
       </section>

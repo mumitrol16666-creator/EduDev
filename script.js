@@ -52,6 +52,10 @@ if (modulePicker && selectedModulesOutput && selectedModulesInput) {
 }
 
 const calculator = document.querySelector("[data-calculator]");
+const API_BASE_URL = window.EDUDEV_API_BASE_URL
+  || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://127.0.0.1:4100"
+    : "https://api.edudev.kz");
 
 if (calculator) {
   const output = calculator.querySelector("[data-total]");
@@ -86,13 +90,28 @@ if (calculator) {
   updateTotal();
 }
 
+const leadForm = document.querySelector("[data-lead-form]");
 const formButton = document.querySelector("[data-form-button]");
 const formNote = document.querySelector("[data-form-note]");
 
-if (formButton && formNote) {
-  formButton.addEventListener("click", () => {
-    const selected = selectedModulesInput?.value || "Клиенты, авто и заказы";
-    formNote.textContent = `Заявка подготовлена с набором: ${selected}. Для реальной отправки подключим выбранный способ связи.`;
+if (leadForm && formButton && formNote) {
+  leadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    formNote.textContent = "";
+    formButton.disabled = true;
+    formButton.textContent = "Отправляем...";
+
+    try {
+      await submitLead(formDataToLeadPayload(new FormData(leadForm), "website_contact"));
+      formNote.textContent = "Заявка отправлена. Мы свяжемся с вами и разберем учет.";
+      leadForm.reset();
+      if (selectedModulesInput) selectedModulesInput.value = selectedModulesOutput?.textContent || "Клиенты, авто и заказы";
+    } catch (error) {
+      formNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
+    } finally {
+      formButton.disabled = false;
+      formButton.textContent = "Получить разбор учета";
+    }
   });
 }
 
@@ -176,9 +195,58 @@ document.addEventListener("keydown", (event) => {
 });
 
 if (callbackForm && callbackNote) {
-  callbackForm.addEventListener("submit", (event) => {
+  callbackForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    callbackNote.textContent = "Заявка подготовлена. Осталось подключить отправку в удобный канал связи.";
-    callbackForm.reset();
+    const submit = callbackForm.querySelector("button[type='submit']");
+    callbackNote.textContent = "";
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = "Отправляем...";
+    }
+
+    try {
+      const data = new FormData(callbackForm);
+      await submitLead({
+        ...formDataToLeadPayload(data, "website_callback"),
+        preferredTime: String(data.get("time") || "").trim(),
+        message: "Заявка на обратный звонок",
+      });
+      callbackNote.textContent = "Заявка отправлена. Перезвоним в выбранное время.";
+      callbackForm.reset();
+    } catch (error) {
+      callbackNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
+    } finally {
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = "Жду звонка";
+      }
+    }
   });
+}
+
+function formDataToLeadPayload(data, source) {
+  return {
+    source,
+    name: String(data.get("name") || "").trim(),
+    phone: String(data.get("phone") || "").trim(),
+    business: String(data.get("business") || "").trim(),
+    city: String(data.get("city") || "").trim(),
+    message: String(data.get("message") || "").trim(),
+    selectedModules: String(data.get("selected_modules") || "").trim(),
+  };
+}
+
+async function submitLead(payload) {
+  const response = await fetch(`${API_BASE_URL}/api/public/leads`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.success === false) {
+    throw new Error(data.error || "Ошибка отправки заявки");
+  }
+  return data.lead;
 }
