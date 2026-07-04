@@ -5,9 +5,9 @@ After=network.target postgresql.service
 [Service]
 Type=simple
 User=edudev
-Group=edudev
-WorkingDirectory=/opt/edudev-crm/backend
-EnvironmentFile=/opt/edudev-crm/backend/.env
+Group=www-data
+WorkingDirectory=/var/www/edudev/backend
+EnvironmentFile=/var/www/edudev/backend/.env
 ExecStart=/usr/bin/npm start
 Restart=always
 RestartSec=5

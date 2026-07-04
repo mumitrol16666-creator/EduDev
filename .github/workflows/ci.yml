@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Check JavaScript syntax
+        run: find backend/src crm/js -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Validate Prisma schema
+        run: npm run prisma:validate --prefix backend
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate --prefix backend
+
+      - name: Smoke test
+        run: npm run smoke --prefix backend

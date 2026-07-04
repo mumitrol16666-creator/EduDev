@@ -11,13 +11,20 @@ loadEnv();
 
 const PORT = Number(process.env.PORT || 4100);
 const HOST = process.env.HOST || '127.0.0.1';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || '';
 const store = createStore();
 const crm = new CrmService(store);
 const auth = new AuthService(store);
 
 const server = http.createServer(async (req, res) => {
   try {
-    res.setHeader('access-control-allow-origin', '*');
+    const requestOrigin = req.headers.origin || '';
+    if (!CORS_ORIGIN) {
+      res.setHeader('access-control-allow-origin', requestOrigin || '*');
+    } else if (CORS_ORIGIN === requestOrigin) {
+      res.setHeader('access-control-allow-origin', requestOrigin);
+    }
+    res.setHeader('vary', 'Origin');
     res.setHeader('access-control-allow-methods', 'GET,POST,PATCH,OPTIONS');
     res.setHeader('access-control-allow-headers', 'content-type,authorization');
     if (req.method === 'OPTIONS') return sendJson(res, 200, { success: true });
@@ -27,6 +34,11 @@ const server = http.createServer(async (req, res) => {
 
     if (method === 'GET' && url.pathname === '/health') {
       return sendJson(res, 200, { success: true, service: 'edudev-crm-backend' });
+    }
+
+    if (method === 'GET' && url.pathname === '/ready') {
+      const health = await store.health();
+      return sendJson(res, 200, { success: true, service: 'edudev-crm-backend', store: health });
     }
 
     if (method === 'GET' && url.pathname === '/api/meta') {
@@ -335,6 +347,17 @@ if (require.main === module) {
 }
 
 module.exports = { server, crm };
+
+function shutdown(signal) {
+  console.log(`Received ${signal}, shutting down EduDev CRM backend`);
+  server.close(() => {
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(1), 10000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
 function bearerToken(req) {
   const match = String(req.headers.authorization || '').match(/^Bearer\s+(.+)$/i);

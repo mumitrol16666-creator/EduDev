@@ -40,6 +40,11 @@ class PrismaStore {
     return this.delegate(collection).findMany();
   }
 
+  async health() {
+    await this.prisma.$queryRaw`SELECT 1`;
+    return { ok: true, mode: 'prisma' };
+  }
+
   async get(collection, id) {
     return this.delegate(collection).findUnique({ where: { id } });
   }

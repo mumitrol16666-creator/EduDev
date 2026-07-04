@@ -48,6 +48,11 @@ class JsonStore {
     return this.db[collection] || [];
   }
 
+  async health() {
+    this.ensureLoaded();
+    return { ok: true, mode: 'json' };
+  }
+
   get(collection, id) {
     return this.all(collection).find((item) => item.id === id) || null;
   }
