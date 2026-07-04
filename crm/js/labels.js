@@ -19,6 +19,7 @@ const labels = {
   consultation: 'Консультация',
   contact_check: 'Проверка контакта',
   content: 'Контент',
+  context: 'Контекст',
   communication_results: 'Результаты общения',
   dashboard: 'Рабочий стол',
   data_collection: 'Сбор данных',
@@ -41,6 +42,7 @@ const labels = {
   follow_up: 'Повторный контакт',
   general: 'Общее',
   high: 'Высокий',
+  instagram: 'Instagram',
   implementation: 'Внедрение',
   implementation_checklist_item_updated: 'Пункт внедрения обновлен',
   implementation_launched: 'Запуск передан в поддержку',
@@ -78,6 +80,7 @@ const labels = {
   overdue: 'Просрочено',
   owner: 'Владелец',
   packages: 'Пакеты',
+  pain: 'Боль',
   paid: 'Оплачено',
   paid_change: 'Платная доработка',
   paused: 'Пауза',
@@ -128,6 +131,7 @@ const labels = {
   tutoring_center: 'Репетиторский центр',
   waiting_client: 'Ждем клиента',
   waiting_start: 'Ожидает старта',
+  whatsapp: 'WhatsApp',
   won: 'Выиграно',
 };
 

@@ -61,6 +61,15 @@ class PrismaStore {
       throw error;
     }
   }
+
+  async delete(collection, id) {
+    try {
+      return await this.delegate(collection).delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') return null;
+      throw error;
+    }
+  }
 }
 
 module.exports = { PrismaStore, MODEL_BY_COLLECTION };

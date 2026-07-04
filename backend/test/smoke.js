@@ -298,6 +298,9 @@ async function main() {
     responsibleId: 'usr_manager',
   });
   assert.equal(communication.result, 'interested');
+  const deletedCommunication = await crm.deleteCommunication(communication.id, 'usr_manager');
+  assert.equal(deletedCommunication.id, communication.id);
+  assert.ok(!(await store.all('communications')).some((item) => item.id === communication.id));
   assert.ok((await store.all('tasks')).some((task) => task.type === 'diagnostics'));
 
   const tasks = await store.all('tasks');

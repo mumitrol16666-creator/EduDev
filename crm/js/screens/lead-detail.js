@@ -1,4 +1,4 @@
-import { get, post } from '../api.js';
+import { del, get, post } from '../api.js';
 import { labelValue } from '../labels.js';
 import { navigate, routeParam } from '../router.js';
 import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
@@ -32,9 +32,9 @@ function renderTask(task) {
     <div class="detail-list-row">
       <span>
         <strong>${escapeHtml(task.title)}</strong>
-        <small>${escapeHtml(task.type)} · ${escapeHtml(formatDate(task.dueAt))}</small>
+        <small>${escapeHtml(humanize(task.type))} · ${escapeHtml(formatDate(task.dueAt))}</small>
       </span>
-      <b>${escapeHtml(task.status || 'open')}</b>
+      <b>${escapeHtml(humanize(task.status || 'open'))}</b>
     </div>
   `;
 }
@@ -54,9 +54,12 @@ function renderDeal(deal) {
 function renderCommunication(item) {
   return `
     <div class="timeline-row">
-      <strong>${escapeHtml(humanize(item.result))}</strong>
+      <div class="timeline-row-head">
+        <strong>${escapeHtml(humanize(item.result))}</strong>
+        <button class="text-button danger-text" type="button" data-delete-communication="${escapeHtml(item.id)}">Удалить</button>
+      </div>
       <p>${escapeHtml(item.text || 'Без описания')}</p>
-      <small>${escapeHtml(item.channel)} · ${escapeHtml(formatDate(item.happenedAt || item.createdAt))}</small>
+      <small>${escapeHtml(humanize(item.channel))} · ${escapeHtml(formatDate(item.happenedAt || item.createdAt))}</small>
     </div>
   `;
 }
@@ -170,7 +173,10 @@ function renderLeadDetail(detail) {
             <span>${deals.length}</span>
           </div>
           <div class="detail-list">
-            ${deals.length ? deals.map(renderDeal).join('') : emptyState('Сделки нет', 'Сделка появится после диагностики.')}
+            ${deals.length ? deals.map(renderDeal).join('') : `
+              ${emptyState('Сделки нет', 'Сначала проведите диагностику: после нее CRM сама создаст сделку и предложит следующий шаг.')}
+              <button class="primary-button full-width" type="button" data-start-diagnostics>Провести диагностику и создать сделку</button>
+            `}
           </div>
         </section>
         <section class="panel detail-section">
@@ -231,8 +237,21 @@ function bindLeadDetail(root, leadId, detail, reload) {
     const dealId = event.currentTarget.dataset.openDeal || detail.deals[0]?.id;
     navigate(dealId ? `deal-detail/${dealId}` : 'deals');
   });
-  root.querySelector('[data-start-diagnostics]')?.addEventListener('click', () => {
-    navigate(`diagnostics/${leadId}`);
+  root.querySelectorAll('[data-start-diagnostics]').forEach((button) => {
+    button.addEventListener('click', () => navigate(`diagnostics/${leadId}`));
+  });
+
+  root.querySelectorAll('[data-delete-communication]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      if (!window.confirm('Удалить эту коммуникацию из карточки заявки?')) return;
+      try {
+        await del(`/api/communications/${button.dataset.deleteCommunication}`);
+        toast('Коммуникация удалена', 'success');
+        await reload();
+      } catch (error) {
+        toast(error.message || 'Не удалось удалить коммуникацию', 'error');
+      }
+    });
   });
 
   root.querySelector('[data-communication-form]')?.addEventListener('submit', async (event) => {

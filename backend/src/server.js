@@ -27,7 +27,7 @@ const server = http.createServer(async (req, res) => {
       res.setHeader('access-control-allow-origin', requestOrigin);
     }
     res.setHeader('vary', 'Origin');
-    res.setHeader('access-control-allow-methods', 'GET,POST,PATCH,OPTIONS');
+    res.setHeader('access-control-allow-methods', 'GET,POST,PATCH,DELETE,OPTIONS');
     res.setHeader('access-control-allow-headers', 'content-type,authorization');
     if (req.method === 'OPTIONS') return sendJson(res, 200, { success: true });
 
@@ -252,6 +252,11 @@ const server = http.createServer(async (req, res) => {
       auth.require(user, PERMISSIONS.CRM_READ);
       const body = await readJson(req);
       return sendJson(res, 201, { success: true, communication: await crm.addCommunication(body) });
+    }
+
+    if (method === 'DELETE' && parts[0] === 'api' && parts[1] === 'communications' && parts[2]) {
+      auth.require(user, PERMISSIONS.CRM_READ);
+      return sendJson(res, 200, { success: true, communication: await crm.deleteCommunication(parts[2], user.id) });
     }
 
     if (method === 'POST' && url.pathname === '/api/support-tickets') {

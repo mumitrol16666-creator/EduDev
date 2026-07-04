@@ -821,6 +821,13 @@
   margin: 6px 0;
 }
 
+.timeline-row-head {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
 .finance-stack {
   display: grid;
   gap: 16px;

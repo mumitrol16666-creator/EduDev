@@ -84,6 +84,16 @@ class JsonStore {
     return list[index];
   }
 
+  delete(collection, id) {
+    this.ensureLoaded();
+    const list = this.db[collection];
+    const index = list.findIndex((item) => item.id === id);
+    if (index === -1) return null;
+    const [record] = list.splice(index, 1);
+    this.save();
+    return record;
+  }
+
   replaceAll(nextDb) {
     this.db = { ...structuredClone(EMPTY_DB), ...nextDb };
     this.save();

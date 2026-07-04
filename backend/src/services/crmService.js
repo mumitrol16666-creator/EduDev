@@ -954,6 +954,18 @@ class CrmService {
     return communication;
   }
 
+  async deleteCommunication(id, actorId = 'system') {
+    const communication = await this.store.get('communications', id);
+    if (!communication) throw notFound('Communication not found');
+    const deleted = await this.store.delete('communications', id);
+    await this.audit('communication_deleted', communication.dealId ? 'deal' : 'lead', communication.dealId || communication.leadId || id, {
+      communicationId: id,
+      actorId,
+      result: communication.result,
+    });
+    return deleted;
+  }
+
   async applyCommunicationRule(communication) {
     const base = {
       responsibleId: communication.responsibleId,
