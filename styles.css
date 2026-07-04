@@ -17,7 +17,8 @@
   --shadow: 0 26px 80px rgba(0, 0, 0, 0.34);
   --glow: 0 0 36px rgba(108, 92, 231, 0.36);
   --brand-gradient: linear-gradient(135deg, #8a5cff 0%, #6c5ce7 42%, #4e7bff 100%);
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  --font-sans: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
 }
 
 * {
@@ -35,7 +36,10 @@ body {
     radial-gradient(circle at 85% 2%, rgba(78, 123, 255, 0.18), transparent 30%),
     var(--bg);
   color: var(--ink);
+  font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body.modal-open {
