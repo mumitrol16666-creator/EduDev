@@ -57,11 +57,12 @@ function userOptions(selected = '') {
 }
 
 function linkedEntity(task) {
-  if (task.leadId) return `Лид: ${task.leadId}`;
-  if (task.dealId) return `Сделка: ${task.dealId}`;
-  if (task.clientId) return `Клиент: ${task.clientId}`;
-  if (task.projectId) return `Внедрение: ${task.projectId}`;
-  if (task.ticketId) return `Тикет: ${task.ticketId}`;
+  if (task.relatedType && task.relatedLabel) return `${task.relatedType}: ${task.relatedLabel}`;
+  if (task.leadId) return 'Заявка';
+  if (task.dealId) return 'Сделка';
+  if (task.clientId) return 'Клиент';
+  if (task.projectId) return 'Внедрение';
+  if (task.ticketId) return 'Обращение';
   return 'Без связи';
 }
 
@@ -76,7 +77,7 @@ function taskRow(task) {
       <td><span class="status-badge">${escapeHtml(humanize(task.status || 'open'))}</span></td>
       <td>
         <strong class="${overdue ? 'danger-text' : ''}">${escapeHtml(formatDate(task.dueAt))}</strong>
-        <small>${overdue ? 'просрочено' : escapeHtml(task.priority || 'medium')}</small>
+        <small>${overdue ? 'просрочено' : escapeHtml(humanize(task.priority || 'medium'))}</small>
       </td>
       <td>${escapeHtml(userName(task.responsibleId))}</td>
       <td>

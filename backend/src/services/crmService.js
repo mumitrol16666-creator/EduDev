@@ -42,13 +42,42 @@ class CrmService {
 
   async list(collection, filters = {}) {
     const items = await this.store.all(collection);
-    return listItems(collection, items, filters);
+    return await this.prepareListResult(collection, items, filters);
   }
 
   async listForUser(collection, filters = {}, user) {
     const items = await this.store.all(collection);
     const scopedItems = await this.scopeItemsForUser(collection, items, user);
-    return listItems(collection, scopedItems, filters);
+    return await this.prepareListResult(collection, scopedItems, filters);
+  }
+
+  async prepareListResult(collection, items, filters = {}) {
+    const result = listItems(collection, items, filters);
+    if (collection === 'tasks') {
+      result.data = await this.enrichTasks(result.data);
+    }
+    return result;
+  }
+
+  async enrichTasks(tasks = []) {
+    if (!tasks.length) return [];
+    const [leads, clients, deals, projects, tickets] = await Promise.all([
+      this.store.all('leads'),
+      this.store.all('clients'),
+      this.store.all('deals'),
+      this.store.all('implementationProjects'),
+      this.store.all('supportTickets'),
+    ]);
+    const leadById = mapById(leads);
+    const clientById = mapById(clients);
+    const dealById = mapById(deals);
+    const projectById = mapById(projects);
+    const ticketById = mapById(tickets);
+
+    return tasks.map((task) => ({
+      ...task,
+      ...taskRelationLabel(task, { leadById, clientById, dealById, projectById, ticketById }),
+    }));
   }
 
   async detail(collection, id) {
@@ -1136,8 +1165,8 @@ class CrmService {
 
     return {
       responsibleId,
-      todayTasks,
-      overdueTasks,
+      todayTasks: await this.enrichTasks(todayTasks),
+      overdueTasks: await this.enrichTasks(overdueTasks),
       newLeads,
       dealsWithoutNextAction,
       stalledDeals,
@@ -1173,7 +1202,7 @@ class CrmService {
 
     return {
       developerId,
-      tasks,
+      tasks: await this.enrichTasks(tasks),
       processedRequests: projects.map((project) => ({
         id: project.id,
         clientId: project.clientId,
@@ -1695,6 +1724,39 @@ function listItems(collection, items, filters = {}) {
       search: query.search,
     },
   };
+}
+
+function mapById(items = []) {
+  return new Map(items.map((item) => [item.id, item]));
+}
+
+function taskRelationLabel(task, refs) {
+  const lead = task.leadId ? refs.leadById.get(task.leadId) : null;
+  if (lead) return { relatedType: 'Заявка', relatedLabel: lead.name || lead.company || 'Без названия' };
+
+  const client = task.clientId ? refs.clientById.get(task.clientId) : null;
+  if (client) return { relatedType: 'Клиент', relatedLabel: client.name || 'Без названия' };
+
+  const deal = task.dealId ? refs.dealById.get(task.dealId) : null;
+  if (deal) {
+    const dealLead = deal.leadId ? refs.leadById.get(deal.leadId) : null;
+    const dealClient = deal.clientId ? refs.clientById.get(deal.clientId) : null;
+    return { relatedType: 'Сделка', relatedLabel: dealClient?.name || dealLead?.name || deal.packageId || 'Без названия' };
+  }
+
+  const project = task.projectId ? refs.projectById.get(task.projectId) : null;
+  if (project) {
+    const projectClient = project.clientId ? refs.clientById.get(project.clientId) : null;
+    return { relatedType: 'Внедрение', relatedLabel: projectClient?.name || project.packageId || 'Без названия' };
+  }
+
+  const ticket = task.ticketId ? refs.ticketById.get(task.ticketId) : null;
+  if (ticket) {
+    const ticketClient = ticket.clientId ? refs.clientById.get(ticket.clientId) : null;
+    return { relatedType: 'Обращение', relatedLabel: ticket.title || ticketClient?.name || 'Без названия' };
+  }
+
+  return { relatedType: null, relatedLabel: null };
 }
 
 function systemReferenceItems() {

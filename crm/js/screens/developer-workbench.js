@@ -31,6 +31,11 @@ function isOverdue(task) {
   return task.status !== 'done' && task.dueAt && new Date(task.dueAt) < new Date();
 }
 
+function taskRelation(task) {
+  if (task.relatedType && task.relatedLabel) return `${task.relatedType}: ${task.relatedLabel}`;
+  return 'Без связанной карточки';
+}
+
 function renderCounters(workbench) {
   return `
     <div class="dashboard-counters deal-counters">
@@ -48,7 +53,7 @@ function renderTask(task) {
     <div class="work-item ${overdue ? 'work-item-danger' : ''}">
       <span>
         <strong>${escapeHtml(task.title)}</strong>
-        <small>${escapeHtml(humanize(task.type))} · ${escapeHtml(formatDate(task.dueAt))} · ${escapeHtml(humanize(task.priority || 'medium'))}</small>
+        <small>${escapeHtml(humanize(task.type))} · ${escapeHtml(taskRelation(task))} · ${escapeHtml(formatDate(task.dueAt))} · ${escapeHtml(humanize(task.priority || 'medium'))}</small>
       </span>
       <div class="row-actions">
         ${task.projectId ? `<button class="secondary-button compact-button" type="button" data-open-project="${escapeHtml(task.projectId)}">Внедрение</button>` : ''}

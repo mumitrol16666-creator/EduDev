@@ -29,12 +29,17 @@ function renderCounter(label, value, tone = '') {
   `;
 }
 
+function taskRelation(task) {
+  if (task.relatedType && task.relatedLabel) return `${task.relatedType}: ${task.relatedLabel}`;
+  return 'Без связанной карточки';
+}
+
 function renderTaskItem(task, isOverdue = false) {
   return `
     <button class="work-item" type="button" data-route="tasks" data-entity-id="${escapeHtml(task.id)}">
       <span>
         <strong>${escapeHtml(task.title)}</strong>
-        <small>${escapeHtml(labelValue(task.type || 'task'))} · ${escapeHtml(formatDate(task.dueAt))}</small>
+        <small>${escapeHtml(labelValue(task.type || 'task'))} · ${escapeHtml(taskRelation(task))} · ${escapeHtml(formatDate(task.dueAt))}</small>
       </span>
       <b class="${isOverdue ? 'danger-text' : ''}">${escapeHtml(labelValue(task.priority || 'medium'))}</b>
     </button>
