@@ -28,6 +28,7 @@ function renderMetaGroup(title, values = []) {
 
 function dictionaryRow(item) {
   const isSystem = item.status === 'system' || item.value?.system;
+  const description = item.value?.description || (isSystem ? 'Встроенный элемент системы' : 'Без описания');
   return `
     <tr>
       <td>
@@ -36,7 +37,7 @@ function dictionaryRow(item) {
       </td>
       <td><span class="status-badge">${escapeHtml(humanize(item.status))}</span></td>
       <td>${escapeHtml(item.sortOrder ?? 100)}</td>
-      <td><code>${escapeHtml(JSON.stringify(item.value || {}))}</code></td>
+      <td>${escapeHtml(description)}</td>
       <td>
         ${isSystem
           ? '<span class="muted">только просмотр</span>'

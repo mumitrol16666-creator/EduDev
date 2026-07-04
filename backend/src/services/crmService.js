@@ -1624,12 +1624,80 @@ function arrayReferenceItems(group, source) {
 }
 
 function humanizeReferenceLabel(value) {
-  return String(value)
-    .toLowerCase()
+  const key = String(value || '').toLowerCase();
+  if (REFERENCE_LABELS[key]) return REFERENCE_LABELS[key];
+  return key
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
 }
+
+const REFERENCE_LABELS = Object.freeze({
+  active: 'Активно',
+  autotech: 'Автобизнес',
+  business: 'Бизнес',
+  call: 'Звонок',
+  cancelled: 'Отменено',
+  car_wash: 'Автомойка',
+  check_contact: 'Проверить контакт',
+  configuration: 'Настройка',
+  consultation: 'Консультация',
+  contact_check: 'Проверка контакта',
+  content: 'Контент',
+  data_collection: 'Сбор данных',
+  developer: 'Программист',
+  diagnostics: 'Диагностика',
+  done: 'Готово',
+  due_soon: 'Скоро оплата',
+  edutech: 'Обучение',
+  expensive: 'Дорого',
+  first_message: 'Первое сообщение',
+  first_touch: 'Первое касание',
+  follow_up: 'Повторный контакт',
+  implementation: 'Внедрение',
+  in_progress: 'В работе',
+  interested: 'Интерес есть',
+  kids_center: 'Детский центр',
+  language_school: 'Языковая школа',
+  launch: 'Запуск',
+  lost: 'Проиграно',
+  manager: 'Менеджер',
+  meeting: 'Встреча',
+  meeting_set: 'Встреча назначена',
+  mixed_education: 'Смешанный учебный центр',
+  mixed_service: 'Смешанный автосервис',
+  music_school: 'Музыкальная школа',
+  network: 'Сеть',
+  new: 'Новая',
+  no_answer: 'Нет ответа',
+  oil_change: 'Пункт замены масла',
+  open: 'Открыто',
+  overdue: 'Просрочено',
+  owner: 'Владелец',
+  paid: 'Оплачено',
+  paid_change: 'Платная доработка',
+  paused: 'Пауза',
+  payment: 'Оплата',
+  prepare_proposal: 'Подготовить предложение',
+  presentation: 'Презентация',
+  pro: 'Про',
+  proposal: 'Предложение',
+  proposal_sent: 'Предложение отправлено',
+  question: 'Вопрос',
+  rejected: 'Отказ',
+  repair_shop: 'СТО',
+  return_later: 'Вернуться позже',
+  sales_lead: 'Руководитель продаж',
+  start: 'Старт',
+  supervisor: 'Управляющий',
+  support: 'Поддержка',
+  tire_service: 'Шиномонтаж',
+  trial_support: 'Бесплатная поддержка',
+  tutoring_center: 'Репетиторский центр',
+  waiting_client: 'Ждем клиента',
+  waiting_start: 'Ожидает старта',
+  won: 'Выиграно',
+});
 
 function normalizeListQuery(raw = {}) {
   const filters = {};
