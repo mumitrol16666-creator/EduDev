@@ -224,6 +224,12 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 201, { success: true, ...(await crm.recordPayment(parts[2], body)) });
     }
 
+    if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'prepayments') {
+      auth.require(user, PERMISSIONS.PAYMENT_WRITE);
+      const body = await readJson(req);
+      return sendJson(res, 201, { success: true, payment: await crm.recordPrepayment(parts[2], body) });
+    }
+
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'tasks' && parts[3] === 'complete') {
       auth.require(user, PERMISSIONS.CRM_READ);
       const body = await readJson(req);

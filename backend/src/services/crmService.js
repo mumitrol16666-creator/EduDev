@@ -696,6 +696,45 @@ class CrmService {
     return { payment, client, deal: updatedDeal, project };
   }
 
+  async recordPrepayment(dealId, payload) {
+    const deal = await this.store.get('deals', dealId);
+    if (!deal) throw notFound('Deal not found');
+    requireFields(payload, ['amount']);
+
+    const lead = await this.store.get('leads', deal.leadId);
+    const client = await this.ensureClientFromDeal(deal, lead);
+    const payment = await this.store.insert('payments', {
+      dealId,
+      clientId: client.id,
+      amount: Number(payload.amount),
+      method: payload.method || 'bank_transfer',
+      paidAt: payload.paidAt || new Date().toISOString(),
+      status: 'paid',
+      note: payload.note || 'Предоплата',
+    });
+
+    await this.store.update('deals', dealId, {
+      clientId: client.id,
+      stage: DEAL_STAGES.PAYMENT,
+      probability: 80,
+      nextActionAt: addDays(0),
+    });
+
+    await this.createTask({
+      type: TASK_TYPES.PAYMENT,
+      title: `Получить остаток оплаты: ${client.name}`,
+      dueAt: addDays(0),
+      responsibleId: deal.responsibleId,
+      clientId: client.id,
+      leadId: deal.leadId,
+      dealId,
+      priority: 'high',
+    });
+
+    await this.audit('prepayment_recorded', 'deal', dealId, { paymentId: payment.id, amount: payment.amount });
+    return payment;
+  }
+
   async createSupportTicket(payload) {
     requireFields(payload, ['clientId', 'title', 'type']);
     if (!Object.values(SUPPORT_TICKET_TYPES).includes(payload.type)) {
@@ -1268,6 +1307,17 @@ class CrmService {
         dealId: deal.id,
       });
     }
+    if (deal.stage === DEAL_STAGES.PREPAYMENT) {
+      await this.createTask({
+        type: TASK_TYPES.PAYMENT,
+        title: `Получить предоплату: ${name}`,
+        dueAt: addDays(0),
+        responsibleId: deal.responsibleId,
+        leadId: deal.leadId,
+        dealId: deal.id,
+        priority: 'high',
+      });
+    }
     if (deal.stage === DEAL_STAGES.PAYMENT) {
       await this.createTask({
         type: TASK_TYPES.PAYMENT,
@@ -1691,7 +1741,9 @@ const REFERENCE_LABELS = Object.freeze({
   paused: 'Пауза',
   payment: 'Оплата',
   prepare_proposal: 'Подготовить предложение',
+  prepayment: 'Предоплата',
   presentation: 'Презентация',
+  prepayment_recorded: 'Предоплата записана',
   pro: 'Про',
   proposal: 'Предложение',
   proposal_sent: 'Предложение отправлено',
@@ -1846,6 +1898,7 @@ function probabilityForStage(stage) {
     [DEAL_STAGES.PRESENTATION]: 35,
     [DEAL_STAGES.PROPOSAL]: 50,
     [DEAL_STAGES.FOLLOW_UP]: 60,
+    [DEAL_STAGES.PREPAYMENT]: 70,
     [DEAL_STAGES.PAYMENT]: 80,
     [DEAL_STAGES.IMPLEMENTATION]: 90,
     [DEAL_STAGES.WON]: 100,
@@ -1854,7 +1907,7 @@ function probabilityForStage(stage) {
 }
 
 function nextActionForStage(stage) {
-  if ([DEAL_STAGES.PROPOSAL, DEAL_STAGES.PAYMENT].includes(stage)) return addDays(0);
+  if ([DEAL_STAGES.PROPOSAL, DEAL_STAGES.PREPAYMENT, DEAL_STAGES.PAYMENT].includes(stage)) return addDays(0);
   if (stage === DEAL_STAGES.FOLLOW_UP) return addDays(1);
   return addDays(2);
 }

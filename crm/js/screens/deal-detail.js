@@ -32,11 +32,17 @@ function renderOptions(items, selected = '') {
 
 function primaryAction(detail) {
   const { deal, client, proposals, payments } = detail;
-  if ((payments.length || deal.clientId) && client) {
+  const paidAmount = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+  const balance = Math.max(Number(deal.amount || 0) - paidAmount, 0);
+  if ((deal.stage === 'implementation' || deal.stage === 'won') && client) {
     return `<button class="secondary-button" type="button" data-open-client="${escapeHtml(client.id)}">Открыть клиента</button>`;
   }
   if (proposals.length) {
-    return '<button class="primary-button" type="submit" form="paymentForm">Записать оплату</button>';
+    return payments.length && balance > 0
+      ? '<button class="primary-button" type="submit" form="paymentForm">Записать финальную оплату</button>'
+      : balance > 0
+        ? '<button class="primary-button" type="submit" form="prepaymentForm">Записать предоплату</button>'
+      : '<button class="primary-button" type="submit" form="paymentForm">Записать финальную оплату</button>';
   }
   return '<button class="primary-button" type="submit" form="proposalForm">Создать предложение</button>';
 }
@@ -85,10 +91,14 @@ function renderPayment(payment) {
 function renderDealDetail(detail) {
   const { deal, lead, client, diagnostics, proposals, payments, implementationProject, tasks } = detail;
   const canCreateProposal = !proposals.length && !payments.length && !deal.clientId;
-  const canRecordPayment = proposals.length && !payments.length && !deal.clientId;
+  const latestProposal = proposals[0];
+  const paidAmount = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+  const balance = Math.max(Number(deal.amount || latestProposal?.amount || 0) - paidAmount, 0);
+  const hasPrepayment = payments.length > 0;
+  const canRecordPrepayment = proposals.length && !hasPrepayment && !implementationProject;
+  const canRecordPayment = proposals.length && !implementationProject;
   const stages = Object.values(dealMeta?.dealStages || {});
   const packages = Object.values(dealMeta?.packages || {});
-  const latestProposal = proposals[0];
 
   return `
     ${pageHeader({
@@ -174,15 +184,46 @@ function renderDealDetail(detail) {
 
         <div class="panel detail-section">
           <div class="detail-section-head">
-            <h2>Оплата</h2>
+            <h2>Предоплата</h2>
+            <span>${hasPrepayment ? 'получена' : 'нет'}</span>
+          </div>
+          ${canRecordPrepayment ? `
+            <form class="form-stack" id="prepaymentForm" data-prepayment-form>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="prepaymentAmount">Сумма предоплаты, ₸</label>
+                  <input id="prepaymentAmount" name="amount" type="number" min="0" step="10000" value="${escapeHtml(Math.ceil(Number(latestProposal?.amount || deal.amount || 0) * 0.5))}" required />
+                </div>
+                <div class="field">
+                  <label for="prepaymentMethod">Метод</label>
+                  <select id="prepaymentMethod" name="method">
+                    <option value="kaspi">Kaspi</option>
+                    <option value="bank_transfer">Банк</option>
+                    <option value="cash">Наличные</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="prepaymentNote">Комментарий</label>
+                <input id="prepaymentNote" name="note" value="Предоплата за внедрение" />
+              </div>
+            </form>
+          ` : `
+            <div class="detail-list">${hasPrepayment ? payments.slice(0, 1).map(renderPayment).join('') : emptyState('Предоплаты нет', 'Предоплату записываем после согласования предложения.')}</div>
+          `}
+        </div>
+
+        <div class="panel detail-section">
+          <div class="detail-section-head">
+            <h2>Финальная оплата</h2>
             <span>${payments.length}</span>
           </div>
           ${canRecordPayment ? `
             <form class="form-stack" id="paymentForm" data-payment-form>
               <div class="field-grid">
                 <div class="field">
-                  <label for="paymentAmount">Сумма оплаты, ₸</label>
-                  <input id="paymentAmount" name="amount" type="number" min="0" step="10000" value="${escapeHtml(latestProposal?.amount || deal.amount || 0)}" required />
+                  <label for="paymentAmount">Остаток к оплате, ₸</label>
+                  <input id="paymentAmount" name="amount" type="number" min="0" step="10000" value="${escapeHtml(balance || latestProposal?.amount || deal.amount || 0)}" required />
                 </div>
                 <div class="field">
                   <label for="paymentMethod">Метод</label>
@@ -195,7 +236,7 @@ function renderDealDetail(detail) {
               </div>
               <div class="field">
                 <label for="paymentNote">Комментарий</label>
-                <input id="paymentNote" name="note" placeholder="Например: предоплата за внедрение" />
+                <input id="paymentNote" name="note" placeholder="Например: остаток за запуск" />
               </div>
             </form>
           ` : `
@@ -328,6 +369,22 @@ function bindDealDetail(root, dealId, detail, reload) {
       await reload();
     } catch (error) {
       toast(error.message || 'Не удалось создать предложение', 'error');
+    }
+  });
+
+  root.querySelector('[data-prepayment-form]')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    try {
+      await post(`/api/deals/${dealId}/prepayments`, {
+        amount: Number(data.get('amount') || 0),
+        method: String(data.get('method') || 'bank_transfer'),
+        note: String(data.get('note') || '').trim() || 'Предоплата',
+      });
+      toast('Предоплата записана', 'success');
+      await reload();
+    } catch (error) {
+      toast(error.message || 'Не удалось записать предоплату', 'error');
     }
   });
 

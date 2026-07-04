@@ -45,6 +45,7 @@ const DEAL_STAGES = Object.freeze({
   PRESENTATION: 'presentation',
   PROPOSAL: 'proposal',
   FOLLOW_UP: 'follow_up',
+  PREPAYMENT: 'prepayment',
   PAYMENT: 'payment',
   IMPLEMENTATION: 'implementation',
   WON: 'won',

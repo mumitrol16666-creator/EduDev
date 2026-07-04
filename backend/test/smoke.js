@@ -168,14 +168,21 @@ async function main() {
   });
   assert.equal(repricedDeal.amount, 320000);
 
+  const prepayment = await crm.recordPrepayment(deal.id, {
+    amount: 100000,
+    method: 'kaspi',
+  });
+  assert.equal(prepayment.amount, 100000);
+  assert.equal((await store.all('implementationProjects')).length, 0);
+
   const result = await crm.recordPayment(deal.id, {
-    amount: 180000,
+    amount: 220000,
     method: 'kaspi',
   });
 
   assert.equal(result.client.status, 'implementation');
   assert.equal((await store.all('implementationProjects')).length, 1);
-  assert.equal((await store.all('payments')).length, 1);
+  assert.equal((await store.all('payments')).length, 2);
   assert.ok((await store.all('tasks')).some((task) => task.type === 'handoff_implementation'));
   const project = (await store.all('implementationProjects'))[0];
   const dataRequest = await crm.createDataCollectionRequest(project.id);
@@ -217,7 +224,7 @@ async function main() {
   assert.equal(dealDetail.implementationProject.id, project.id);
   const clientDetail = await crm.detail('clients', result.client.id);
   assert.equal(clientDetail.implementationProjects.length, 1);
-  assert.equal(clientDetail.payments.length, 1);
+  assert.equal(clientDetail.payments.length, 2);
   const projectDetail = await crm.detail('implementationProjects', project.id);
   assert.equal(projectDetail.client.id, result.client.id);
   assert.equal(projectDetail.dataCollectionRequests.length, 1);
@@ -315,7 +322,7 @@ async function main() {
 
   const analytics = await crm.analyticsSummary();
   assert.equal(analytics.leads.total, 3);
-  assert.equal(analytics.payments.paidAmount, 180000);
+  assert.equal(analytics.payments.paidAmount, 320000);
   assert.equal(analytics.subscriptions.active, 1);
   assert.equal(analytics.debts.open, 0);
 
