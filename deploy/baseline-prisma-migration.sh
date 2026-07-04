@@ -19,4 +19,12 @@ fi
 
 cd "$APP_DIR"
 npm run prisma:validate --prefix backend
+
+if [[ -f backend/.env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source backend/.env
+  set +a
+fi
+
 npx --prefix backend prisma migrate resolve --applied "$MIGRATION_NAME" --schema backend/prisma/schema.prisma
