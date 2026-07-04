@@ -118,6 +118,10 @@ async function main() {
 
   assert.equal((await store.all('leads')).length, 1);
   assert.equal((await store.all('tasks')).length, 1);
+  const firstLeadTask = (await store.all('tasks'))[0];
+  const firstLeadTaskKazakhstanTime = new Date(new Date(firstLeadTask.dueAt).getTime() + 5 * 60 * 60000);
+  assert.equal(firstLeadTaskKazakhstanTime.getUTCHours(), 18);
+  assert.equal(firstLeadTaskKazakhstanTime.getUTCMinutes(), 0);
   const secondLead = await crm.createLead({
     name: 'Tire Service Astana',
     niche: 'tire_service',

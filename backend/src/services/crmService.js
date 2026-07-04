@@ -545,7 +545,7 @@ class CrmService {
     await this.createTask({
       type: TASK_TYPES.CHECK_CONTACT,
       title: `Проверить контакт: ${lead.name}`,
-      dueAt: addDays(0),
+      dueAt: addBusinessDaysAtHour(1, 18),
       responsibleId: lead.responsibleId,
       leadId: lead.id,
       priority: 'high',
@@ -2032,6 +2032,21 @@ function addDays(days) {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return date.toISOString();
+}
+
+function addBusinessDaysAtHour(days, hour, minute = 0) {
+  const aqTobeOffsetMinutes = 5 * 60;
+  const businessNow = new Date(Date.now() + aqTobeOffsetMinutes * 60000);
+  const targetAsUtc = Date.UTC(
+    businessNow.getUTCFullYear(),
+    businessNow.getUTCMonth(),
+    businessNow.getUTCDate() + days,
+    hour,
+    minute,
+    0,
+    0,
+  );
+  return new Date(targetAsUtc - aqTobeOffsetMinutes * 60000).toISOString();
 }
 
 function addDaysFrom(value, days) {
