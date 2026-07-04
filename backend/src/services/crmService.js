@@ -205,6 +205,14 @@ class CrmService {
     });
   }
 
+  async assignmentUsers() {
+    const users = await this.store.all('users');
+    return users
+      .filter((user) => user.status !== 'inactive')
+      .map(safeUserRecord)
+      .sort((a, b) => String(a.role).localeCompare(String(b.role), 'ru') || String(a.name).localeCompare(String(b.name), 'ru'));
+  }
+
   async settingsDictionaries() {
     const customItems = await this.store.all('referenceItems');
     const grouped = {};
@@ -618,6 +626,40 @@ class CrmService {
     return updated;
   }
 
+  async updateDealResponsibles(id, payload) {
+    const deal = await this.store.get('deals', id);
+    if (!deal) throw notFound('Deal not found');
+    const patch = {};
+
+    if (payload.managerId !== undefined) {
+      if (payload.managerId) await this.assertUserRole(payload.managerId, [ROLES.MANAGER, ROLES.SALES_LEAD, ROLES.SUPERVISOR, ROLES.OWNER]);
+      patch.responsibleId = payload.managerId || null;
+    }
+
+    if (payload.implementationId !== undefined) {
+      if (payload.implementationId) await this.assertUserRole(payload.implementationId, [ROLES.DEVELOPER, ROLES.IMPLEMENTATION, ROLES.SUPERVISOR, ROLES.OWNER]);
+      patch.implementationResponsibleId = payload.implementationId || null;
+    }
+
+    const updatedDeal = Object.keys(patch).length ? await this.store.update('deals', id, patch) : deal;
+    let project = null;
+    if (payload.implementationId !== undefined) {
+      const projects = await this.store.all('implementationProjects');
+      project = projects.find((item) => item.dealId === id) || null;
+      if (project) {
+        project = await this.store.update('implementationProjects', project.id, {
+          responsibleId: payload.implementationId || null,
+        });
+      }
+    }
+
+    await this.audit('deal_responsibles_updated', 'deal', id, {
+      managerId: updatedDeal.responsibleId || null,
+      implementationId: updatedDeal.implementationResponsibleId || project?.responsibleId || null,
+    });
+    return { deal: updatedDeal, implementationProject: project };
+  }
+
   async createProposal(dealId, payload) {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
@@ -680,7 +722,7 @@ class CrmService {
       nextActionAt: addDays(0),
     });
 
-    const project = await this.createImplementationProject(updatedDeal, client);
+    const project = await this.createImplementationProject(updatedDeal, client, payload.implementationId || deal.implementationResponsibleId || null);
     await this.createTask({
       type: TASK_TYPES.HANDOFF_IMPLEMENTATION,
       title: `Передать во внедрение: ${client.name}`,
@@ -1354,10 +1396,15 @@ class CrmService {
     });
   }
 
-  async createImplementationProject(deal, client) {
+  async createImplementationProject(deal, client, responsibleId = null) {
     const projects = await this.store.all('implementationProjects');
     const existing = projects.find((project) => project.dealId === deal.id);
-    if (existing) return existing;
+    if (existing) {
+      if (responsibleId && responsibleId !== existing.responsibleId) {
+        return await this.store.update('implementationProjects', existing.id, { responsibleId });
+      }
+      return existing;
+    }
     return await this.store.insert('implementationProjects', {
       clientId: client.id,
       dealId: deal.id,
@@ -1367,8 +1414,15 @@ class CrmService {
       status: IMPLEMENTATION_STATUSES.DATA_COLLECTION,
       checklist: implementationChecklist(deal.niche),
       supportFreeUntil: addMonths(4),
-      responsibleId: await this.defaultImplementationId(),
+      responsibleId: responsibleId || deal.implementationResponsibleId || (await this.defaultImplementationId()),
     });
+  }
+
+  async assertUserRole(userId, allowedRoles) {
+    const user = await this.store.get('users', userId);
+    if (!user || user.status !== 'active') throw badRequest('Responsible user is not active');
+    if (!allowedRoles.includes(user.role)) throw badRequest(`User role cannot be assigned here: ${user.role}`);
+    return user;
   }
 
   async createDataCollectionRequest(projectId, payload = {}) {

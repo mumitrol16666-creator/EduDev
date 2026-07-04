@@ -167,6 +167,12 @@ async function main() {
     reason: 'Согласовали стартовый набор без склада',
   });
   assert.equal(repricedDeal.amount, 320000);
+  const assignedDeal = await crm.updateDealResponsibles(deal.id, {
+    managerId: 'usr_manager',
+    implementationId: 'usr_developer',
+  });
+  assert.equal(assignedDeal.deal.responsibleId, 'usr_manager');
+  assert.equal(assignedDeal.deal.implementationResponsibleId, 'usr_developer');
 
   const prepayment = await crm.recordPrepayment(deal.id, {
     amount: 100000,

@@ -746,6 +746,10 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.info-grid.single-column {
+  grid-template-columns: 1fr;
+}
+
 .info-item {
   background: var(--panel-soft);
   border: 1px solid var(--line);

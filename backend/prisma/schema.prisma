@@ -21,6 +21,7 @@ model User {
 
   leads             Lead[]                  @relation("LeadResponsible")
   deals             Deal[]                  @relation("DealResponsible")
+  implementationDeals Deal[]                @relation("DealImplementationResponsible")
   tasks             Task[]                  @relation("TaskResponsible")
   notes             Note[]                  @relation("NoteAuthor")
   communications    Communication[]         @relation("CommunicationResponsible")
@@ -105,6 +106,7 @@ model Deal {
   probability      Int      @default(0)
   nextActionAt     DateTime?
   responsibleId    String?
+  implementationResponsibleId String?
   objections       Json     @default("[]")
   lostReason       String?
   deletedAt        DateTime?
@@ -114,6 +116,7 @@ model Deal {
   lead            Lead                    @relation(fields: [leadId], references: [id])
   client          Client?                 @relation(fields: [clientId], references: [id])
   responsible     User?                   @relation("DealResponsible", fields: [responsibleId], references: [id])
+  implementationResponsible User?         @relation("DealImplementationResponsible", fields: [implementationResponsibleId], references: [id])
   tasks           Task[]
   notes           Note[]
   communications  Communication[]
@@ -124,6 +127,7 @@ model Deal {
 
   @@index([stage, nextActionAt])
   @@index([responsibleId, updatedAt])
+  @@index([implementationResponsibleId])
 }
 
 model Task {

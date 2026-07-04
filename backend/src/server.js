@@ -4,7 +4,7 @@ const { disconnectPrisma } = require('./config/prisma');
 const { createStore } = require('./store/storeFactory');
 const { CrmService } = require('./services/crmService');
 const { AuthService } = require('./services/authService');
-const { PERMISSIONS } = require('./domain/constants');
+const { PERMISSIONS, ROLES } = require('./domain/constants');
 const { navigationForRole } = require('./domain/navigation');
 const { sendJson, sendError, readJson, parsePath } = require('./lib/http');
 
@@ -74,9 +74,11 @@ const server = http.createServer(async (req, res) => {
 
     if (method === 'GET' && url.pathname === '/api/workbench/today') {
       auth.require(user, PERMISSIONS.CRM_READ);
+      const requestedResponsibleId = url.searchParams.get('responsibleId') || undefined;
+      const responsibleId = user.role === ROLES.MANAGER ? user.id : requestedResponsibleId;
       return sendJson(res, 200, {
         success: true,
-        workbench: await crm.managerToday(url.searchParams.get('responsibleId') || undefined),
+        workbench: await crm.managerToday(responsibleId),
       });
     }
 
@@ -125,6 +127,11 @@ const server = http.createServer(async (req, res) => {
     if (method === 'GET' && url.pathname === '/api/team/workload') {
       auth.require(user, PERMISSIONS.ADMIN_READ);
       return sendJson(res, 200, { success: true, workload: await crm.teamWorkload() });
+    }
+
+    if (method === 'GET' && url.pathname === '/api/team/assignment-options') {
+      auth.require(user, PERMISSIONS.CRM_READ);
+      return sendJson(res, 200, { success: true, users: await crm.assignmentUsers() });
     }
 
     if (method === 'GET' && url.pathname === '/api/settings/dictionaries') {
@@ -210,6 +217,12 @@ const server = http.createServer(async (req, res) => {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
       const body = await readJson(req);
       return sendJson(res, 200, { success: true, deal: await crm.updateDealAmount(parts[2], body) });
+    }
+
+    if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'responsibles') {
+      auth.require(user, PERMISSIONS.DEAL_WRITE);
+      const body = await readJson(req);
+      return sendJson(res, 200, { success: true, ...(await crm.updateDealResponsibles(parts[2], body)) });
     }
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'proposals') {

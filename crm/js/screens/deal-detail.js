@@ -4,6 +4,7 @@ import { navigate, routeParam } from '../router.js';
 import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
 
 let dealMeta = null;
+let dealUsers = [];
 
 function humanize(value) {
   return labelValue(value);
@@ -88,6 +89,25 @@ function renderPayment(payment) {
   `;
 }
 
+function userName(userId) {
+  return dealUsers.find((user) => user.id === userId)?.name || 'Не назначен';
+}
+
+function renderUserOptions(users, selected = '', placeholder = 'Не назначен') {
+  return `
+    <option value="">${escapeHtml(placeholder)}</option>
+    ${(users || []).map((user) => `
+      <option value="${escapeHtml(user.id)}" ${user.id === selected ? 'selected' : ''}>
+        ${escapeHtml(user.name)} · ${escapeHtml(humanize(user.role))}
+      </option>
+    `).join('')}
+  `;
+}
+
+function roleUsers(roles) {
+  return dealUsers.filter((user) => roles.includes(user.role) && user.status !== 'inactive');
+}
+
 function renderDealDetail(detail) {
   const { deal, lead, client, diagnostics, proposals, payments, implementationProject, tasks } = detail;
   const canCreateProposal = !proposals.length && !payments.length && !deal.clientId;
@@ -97,6 +117,9 @@ function renderDealDetail(detail) {
   const hasPrepayment = payments.length > 0;
   const canRecordPrepayment = proposals.length && !hasPrepayment && !implementationProject;
   const canRecordPayment = proposals.length && !implementationProject;
+  const managerUsers = roleUsers(['manager', 'sales_lead', 'supervisor', 'owner']);
+  const implementationUsers = roleUsers(['developer', 'implementation', 'supervisor', 'owner']);
+  const currentImplementationId = implementationProject?.responsibleId || deal.implementationResponsibleId || '';
   const stages = Object.values(dealMeta?.dealStages || {});
   const packages = Object.values(dealMeta?.packages || {});
 
@@ -128,6 +151,26 @@ function renderDealDetail(detail) {
             <span>Выбранные разделы</span>
             <div class="section-preview">${renderSections(deal.selectedSections)}</div>
           </div>
+        </div>
+
+        <div class="panel detail-section">
+          <div class="detail-section-head">
+            <h2>Ответственные</h2>
+          </div>
+          <form class="form-stack" data-responsibles-form>
+            <div class="field-grid">
+              <div class="field">
+                <label for="dealManager">Менеджер по сделке</label>
+                <select id="dealManager" name="managerId">${renderUserOptions(managerUsers, deal.responsibleId)}</select>
+              </div>
+              <div class="field">
+                <label for="dealImplementation">Программист / внедрение</label>
+                <select id="dealImplementation" name="implementationId">${renderUserOptions(implementationUsers, currentImplementationId)}</select>
+              </div>
+            </div>
+            <button class="secondary-button" type="submit">Сохранить ответственных</button>
+            <p class="muted">Менеджер ведет продажу. Программист или специалист внедрения будет назначен на запуск после оплаты.</p>
+          </form>
         </div>
 
         <div class="panel detail-section">
@@ -238,6 +281,7 @@ function renderDealDetail(detail) {
                 <label for="paymentNote">Комментарий</label>
                 <input id="paymentNote" name="note" placeholder="Например: остаток за запуск" />
               </div>
+              <input type="hidden" name="implementationId" value="${escapeHtml(currentImplementationId)}" />
             </form>
           ` : `
             <div class="detail-list">${payments.length ? payments.map(renderPayment).join('') : emptyState('Оплаты нет', 'Оплату записываем после отправки предложения.')}</div>
@@ -275,6 +319,15 @@ function renderDealDetail(detail) {
             ${tasks.length ? tasks.map(renderTask).join('') : emptyState('Задач нет', 'Задачи появятся после смены этапов и оплаты.')}
           </div>
         </section>
+        <section class="panel detail-section">
+          <div class="detail-section-head">
+            <h2>Ответственные</h2>
+          </div>
+          <div class="info-grid single-column">
+            <div class="info-item"><span>Менеджер</span><strong>${escapeHtml(userName(deal.responsibleId))}</strong></div>
+            <div class="info-item"><span>Программист / внедрение</span><strong>${escapeHtml(userName(currentImplementationId))}</strong></div>
+          </div>
+        </section>
       </aside>
     </div>
   `;
@@ -295,11 +348,13 @@ export async function mountDealDetailScreen() {
 
   const loadDetail = async () => {
     root.innerHTML = emptyState('Загружаем сделку', 'Обновляем данные сделки.');
-    const [metaResult, detailResult] = await Promise.all([
+    const [metaResult, detailResult, usersResult] = await Promise.all([
       dealMeta ? Promise.resolve({ meta: dealMeta }) : get('/api/meta'),
       get(`/api/deals/${dealId}`),
+      dealUsers.length ? Promise.resolve({ users: dealUsers }) : get('/api/team/assignment-options').catch(() => ({ users: [] })),
     ]);
     dealMeta = metaResult.meta;
+    dealUsers = usersResult.users || [];
     root.innerHTML = renderDealDetail(detailResult.detail);
     bindDealDetail(root, dealId, detailResult.detail, loadDetail);
   };
@@ -319,6 +374,21 @@ function bindDealDetail(root, dealId, detail, reload) {
     button.addEventListener('click', () => navigate(`client-detail/${button.dataset.openClient}`));
   });
   root.querySelector('[data-open-implementation]')?.addEventListener('click', () => navigate(`implementation-detail/${detail.implementationProject.id}`));
+
+  root.querySelector('[data-responsibles-form]')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    try {
+      await patch(`/api/deals/${dealId}/responsibles`, {
+        managerId: String(data.get('managerId') || ''),
+        implementationId: String(data.get('implementationId') || ''),
+      });
+      toast('Ответственные сохранены', 'success');
+      await reload();
+    } catch (error) {
+      toast(error.message || 'Не удалось сохранить ответственных', 'error');
+    }
+  });
 
   root.querySelector('[data-stage-form]')?.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -396,6 +466,7 @@ function bindDealDetail(root, dealId, detail, reload) {
         amount: Number(data.get('amount') || 0),
         method: String(data.get('method') || 'bank_transfer'),
         note: String(data.get('note') || '').trim() || undefined,
+        implementationId: String(data.get('implementationId') || '') || undefined,
       });
       toast('Оплата записана, клиент передан во внедрение', 'success');
       await reload();
