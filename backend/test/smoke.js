@@ -70,6 +70,7 @@ async function main() {
   assert.ok(navigationForRole('developer').some((item) => item.id === 'developer'));
   assert.ok(!navigationForRole('developer').some((item) => item.id === 'leads'));
   assert.ok(navigationForRole('supervisor').some((item) => item.id === 'audit'));
+  assert.equal(navigationForRole('manager').find((item) => item.id === 'materials').api[0], '/api/materials');
   const newDeveloper = await crm.createUser({
     name: 'Junior Developer',
     role: 'developer',
@@ -141,6 +142,8 @@ async function main() {
     phone: '+77000000002',
   });
   assert.equal(detailingLead.niche, 'detailing');
+  const materials = await crm.listForUser('materials', { limit: '100' }, manager);
+  assert.ok(Array.isArray(materials.data));
 
   const { diagnostics, deal } = await crm.addDiagnostics(lead.id, {
     problems: ['склад не сходится', 'клиенты не возвращаются'],

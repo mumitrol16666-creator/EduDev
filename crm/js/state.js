@@ -1,7 +1,13 @@
 function defaultApiBaseUrl() {
+  const configuredUrl = String(window.EDUDEV_API_BASE_URL || '').trim();
+  if (configuredUrl) return configuredUrl.replace(/\/$/, '');
+
   const host = window.location.hostname;
   if (host === 'localhost' || host === '127.0.0.1') {
     return 'http://127.0.0.1:4100';
+  }
+  if (host === 'crm.edudev.kz') {
+    return 'https://api.edudev.kz';
   }
   return '';
 }

@@ -1,5 +1,6 @@
 const http = require('http');
 const { loadEnv } = require('./config/env');
+const { disconnectPrisma } = require('./config/prisma');
 const { createStore } = require('./store/storeFactory');
 const { CrmService } = require('./services/crmService');
 const { AuthService } = require('./services/authService');
@@ -322,6 +323,7 @@ const server = http.createServer(async (req, res) => {
 function collectionFromPath(pathPart) {
   return {
     users: 'users',
+    materials: 'materials',
     leads: 'leads',
     clients: 'clients',
     deals: 'deals',
@@ -350,7 +352,10 @@ module.exports = { server, crm };
 
 function shutdown(signal) {
   console.log(`Received ${signal}, shutting down EduDev CRM backend`);
-  server.close(() => {
+  server.close(async () => {
+    await disconnectPrisma().catch((error) => {
+      console.error('Failed to disconnect Prisma cleanly', error);
+    });
     process.exit(0);
   });
   setTimeout(() => process.exit(1), 10000).unref();
