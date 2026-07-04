@@ -14,6 +14,10 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      DATABASE_URL: postgresql://edudev:edudev@127.0.0.1:5432/edudev_crm?schema=public
+      CRM_STORE: json
+      NODE_ENV: test
 
     defaults:
       run:
