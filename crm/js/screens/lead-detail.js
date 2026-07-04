@@ -189,7 +189,7 @@ function renderLeadDetail(detail) {
               <div class="detail-list-row">
                 <span>
                   <strong>${escapeHtml(item.summary || 'Диагностика создана')}</strong>
-                  <small>${escapeHtml((item.recommendedSections || []).join(', '))}</small>
+                  <small>${escapeHtml((item.recommendedSections || []).map(humanize).join(', '))}</small>
                 </span>
               </div>
             `).join('')}</div>`

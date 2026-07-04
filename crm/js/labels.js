@@ -2,6 +2,7 @@ const labels = {
   active: 'Активно',
   all: 'Все',
   analytics: 'Аналитика',
+  attendance_progress: 'Посещаемость и прогресс',
   autotech: 'Автобизнес',
   autotech_niches: 'Ниши автобизнеса',
   bank_transfer: 'Банк',
@@ -14,6 +15,7 @@ const labels = {
   check_contact: 'Проверить контакт',
   client: 'Клиент',
   clients: 'Клиенты',
+  clients_cars_orders: 'Клиенты, автомобили и заказы',
   closed: 'Закрыто',
   configuration: 'Настройка',
   consultation: 'Консультация',
@@ -85,6 +87,7 @@ const labels = {
   paid_change: 'Платная доработка',
   paused: 'Пауза',
   payment: 'Оплата',
+  payments_subscriptions_debts: 'Оплаты, абонементы и долги',
   payment_recorded: 'Оплата записана',
   pending: 'Ожидает оплаты',
   prepare_proposal: 'Подготовить предложение',
@@ -102,14 +105,17 @@ const labels = {
   reference_item_updated: 'Элемент справочника обновлен',
   rejected: 'Отказ',
   repair_shop: 'СТО',
+  reminders: 'Напоминания клиентам',
   return_later: 'Вернуться позже',
   roles: 'Роли',
   sales_lead: 'Руководитель продаж',
+  schedule_teachers_rooms: 'Расписание, преподаватели и кабинеты',
   settings: 'Настройки',
   start: 'Старт',
   subscription_created: 'Подписка создана',
   subscription_renewed: 'Подписка продлена',
   subscription_statuses: 'Статусы подписок',
+  students_parents_programs: 'Ученики, родители и программы',
   supervisor: 'Управляющий',
   support: 'Поддержка',
   support_ticket: 'Обращение',
@@ -130,9 +136,11 @@ const labels = {
   testing: 'Тестирование',
   tire_service: 'Шиномонтаж',
   trial_support: 'Бесплатная поддержка',
+  trial_lessons_pipeline: 'Пробные занятия и воронка',
   tutoring_center: 'Репетиторский центр',
   waiting_client: 'Ждем клиента',
   waiting_start: 'Ожидает старта',
+  warehouse: 'Склад и остатки',
   whatsapp: 'WhatsApp',
   won: 'Выиграно',
 };
@@ -140,6 +148,7 @@ const labels = {
 export function labelValue(value) {
   const key = String(value || '').trim();
   if (!key) return '';
+  if (key.startsWith('niche_')) return `Сценарий: ${labelValue(key.replace('niche_', ''))}`;
   return labels[key] || key
     .split('_')
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
