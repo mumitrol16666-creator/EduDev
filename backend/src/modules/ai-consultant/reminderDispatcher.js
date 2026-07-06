@@ -1,5 +1,6 @@
 const { withRetry } = require('./retry');
 const { loadChannelPolicy, prepareOutboundMessages } = require('./channelPolicy');
+const { enqueueLocalOutbound } = require('./localOutbox');
 
 async function dispatchDueReminders({ crm, greenApiClient, now = new Date(), limit = 20, env = process.env }) {
   const policy = loadChannelPolicy(env);
@@ -27,7 +28,14 @@ async function dispatchDueReminders({ crm, greenApiClient, now = new Date(), lim
     if (!outbound.allowed) {
       sent = { skipped: true, reason: outbound.reason, policy: outbound.policy };
     } else if (outbound.policy.queueOnly) {
-      sent = { queued: true, transport: outbound.policy.transport, messages: outbound.messages, policy: outbound.policy };
+      const outboxItem = await enqueueLocalOutbound(crm, {
+        chatId,
+        phone: item.plan.phone,
+        leadId: item.plan.leadId || item.note.entityId,
+        messages: outbound.messages,
+        context: 'reminder',
+      });
+      sent = { queued: true, transport: outbound.policy.transport, messages: outbound.messages, outboxId: outboxItem?.id || null, policy: outbound.policy };
     } else {
       sent = await withRetry(async () => {
         const sentMessages = [];

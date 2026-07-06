@@ -4,12 +4,14 @@ const { AiConsultantService } = require('./service');
 const { lessonReminderMessage, paymentReminderMessage } = require('./reminderTemplates');
 const { classifyIntent } = require('./intentRouter');
 const { aiConsultantReadiness } = require('./readiness');
+const { listLocalOutbox, markLocalOutboxSent, markLocalOutboxFailed } = require('./localOutbox');
 
 function createAiConsultantModule({ crm, env = process.env, greenApiClient = new GreenApiClient(env) }) {
   const service = new AiConsultantService({ crm, greenApiClient, env });
   const webhookToken = env.AI_CONSULTANT_WEBHOOK_TOKEN || '';
   const cronToken = env.AI_CONSULTANT_CRON_TOKEN || '';
   const adminToken = env.AI_CONSULTANT_ADMIN_TOKEN || cronToken || '';
+  const localAgentToken = env.AI_CONSULTANT_LOCAL_AGENT_TOKEN || adminToken || cronToken || '';
   const testEndpointsEnabled = String(env.AI_CONSULTANT_TEST_ENDPOINTS || (env.NODE_ENV === 'production' ? 'false' : 'true')) === 'true';
 
   return {
@@ -50,6 +52,40 @@ function createAiConsultantModule({ crm, env = process.env, greenApiClient = new
         }
         const body = await readJson(req);
         return sendJson(res, 200, { success: true, result: await service.dispatchDueReminders(body) });
+      }
+
+      if (method === 'POST' && url.pathname === '/api/ai-consultant/local-agent/message') {
+        if (!isAuthorizedLocalAgent(req, url, localAgentToken, env)) {
+          return sendJson(res, 401, { success: false, error: 'Invalid AI consultant local agent token' });
+        }
+        const body = await readJson(req);
+        return sendJson(res, 200, { success: true, result: await service.processTestMessage(body) });
+      }
+
+      if (method === 'GET' && url.pathname === '/api/ai-consultant/local-agent/outbox') {
+        if (!isAuthorizedLocalAgent(req, url, localAgentToken, env)) {
+          return sendJson(res, 401, { success: false, error: 'Invalid AI consultant local agent token' });
+        }
+        return sendJson(res, 200, {
+          success: true,
+          outbox: await listLocalOutbox(crm, { limit: url.searchParams.get('limit') || 20 }),
+        });
+      }
+
+      if (method === 'POST' && url.pathname.startsWith('/api/ai-consultant/local-agent/outbox/')) {
+        if (!isAuthorizedLocalAgent(req, url, localAgentToken, env)) {
+          return sendJson(res, 401, { success: false, error: 'Invalid AI consultant local agent token' });
+        }
+        const parts = url.pathname.split('/').filter(Boolean);
+        const id = parts[4];
+        const action = parts[5];
+        const body = await readJson(req);
+        if (action === 'sent') {
+          return sendJson(res, 200, { success: true, item: await markLocalOutboxSent(crm, id, body) });
+        }
+        if (action === 'failed') {
+          return sendJson(res, 200, { success: true, item: await markLocalOutboxFailed(crm, id, body) });
+        }
       }
 
       if (url.pathname.startsWith('/api/ai-consultant/test-') && !testEndpointsEnabled) {
@@ -134,6 +170,14 @@ function isAuthorizedAdmin(req, url, expectedToken, env = process.env) {
   if (env.NODE_ENV !== 'production' && !expectedToken) return true;
   if (!expectedToken) return false;
   const headerToken = req.headers['x-ai-consultant-admin-token'];
+  const queryToken = url.searchParams.get('token');
+  return headerToken === expectedToken || queryToken === expectedToken;
+}
+
+function isAuthorizedLocalAgent(req, url, expectedToken, env = process.env) {
+  if (env.NODE_ENV !== 'production' && !expectedToken) return true;
+  if (!expectedToken) return false;
+  const headerToken = req.headers['x-ai-consultant-local-agent-token'];
   const queryToken = url.searchParams.get('token');
   return headerToken === expectedToken || queryToken === expectedToken;
 }

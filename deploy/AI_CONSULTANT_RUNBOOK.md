@@ -47,6 +47,7 @@ GREEN_API_URL="https://api.green-api.com"
 AI_CONSULTANT_WEBHOOK_TOKEN="CHANGE_LONG_RANDOM_WEBHOOK_TOKEN"
 AI_CONSULTANT_CRON_TOKEN="CHANGE_LONG_RANDOM_CRON_TOKEN"
 AI_CONSULTANT_ADMIN_TOKEN="CHANGE_LONG_RANDOM_ADMIN_TOKEN"
+AI_CONSULTANT_LOCAL_AGENT_TOKEN="CHANGE_LONG_RANDOM_LOCAL_AGENT_TOKEN"
 
 AI_CONSULTANT_TIMEZONE="Asia/Aqtobe"
 AI_CONSULTANT_WORKING_HOURS="09:00-21:00"
@@ -76,6 +77,41 @@ AI_CONSULTANT_OUTBOUND_POLICY="inbound_only"
 ```
 
 Так бот будет отвечать только на входящие сообщения и не будет отправлять cron-напоминания.
+
+## Локальный браузерный агент
+
+На сервере:
+
+```bash
+AI_CONSULTANT_CHANNEL_MODE="browser_local"
+AI_CONSULTANT_LOCAL_AGENT_TOKEN="CHANGE_LONG_RANDOM_LOCAL_AGENT_TOKEN"
+pm2 reload edudev --update-env
+```
+
+На локальном компьютере:
+
+```bash
+cd local-agent
+npm install
+cp .env.example .env
+```
+
+В `local-agent/.env`:
+
+```bash
+CRM_API_URL="https://api.edudev.kz"
+LOCAL_AGENT_TOKEN="тот же AI_CONSULTANT_LOCAL_AGENT_TOKEN"
+LOCAL_AGENT_SEND_ENABLED=true
+LOCAL_AGENT_INCOMING_ENABLED=false
+```
+
+Запуск:
+
+```bash
+npm run start
+```
+
+Первый запуск откроет WhatsApp Web. Нужно отсканировать QR. После этого агент будет забирать outbox из CRM и отправлять сообщения через браузер.
 
 ## 3. Перезапустить backend
 

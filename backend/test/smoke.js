@@ -37,6 +37,7 @@ const { llmFallbackDecision } = require('../src/modules/ai-consultant/fallbackPo
 const { CONVERSATION_STATES, deriveConversationState } = require('../src/modules/ai-consultant/conversationState');
 const { scaffoldAiConsultantProject } = require('../src/modules/ai-consultant/projectScaffolder');
 const { CHANNEL_MODES, prepareOutboundMessages } = require('../src/modules/ai-consultant/channelPolicy');
+const { listLocalOutbox, markLocalOutboxSent } = require('../src/modules/ai-consultant/localOutbox');
 const { DIRECTIONS, PERMISSIONS } = require('../src/domain/constants');
 const { navigationForRole } = require('../src/domain/navigation');
 
@@ -227,6 +228,10 @@ async function main() {
   const queuedDelivery = await browserAgent.deliver('77000000000@c.us', 'Ответ через локальный браузер', true);
   assert.equal(queuedDelivery.queued, true);
   assert.equal(queuedDelivery.transport, 'local_browser_agent');
+  const localOutbox = await listLocalOutbox(crm);
+  assert.ok(localOutbox.some((item) => item.id === queuedDelivery.outboxId && item.messages[0].includes('локальный браузер')));
+  await markLocalOutboxSent(crm, queuedDelivery.outboxId, { test: true });
+  assert.ok(!(await listLocalOutbox(crm)).some((item) => item.id === queuedDelivery.outboxId));
   const dryRunAgent = new AiConsultantService({
     crm,
     greenApiClient: {

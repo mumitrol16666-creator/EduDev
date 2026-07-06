@@ -33,6 +33,7 @@ const { executeAiActions } = require('./actionExecutor');
 const { llmFallbackDecision } = require('./fallbackPolicy');
 const { syncConversationState } = require('./conversationState');
 const { loadChannelPolicy, prepareOutboundMessages } = require('./channelPolicy');
+const { enqueueLocalOutbound } = require('./localOutbox');
 
 class AiConsultantService {
   constructor({ crm, greenApiClient, env = process.env, llmAdapter = null, promptPack = null, projectAdapter = null }) {
@@ -546,12 +547,18 @@ class AiConsultantService {
       return { skipped: true, reason: outbound.reason, policy: outbound.policy };
     }
     if (outbound.policy.queueOnly) {
+      const outboxItem = await enqueueLocalOutbound(this.crm, {
+        chatId,
+        messages: outbound.messages,
+        context: 'reply',
+      });
       return {
         queued: true,
         transport: outbound.policy.transport,
         policy: outbound.policy,
         chatId,
         messages: outbound.messages,
+        outboxId: outboxItem?.id || null,
       };
     }
     const messages = outbound.messages;
