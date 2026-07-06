@@ -34,6 +34,9 @@ const { PromptPack, REQUIRED_PROJECT_PROMPTS } = require('../src/modules/ai-cons
 const { parseLlmJson } = require('../src/modules/ai-consultant/llmAdapter');
 const { normalizeAiActionContract } = require('../src/modules/ai-consultant/actionContract');
 const { llmFallbackDecision } = require('../src/modules/ai-consultant/fallbackPolicy');
+const { CONVERSATION_STATES, deriveConversationState } = require('../src/modules/ai-consultant/conversationState');
+const { scaffoldAiConsultantProject } = require('../src/modules/ai-consultant/projectScaffolder');
+const { CHANNEL_MODES, prepareOutboundMessages } = require('../src/modules/ai-consultant/channelPolicy');
 const { DIRECTIONS, PERMISSIONS } = require('../src/domain/constants');
 const { navigationForRole } = require('../src/domain/navigation');
 
@@ -201,6 +204,40 @@ async function main() {
   assert.equal(aiResult.accepted, true);
   assert.ok(aiResult.action.reply.includes('возраст'));
   assert.ok(sentMessages.some((item) => item.type === 'message' && item.message.includes('вокал')));
+  assert.equal(aiConsultant.channelPolicy.mode, CHANNEL_MODES.GREEN_API_SAFE);
+  const blockedColdOutbound = prepareOutboundMessages('Холодное сообщение', {
+    env: { AI_CONSULTANT_OUTBOUND_POLICY: 'inbound_only' },
+    context: 'cold_outbound',
+  });
+  assert.equal(blockedColdOutbound.allowed, false);
+  const allowedReminderOutbound = prepareOutboundMessages('Напоминание об уроке', {
+    env: { AI_CONSULTANT_OUTBOUND_POLICY: 'allow_reminders' },
+    context: 'reminder',
+  });
+  assert.equal(allowedReminderOutbound.allowed, true);
+  const browserAgent = new AiConsultantService({
+    crm,
+    greenApiClient: {
+      enabled: true,
+      async sendTyping() { throw new Error('browser_local must not send typing directly'); },
+      async sendMessage() { throw new Error('browser_local must not send messages directly'); },
+    },
+    env: { AI_CONSULTANT_ENABLED: 'true', AI_CONSULTANT_CHANNEL_MODE: 'browser_local' },
+  });
+  const queuedDelivery = await browserAgent.deliver('77000000000@c.us', 'Ответ через локальный браузер', true);
+  assert.equal(queuedDelivery.queued, true);
+  assert.equal(queuedDelivery.transport, 'local_browser_agent');
+  const dryRunAgent = new AiConsultantService({
+    crm,
+    greenApiClient: {
+      enabled: true,
+      async sendTyping() { throw new Error('dry_run must not send typing'); },
+      async sendMessage() { throw new Error('dry_run must not send messages'); },
+    },
+    env: { AI_CONSULTANT_ENABLED: 'true', AI_CONSULTANT_CHANNEL_MODE: 'dry_run' },
+  });
+  const dryDelivery = await dryRunAgent.deliver('77000000000@c.us', 'Не отправлять', true);
+  assert.equal(dryDelivery.skipped, true);
   const dedupePayload = {
     idMessage: 'msg_duplicate_1',
     typeWebhook: 'incomingMessageReceived',
@@ -253,6 +290,28 @@ async function main() {
   assert.equal(promptPack.audit().projectReady, true);
   assert.deepEqual(promptPack.audit().missingProjectPrompts, []);
   assert.ok(promptPack.systemPrompt({ brandName: 'Тест' }).includes('Project Prompt Pack'));
+  const maestroExamplePromptDir = path.join(__dirname, '../examples/ai-consultant/maestro/prompts');
+  const maestroExamplePromptPack = new PromptPack({ projectDir: maestroExamplePromptDir });
+  assert.equal(maestroExamplePromptPack.audit().projectReady, true);
+  assert.equal(maestroExamplePromptPack.audit().projectPrompts, REQUIRED_PROJECT_PROMPTS.length);
+  assert.ok(maestroExamplePromptPack.systemPrompt({ brandName: 'Маэстро' }).includes('школа Маэстро'));
+  const scaffoldBaseDir = path.join(__dirname, '../data/test-scaffold-projects');
+  if (fs.existsSync(scaffoldBaseDir)) fs.rmSync(scaffoldBaseDir, { recursive: true, force: true });
+  const scaffoldResult = scaffoldAiConsultantProject({
+    id: 'Auto Service!',
+    name: 'Auto Service',
+    baseDir: scaffoldBaseDir,
+  });
+  assert.equal(scaffoldResult.id, 'auto-service');
+  assert.equal(scaffoldResult.created.length, REQUIRED_PROJECT_PROMPTS.length + 1);
+  assert.equal(new PromptPack({ projectDir: scaffoldResult.promptsDir }).audit().projectReady, true);
+  const scaffoldSecondRun = scaffoldAiConsultantProject({
+    id: 'auto-service',
+    name: 'Auto Service',
+    baseDir: scaffoldBaseDir,
+  });
+  assert.equal(scaffoldSecondRun.created.length, 0);
+  assert.equal(scaffoldSecondRun.skipped.length, REQUIRED_PROJECT_PROMPTS.length + 1);
   const customConfig = loadProjectConfig({
     AI_CONSULTANT_PROJECT_ID: 'test_center',
     AI_CONSULTANT_SCHOOL_NAME: 'центра Тест',
@@ -316,6 +375,10 @@ async function main() {
     classification: { escalate: false },
     result: { error: 'timeout' },
   }).shouldHandoff, true);
+  assert.equal(deriveConversationState({ action: { noteType: 'trial_booking_confirmed' } }), CONVERSATION_STATES.TRIAL_BOOKED);
+  assert.equal(deriveConversationState({
+    action: { noteType: 'trial_lesson', note: 'Предложенные слоты: slot_1' },
+  }), CONVERSATION_STATES.AWAITING_SLOT_CONFIRMATION);
   const fakeLlmCalls = [];
   const aiConsultantWithLlm = new AiConsultantService({
     crm,
@@ -389,6 +452,7 @@ async function main() {
   assert.ok(fakeLlmCalls[0].messages[0].content.includes('универсальное ядро'));
   const llmLead = (await store.all('leads')).find((item) => item.phone === '+77000000009');
   assert.equal(llmLead.aiStatus, AI_LEAD_STATUSES.WARM);
+  assert.equal(llmLead.aiConversationState, CONVERSATION_STATES.HANDOFF);
   assert.ok(llmLead.aiNextAction.includes('playbook'));
   const updatedLlmLead = await store.get('leads', llmLead.id);
   assert.equal(updatedLlmLead.aiProfile.goal, 'consultation_needed');
@@ -447,6 +511,7 @@ async function main() {
   assert.ok(strictFallbackResult.action.reply.includes('администратору'));
   const strictFallbackLead = (await store.all('leads')).find((item) => item.phone === '+77000000011');
   assert.equal(strictFallbackLead.aiStatus, AI_LEAD_STATUSES.HUMAN_NEEDED);
+  assert.equal(strictFallbackLead.aiConversationState, CONVERSATION_STATES.HANDOFF);
   assert.ok((await store.all('tasks')).some((item) => item.leadId === strictFallbackLead.id && item.title.includes('AI API недоступен')));
   const profiledResult = await aiConsultant.processTestMessage({
     phone: '+77000000004',
@@ -455,6 +520,7 @@ async function main() {
   assert.ok(profiledResult.action.reply.includes('зафиксировала'));
   assert.ok(!profiledResult.action.reply.includes('для себя или для ребенка'));
   const profiledLead = await store.get('leads', profiledResult.leadId);
+  assert.equal(profiledLead.aiConversationState, CONVERSATION_STATES.COLLECTING_PROFILE);
   assert.deepEqual(profiledLead.aiProfile, {
     student_age: 8,
     interest: 'вокал',
@@ -491,6 +557,7 @@ async function main() {
   }));
   const qualifiedMemoryLead = await store.get('leads', goalFollowup.leadId);
   assert.equal(qualifiedMemoryLead.aiStatus, AI_LEAD_STATUSES.QUALIFIED);
+  assert.equal(qualifiedMemoryLead.aiConversationState, CONVERSATION_STATES.OFFERING_TRIAL);
   assert.equal(qualifiedMemoryLead.aiNextAction, 'Подобрать и подтвердить пробный урок');
   assert.equal(qualifiedMemoryLead.aiProfile.goal, 'confidence');
   assert.ok(qualifiedMemoryLead.aiSummary.includes('цель: уверенность'));
@@ -520,12 +587,14 @@ async function main() {
   assert.ok(trialResult.action.reply.includes('пн, 06.07, 18:00'));
   const trialLead = (await store.all('leads')).find((item) => item.phone === '+77000000005');
   assert.equal(findLastOfferedSlot(await aiConsultant.crmTools.leadNotes(trialLead)), 'slot_vocal_mon_1800');
+  assert.equal((await store.get('leads', trialLead.id)).aiConversationState, CONVERSATION_STATES.AWAITING_SLOT_CONFIRMATION);
   const bookingResult = await aiConsultant.processTestMessage({
     phone: '+77000000005',
     text: 'Да, подходит, запишите',
   });
   assert.equal(bookingResult.action.noteType, 'trial_booking_confirmed');
   assert.equal((await store.get('leads', trialLead.id)).aiStatus, AI_LEAD_STATUSES.TRIAL_BOOKED);
+  assert.equal((await store.get('leads', trialLead.id)).aiConversationState, CONVERSATION_STATES.TRIAL_BOOKED);
   assert.ok((await store.all('tasks')).some((item) => item.leadId === trialLead.id && item.title.includes('Подтвердить запись')));
   const optOutResult = await aiConsultant.processTestMessage({
     phone: '+77000000005',
@@ -535,6 +604,7 @@ async function main() {
   const optedOutLead = await store.get('leads', trialLead.id);
   assert.equal(hasOptedOut(optedOutLead), true);
   assert.equal(optedOutLead.aiStatus, AI_LEAD_STATUSES.OPT_OUT);
+  assert.equal(optedOutLead.aiConversationState, CONVERSATION_STATES.CLOSED);
   const suppressedResult = await aiConsultant.processTestMessage({
     phone: '+77000000005',
     text: 'Сколько стоит вокал?',
@@ -567,6 +637,7 @@ async function main() {
   const handoffLead = (await store.all('leads')).find((item) => item.phone === '+77000000008');
   assert.equal(isHumanHandoffActive(handoffLead), true);
   assert.equal(handoffLead.aiStatus, AI_LEAD_STATUSES.HUMAN_NEEDED);
+  assert.equal(handoffLead.aiConversationState, CONVERSATION_STATES.HANDOFF);
   const handoffSuppressed = await aiConsultant.processTestMessage({
     phone: '+77000000008',
     text: 'Сколько стоит вокал?',
@@ -940,6 +1011,7 @@ async function main() {
 
   fs.unlinkSync(tmpDb);
   fs.rmSync(projectPromptDir, { recursive: true, force: true });
+  fs.rmSync(scaffoldBaseDir, { recursive: true, force: true });
   console.log('Smoke test passed');
 }
 

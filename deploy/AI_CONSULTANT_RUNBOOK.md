@@ -26,6 +26,11 @@ AI_CONSULTANT_ENABLED=true
 AI_CONSULTANT_PROJECT_ID="maestro"
 AI_CONSULTANT_MODE="rules"
 AI_CONSULTANT_LLM_ENABLED=false
+AI_CONSULTANT_CHANNEL_MODE="green_api_safe"
+AI_CONSULTANT_OUTBOUND_POLICY="allow_reminders"
+AI_CONSULTANT_MAX_REPLY_PARTS=2
+AI_CONSULTANT_MAX_REPLY_LENGTH=420
+AI_CONSULTANT_APPEND_OPT_OUT_FOOTER=false
 
 AI_CONSULTANT_SCHOOL_NAME="школы Маэстро"
 AI_CONSULTANT_BRAND_NAME="Маэстро"
@@ -49,6 +54,28 @@ AI_CONSULTANT_TEST_ENDPOINTS=false
 ```
 
 Если `GREEN_API_INSTANCE_ID` или `GREEN_API_TOKEN` пустые, CRM будет создавать лидов, коммуникации и задачи, но WhatsApp-ответы отправляться не будут.
+
+## Варианты канала
+
+1. `official_api`  
+   Для официальной WhatsApp Business Platform/BSP. Самый безопасный production-путь.
+
+2. `green_api_safe`  
+   Для Green API. Ядро отвечает на входящие и отправляет только согласованные напоминания. Рекомендуемый стартовый режим.
+
+3. `browser_local`  
+   Для будущего локального Playwright/WhatsApp Web агента. Ядро готовит сообщения и возвращает их как очередь, но само не дергает Green API.
+
+4. `dry_run`  
+   Без отправки сообщений. CRM, лиды, задачи и заметки обновляются, но WhatsApp не трогается.
+
+Для прогрева номера можно поставить:
+
+```bash
+AI_CONSULTANT_OUTBOUND_POLICY="inbound_only"
+```
+
+Так бот будет отвечать только на входящие сообщения и не будет отправлять cron-напоминания.
 
 ## 3. Перезапустить backend
 

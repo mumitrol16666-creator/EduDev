@@ -50,6 +50,8 @@ model Lead {
   aiNextAction      String?  @db.Text
   aiSummary         String?  @db.Text
   aiProfile         Json     @default("{}")
+  aiConversationState String?
+  aiConversationStateUpdatedAt DateTime?
   responsibleId     String?
   deletedAt         DateTime?
   createdAt         DateTime @default(now())

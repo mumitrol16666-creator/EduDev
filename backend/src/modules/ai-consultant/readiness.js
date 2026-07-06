@@ -43,6 +43,16 @@ async function aiConsultantReadiness({ crm, service, greenApiClient, env = proce
       ? 'Project adapter is configured'
       : 'Project adapter is missing',
   });
+  add('channel_policy', Boolean(service.channelPolicy?.mode), {
+    mode: service.channelPolicy?.mode,
+    transport: service.channelPolicy?.transport,
+    outboundPolicy: service.channelPolicy?.outboundPolicy,
+    riskLevel: service.channelPolicy?.riskLevel,
+    maxParts: service.channelPolicy?.maxParts,
+    maxLength: service.channelPolicy?.maxLength,
+    severity: service.channelPolicy?.riskLevel === 'medium_high' ? 'warning' : 'warning',
+    message: `Channel mode: ${service.channelPolicy?.mode || 'unknown'}`,
+  });
   add('prompt_pack', promptAudit.ok, {
     corePrompts: promptAudit.corePrompts,
     projectPrompts: promptAudit.projectPrompts,

@@ -44,6 +44,7 @@ function safeLead(lead = {}) {
     phone: lead.phone,
     whatsapp: lead.whatsapp,
     aiStatus: lead.aiStatus,
+    aiConversationState: lead.aiConversationState,
     aiProfile: lead.aiProfile,
     aiSummary: lead.aiSummary,
   };

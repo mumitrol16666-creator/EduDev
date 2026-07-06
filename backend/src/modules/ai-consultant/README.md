@@ -40,6 +40,9 @@
 - подключает проект через adapter: project id, CRM mapping, knowledge dir, prompt dir и slots file без правки ядра.
 - валидирует project prompt pack: `business_profile`, `sales_playbook`, `faq`, `guardrails`.
 - применяет LLM fallback policy: note, rules fallback или handoff при strict LLM / рискованном intent.
+- ведет conversation state machine: `collecting_profile`, `offering_trial`, `awaiting_slot_confirmation`, `trial_booked`, `handoff`, `closed`.
+- содержит пример project pack для Маэстро в `backend/examples/ai-consultant/maestro`.
+- умеет scaffold нового project pack из шаблонов через `npm run ai:scaffold-project`.
 
 ## Переменные окружения
 
@@ -48,6 +51,11 @@ AI_CONSULTANT_ENABLED=true
 AI_CONSULTANT_PROJECT_ID=maestro
 AI_CONSULTANT_MODE=rules
 AI_CONSULTANT_LLM_ENABLED=false
+AI_CONSULTANT_CHANNEL_MODE=green_api_safe
+AI_CONSULTANT_OUTBOUND_POLICY=allow_reminders
+AI_CONSULTANT_MAX_REPLY_PARTS=2
+AI_CONSULTANT_MAX_REPLY_LENGTH=420
+AI_CONSULTANT_APPEND_OPT_OUT_FOOTER=false
 AI_CONSULTANT_LLM_BASE_URL=https://api.openai.com/v1
 AI_CONSULTANT_LLM_API_KEY=
 AI_CONSULTANT_LLM_MODEL=gpt-4.1-mini
@@ -76,6 +84,42 @@ AI_CONSULTANT_WORKING_HOURS=09:00-21:00
 AI_CONSULTANT_SEND_RETRIES=2
 AI_CONSULTANT_RETRY_DELAY_MS=100
 AI_CONSULTANT_TEST_ENDPOINTS=true
+```
+
+## Режимы канала
+
+```bash
+# Самый правильный production-вариант через официальную WhatsApp Business Platform.
+AI_CONSULTANT_CHANNEL_MODE=official_api
+AI_CONSULTANT_OUTBOUND_POLICY=allow_all
+
+# Аккуратный режим для Green API: входящие ответы + согласованные напоминания.
+AI_CONSULTANT_CHANNEL_MODE=green_api_safe
+AI_CONSULTANT_OUTBOUND_POLICY=allow_reminders
+AI_CONSULTANT_MAX_REPLY_PARTS=2
+AI_CONSULTANT_MAX_REPLY_LENGTH=420
+
+# Локальный браузерный агент: ядро принимает решение, но не шлет через Green API.
+AI_CONSULTANT_CHANNEL_MODE=browser_local
+
+# Полный dry-run: CRM обновляется, отправки нет.
+AI_CONSULTANT_CHANNEL_MODE=dry_run
+```
+
+`AI_CONSULTANT_OUTBOUND_POLICY=inbound_only` блокирует напоминания и любые инициативные отправки. Это самый осторожный режим для прогрева номера.
+
+## Новый Project Pack
+
+```bash
+cd backend
+npm run ai:scaffold-project -- --id autotech --name "Автосервис"
+```
+
+После этого заполните `backend/examples/ai-consultant/autotech/prompts/*.md` и подключите:
+
+```bash
+AI_CONSULTANT_PROJECT_ID=autotech
+AI_CONSULTANT_PROJECT_PROMPT_DIR=backend/examples/ai-consultant/autotech/prompts
 ```
 
 Если `GREEN_API_INSTANCE_ID` или `GREEN_API_TOKEN` не заданы, модуль работает в dry-run режиме: CRM обновляется, но сообщение в WhatsApp не отправляется.

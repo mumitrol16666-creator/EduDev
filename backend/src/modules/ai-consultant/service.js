@@ -4,7 +4,7 @@ const { findDirection } = require('./knowledgeBase');
 const { createProjectAdapter } = require('./projectAdapter');
 const { extractClientProfile, profileSummary, humanProfileValue } = require('./profileExtractor');
 const { AiConsultantCrmTools } = require('./crmTools');
-const { splitWhatsAppReply, humanDelayMs } = require('./responseFormatter');
+const { humanDelayMs } = require('./responseFormatter');
 const { paymentCheckMessage } = require('./reminderTemplates');
 const { INTENTS, classifyIntent } = require('./intentRouter');
 const { createReminderTask } = require('./reminderPlanner');
@@ -31,6 +31,8 @@ const { OpenAiCompatibleLlmAdapter } = require('./llmAdapter');
 const { AiCore } = require('./aiCore');
 const { executeAiActions } = require('./actionExecutor');
 const { llmFallbackDecision } = require('./fallbackPolicy');
+const { syncConversationState } = require('./conversationState');
+const { loadChannelPolicy, prepareOutboundMessages } = require('./channelPolicy');
 
 class AiConsultantService {
   constructor({ crm, greenApiClient, env = process.env, llmAdapter = null, promptPack = null, projectAdapter = null }) {
@@ -45,6 +47,7 @@ class AiConsultantService {
     this.audio = new AudioProcessor({ env });
     this.enabled = String(env.AI_CONSULTANT_ENABLED || 'true') !== 'false';
     this.runtime = loadRuntimeMode(env);
+    this.channelPolicy = loadChannelPolicy(env);
     this.promptPack = promptPack || new PromptPack({
       projectDir: this.projectAdapter.paths.projectPromptDir,
     });
@@ -67,6 +70,7 @@ class AiConsultantService {
       llmEnabled: this.runtime.llmEnabled,
       rulesOnly: this.runtime.rulesOnly,
       paidAiRequired: this.runtime.paidAiRequired,
+      channelPolicy: this.channelPolicy,
       llmConfigured: this.aiCore.available(),
       promptDocuments: this.promptPack.listPrompts().length,
       corePromptDocuments: this.promptPack.listCorePrompts().length,
@@ -104,6 +108,12 @@ class AiConsultantService {
 
     const action = await this.decideAction(message, lead, profile, audioResult);
     await this.applyWorkingHours(action, lead, message);
+    const conversationState = await syncConversationState({
+      crmTools: this.crmTools,
+      lead,
+      profile,
+      action,
+    });
     await this.crmTools.addLeadNote(lead, action.noteType || 'ai_consultant', action.note);
 
     const delivery = await this.deliver(message.chatId, action.reply, action.shouldSend && !action.suppressDelivery);
@@ -116,9 +126,10 @@ class AiConsultantService {
       suppressed: action.suppressDelivery,
       delivery,
       profile,
+      conversationState: conversationState.state,
       audio: audioResult,
     });
-    return { accepted: true, message, leadId: lead.id, profile, audio: audioResult, action, delivery };
+    return { accepted: true, message, leadId: lead.id, profile, conversationState: conversationState.state, audio: audioResult, action, delivery };
   }
 
   async processTestMessage(payload = {}) {
@@ -168,6 +179,7 @@ class AiConsultantService {
       greenApiClient: this.greenApiClient,
       now: payload.now ? new Date(payload.now) : new Date(),
       limit: payload.limit || 20,
+      env: this.env,
     });
   }
 
@@ -525,7 +537,24 @@ class AiConsultantService {
 
   async deliver(chatId, reply, shouldSend = true) {
     if (!shouldSend) return { skipped: true };
-    const messages = splitWhatsAppReply(reply);
+    const outbound = prepareOutboundMessages(reply, {
+      env: this.env,
+      policy: this.channelPolicy,
+      context: 'reply',
+    });
+    if (!outbound.allowed) {
+      return { skipped: true, reason: outbound.reason, policy: outbound.policy };
+    }
+    if (outbound.policy.queueOnly) {
+      return {
+        queued: true,
+        transport: outbound.policy.transport,
+        policy: outbound.policy,
+        chatId,
+        messages: outbound.messages,
+      };
+    }
+    const messages = outbound.messages;
     const results = [];
     for (const message of messages) {
       const typing = await withRetry(() => this.greenApiClient.sendTyping(chatId), {
@@ -539,7 +568,7 @@ class AiConsultantService {
       });
       results.push({ typing, sent });
     }
-    return { messages, results };
+    return { policy: outbound.policy, messages, results };
   }
 
   async applyWorkingHours(action, lead, message) {

@@ -1,6 +1,8 @@
 const { withRetry } = require('./retry');
+const { loadChannelPolicy, prepareOutboundMessages } = require('./channelPolicy');
 
-async function dispatchDueReminders({ crm, greenApiClient, now = new Date(), limit = 20 }) {
+async function dispatchDueReminders({ crm, greenApiClient, now = new Date(), limit = 20, env = process.env }) {
+  const policy = loadChannelPolicy(env);
   const notes = await crm.store.all('notes');
   const auditLogs = await crm.store.all('auditLogs');
   const sentKeys = new Set(
@@ -20,10 +22,24 @@ async function dispatchDueReminders({ crm, greenApiClient, now = new Date(), lim
   const results = [];
   for (const item of duePlans) {
     const chatId = item.plan.chatId || phoneToChatId(item.plan.phone);
-    const sent = await withRetry(() => greenApiClient.sendMessage(chatId, item.plan.message), {
-      attempts: process.env.AI_CONSULTANT_SEND_RETRIES || 2,
-      delayMs: process.env.AI_CONSULTANT_RETRY_DELAY_MS || 100,
-    });
+    const outbound = prepareOutboundMessages(item.plan.message, { env, policy, context: 'reminder' });
+    let sent = null;
+    if (!outbound.allowed) {
+      sent = { skipped: true, reason: outbound.reason, policy: outbound.policy };
+    } else if (outbound.policy.queueOnly) {
+      sent = { queued: true, transport: outbound.policy.transport, messages: outbound.messages, policy: outbound.policy };
+    } else {
+      sent = await withRetry(async () => {
+        const sentMessages = [];
+        for (const message of outbound.messages) {
+          sentMessages.push(await greenApiClient.sendMessage(chatId, message));
+        }
+        return sentMessages;
+      }, {
+        attempts: env.AI_CONSULTANT_SEND_RETRIES || 2,
+        delayMs: env.AI_CONSULTANT_RETRY_DELAY_MS || 100,
+      });
+    }
     await crm.audit('ai_consultant_reminder_sent', 'lead', item.plan.leadId || item.note.entityId, {
       ...item.plan,
       chatId,
