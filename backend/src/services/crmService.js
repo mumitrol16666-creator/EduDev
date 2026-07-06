@@ -1312,6 +1312,7 @@ class CrmService {
       dealId: payload.dealId || null,
       projectId: payload.projectId || null,
       ticketId: payload.ticketId || null,
+      description: payload.description || '',
       createdById: payload.createdById || null,
       result: null,
       completedAt: null,
@@ -1344,6 +1345,7 @@ class CrmService {
       dealId: payload.dealId || null,
       projectId: payload.projectId || null,
       ticketId: payload.ticketId || null,
+      description: payload.description || '',
       createdById,
     });
     await this.audit('management_task_created', 'task', task.id, {

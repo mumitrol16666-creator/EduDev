@@ -45,6 +45,11 @@ model Lead {
   currentAccounting String?
   pain              String?  @db.Text
   status            String
+  aiStatus          String?
+  aiStatusUpdatedAt DateTime?
+  aiNextAction      String?  @db.Text
+  aiSummary         String?  @db.Text
+  aiProfile         Json     @default("{}")
   responsibleId     String?
   deletedAt         DateTime?
   createdAt         DateTime @default(now())
@@ -144,6 +149,7 @@ model Task {
   projectId         String?
   ticketId          String?
   createdById       String?
+  description       String?  @db.Text
   result            String?  @db.Text
   rescheduleComment String?  @db.Text
   completedAt       DateTime?

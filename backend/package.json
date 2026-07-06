@@ -9,6 +9,7 @@
     "dev": "node src/server.js",
     "seed": "node src/seed.js",
     "bootstrap:admin": "node src/bootstrap-admin.js",
+    "ai:dispatch-reminders": "node src/modules/ai-consultant/dispatch-reminders.js",
     "smoke": "node test/smoke.js",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",

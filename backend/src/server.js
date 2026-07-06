@@ -4,6 +4,7 @@ const { disconnectPrisma } = require('./config/prisma');
 const { createStore } = require('./store/storeFactory');
 const { CrmService } = require('./services/crmService');
 const { AuthService } = require('./services/authService');
+const { createAiConsultantModule } = require('./modules/ai-consultant');
 const { PERMISSIONS, ROLES } = require('./domain/constants');
 const { navigationForRole } = require('./domain/navigation');
 const { sendJson, sendError, readJson, parsePath } = require('./lib/http');
@@ -17,6 +18,7 @@ const CORS_ORIGINS = CORS_ORIGIN.split(',').map((origin) => origin.trim()).filte
 const store = createStore();
 const crm = new CrmService(store);
 const auth = new AuthService(store);
+const aiConsultant = createAiConsultantModule({ crm });
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -46,6 +48,9 @@ const server = http.createServer(async (req, res) => {
     if (method === 'GET' && url.pathname === '/api/meta') {
       return sendJson(res, 200, { success: true, meta: crm.meta() });
     }
+
+    const aiConsultantHandled = await aiConsultant.handlePublicRoute({ req, res, method, url, parts });
+    if (aiConsultantHandled !== false) return aiConsultantHandled;
 
     if (method === 'POST' && url.pathname === '/api/auth/login') {
       const body = await readJson(req);
