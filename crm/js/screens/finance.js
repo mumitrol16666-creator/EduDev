@@ -78,7 +78,7 @@ function paymentRow(payment) {
       </td>
       <td>
         <strong>${escapeHtml(clientName(payment.clientId))}</strong>
-        <small>${escapeHtml(payment.dealId || 'без сделки')}</small>
+        <small>${escapeHtml(payment.dealId ? 'привязано к сделке' : 'без сделки')}</small>
       </td>
       <td>${escapeHtml(formatDate(payment.paidAt || payment.createdAt))}</td>
       <td>${escapeHtml(payment.note || '—')}</td>

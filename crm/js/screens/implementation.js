@@ -46,7 +46,7 @@ function projectRow(project, client) {
   return `
     <tr>
       <td>
-        <strong>${escapeHtml(client?.name || project.clientId)}</strong>
+        <strong>${escapeHtml(client?.name || 'Клиент не найден')}</strong>
         <small>${escapeHtml(client?.city || 'город не указан')} · ${escapeHtml(directionLabel(client?.direction))}</small>
       </td>
       <td>

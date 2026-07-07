@@ -47,7 +47,7 @@ function renderOptions(items, selected = '', placeholder = 'Все') {
 }
 
 function clientName(clientId) {
-  return clientsCache.find((client) => client.id === clientId)?.name || clientId || 'клиент не указан';
+  return clientsCache.find((client) => client.id === clientId)?.name || 'клиент не найден';
 }
 
 function userName(userId) {
@@ -110,7 +110,7 @@ function ticketRow(ticket) {
       </td>
       <td>
         <strong>${escapeHtml(clientName(ticket.clientId))}</strong>
-        <small>${escapeHtml(ticket.projectId || 'без внедрения')}</small>
+        <small>${escapeHtml(ticket.projectId ? 'привязано к внедрению' : 'без внедрения')}</small>
       </td>
       <td>
         <span class="status-badge">${escapeHtml(humanize(ticket.status))}</span>

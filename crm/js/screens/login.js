@@ -6,7 +6,7 @@ export function renderLogin(app, onSuccess) {
     <main class="login-page">
       <section class="login-shell">
         <div class="login-copy">
-          <p class="eyebrow">EduDev CRM</p>
+          <img class="login-logo" src="./assets/edudev-logo.svg" alt="EduDev" />
           <h1>Внутренняя система для продаж, внедрения и поддержки</h1>
           <p>
             Один вход для менеджера, управляющего, программиста и поддержки.

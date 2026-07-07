@@ -76,11 +76,7 @@ function renderShell() {
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <span class="brand-mark">E</span>
-          <div>
-            <strong>EduDev CRM</strong>
-            <span>операционная система</span>
-          </div>
+          <img class="brand-logo" src="./assets/edudev-logo.svg" alt="EduDev" />
         </div>
         <nav class="sidebar-nav">
           ${nav.map((item) => `

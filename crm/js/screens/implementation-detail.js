@@ -208,7 +208,7 @@ function renderImplementationDetail(detail) {
             <span class="status-badge">${escapeHtml(humanize(project.status))}</span>
           </div>
           <div class="info-grid">
-            <div class="info-item"><span>Клиент</span><strong>${escapeHtml(client?.name || project.clientId)}</strong></div>
+            <div class="info-item"><span>Клиент</span><strong>${escapeHtml(client?.name || 'Клиент не найден')}</strong></div>
             <div class="info-item"><span>Город</span><strong>${escapeHtml(client?.city || 'не указан')}</strong></div>
             <div class="info-item"><span>Телефон</span><strong>${escapeHtml(client?.phone || 'не указан')}</strong></div>
             <div class="info-item"><span>Сумма сделки</span><strong>${escapeHtml(formatMoney(deal?.amount || 0))}</strong></div>

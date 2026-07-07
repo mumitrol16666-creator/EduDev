@@ -19,6 +19,13 @@
   max-width: 620px;
 }
 
+.login-logo {
+  display: block;
+  height: 46px;
+  margin-bottom: 24px;
+  width: 156px;
+}
+
 .login-copy h1 {
   font-size: clamp(40px, 6vw, 72px);
   line-height: 0.98;
@@ -98,6 +105,12 @@
   height: 38px;
   place-items: center;
   width: 38px;
+}
+
+.brand-logo {
+  display: block;
+  height: 38px;
+  width: 128px;
 }
 
 .brand strong,

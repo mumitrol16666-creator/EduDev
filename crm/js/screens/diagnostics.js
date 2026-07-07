@@ -67,12 +67,18 @@ function renderSectionPreview(sections) {
   return sections.map((section) => `<span class="status-badge">${escapeHtml(humanize(section))}</span>`).join('');
 }
 
-function renderDiagnosticsRow(item) {
+function leadNameForDiagnostic(item, leadsById) {
+  const lead = leadsById.get(item.leadId);
+  if (!lead) return 'Заявка не найдена';
+  return [lead.name, lead.city].filter(Boolean).join(' · ');
+}
+
+function renderDiagnosticsRow(item, leadsById) {
   return `
     <tr>
       <td>
         <strong>${escapeHtml(humanize(item.niche))}</strong>
-        <small>${escapeHtml(item.leadId)}</small>
+        <small>${escapeHtml(leadNameForDiagnostic(item, leadsById))}</small>
       </td>
       <td>${escapeHtml((item.problems || []).join(', ') || 'не указано')}</td>
       <td>${renderSectionPreview(item.recommendedSections || [])}</td>
@@ -81,7 +87,7 @@ function renderDiagnosticsRow(item) {
   `;
 }
 
-function renderDiagnosticsList(items, meta) {
+function renderDiagnosticsList(items, meta, leadsById = new Map()) {
   if (!items.length) {
     return emptyState('Диагностик пока нет', 'Диагностика создаётся из карточки лида, чтобы сразу связать её со сделкой.');
   }
@@ -97,7 +103,7 @@ function renderDiagnosticsList(items, meta) {
             <th>Создано</th>
           </tr>
         </thead>
-        <tbody>${items.map(renderDiagnosticsRow).join('')}</tbody>
+        <tbody>${items.map((item) => renderDiagnosticsRow(item, leadsById)).join('')}</tbody>
       </table>
       <div class="table-footer">
         <span>Показано ${items.length} из ${meta.total}</span>
@@ -212,13 +218,17 @@ export async function mountDiagnosticsScreen() {
       return;
     }
 
-    const result = await get('/api/diagnostics?sort=-createdAt&limit=25');
+    const [result, leadsResult] = await Promise.all([
+      get('/api/diagnostics?sort=-createdAt&limit=25'),
+      get('/api/leads?limit=500'),
+    ]);
+    const leadsById = new Map((leadsResult.data || []).map((lead) => [lead.id, lead]));
     root.innerHTML = `
       ${pageHeader({
         title: 'Диагностика',
         subtitle: 'История проведённых диагностик. Новая диагностика создаётся только из карточки лида.',
       })}
-      ${renderDiagnosticsList(result.data, result.meta)}
+      ${renderDiagnosticsList(result.data, result.meta, leadsById)}
     `;
   } catch (error) {
     root.innerHTML = emptyState('Не удалось загрузить диагностику', error.message || 'Проверьте подключение и доступ.');
