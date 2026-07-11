@@ -52,11 +52,51 @@ class CrmService {
   }
 
   async prepareListResult(collection, items, filters = {}) {
-    const result = listItems(collection, items, filters);
+    const scopedFilters = { ...filters };
+    let scopedItems = items;
+    if (collection === 'leads' && scopedFilters.queue) {
+      scopedItems = filterLeadsByQueue(scopedItems, scopedFilters.queue);
+      delete scopedFilters.queue;
+    }
+    const result = listItems(collection, scopedItems, scopedFilters);
     if (collection === 'tasks') {
       result.data = await this.enrichTasks(result.data);
     }
     return result;
+  }
+
+  async leadWorkQueues(filters = {}, user) {
+    const allLeads = await this.store.all('leads');
+    const scopedLeads = await this.scopeItemsForUser('leads', allLeads, user);
+    const baseFilters = { ...filters };
+    delete baseFilters.queue;
+    delete baseFilters.page;
+    delete baseFilters.limit;
+    delete baseFilters.sort;
+    const query = normalizeListQuery({
+      ...baseFilters,
+      limit: 200,
+      sort: '-updatedAt,-createdAt',
+    });
+    const visibleLeads = scopedLeads.filter((lead) => matchesListQuery(lead, query));
+
+    const queue = (key, title) => {
+      const items = filterLeadsByQueue(visibleLeads, key);
+      return {
+        key,
+        title,
+        count: items.length,
+        sample: sortItems(items, '-updatedAt,-createdAt').slice(0, 5),
+      };
+    };
+
+    return {
+      new: queue('new', 'Новые'),
+      stale: queue('stale', 'Зависли'),
+      noResponsible: queue('no_responsible', 'Без ответственного'),
+      diagnostics: queue('diagnostics', 'Диагностика'),
+      active: queue('active', 'Активные'),
+    };
   }
 
   async enrichTasks(tasks = []) {
@@ -1787,6 +1827,30 @@ function listItems(collection, items, filters = {}) {
       search: query.search,
     },
   };
+}
+
+function isActiveLeadRecord(lead) {
+  return ![LEAD_STATUSES.WON, LEAD_STATUSES.LOST].includes(lead.status);
+}
+
+function isNewLeadRecord(lead) {
+  return [LEAD_STATUSES.NEW, LEAD_STATUSES.CONTACT_CHECK].includes(lead.status);
+}
+
+function isStaleLeadRecord(lead) {
+  if (!isActiveLeadRecord(lead)) return false;
+  const updated = new Date(lead.updatedAt || lead.createdAt);
+  if (Number.isNaN(updated.getTime())) return false;
+  return Date.now() - updated.getTime() >= 1000 * 60 * 60 * 24 * 2;
+}
+
+function filterLeadsByQueue(leads = [], queue = '') {
+  if (queue === 'new') return leads.filter(isNewLeadRecord);
+  if (queue === 'stale') return leads.filter(isStaleLeadRecord);
+  if (queue === 'no_responsible') return leads.filter((lead) => !lead.responsibleId);
+  if (queue === 'diagnostics') return leads.filter((lead) => [LEAD_STATUSES.DIAGNOSTICS, LEAD_STATUSES.MEETING].includes(lead.status));
+  if (queue === 'active') return leads.filter(isActiveLeadRecord);
+  return leads;
 }
 
 function mapById(items = []) {

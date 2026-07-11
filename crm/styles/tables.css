@@ -65,6 +65,20 @@
   padding: 12px 14px;
 }
 
+.paged-footer {
+  gap: 12px;
+}
+
+.pager-actions {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.pager-actions span {
+  white-space: nowrap;
+}
+
 .leads-table th:last-child,
 .leads-table td:last-child {
   text-align: right;

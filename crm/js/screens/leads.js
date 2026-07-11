@@ -4,6 +4,7 @@ import { navigate } from '../router.js';
 import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
 
 let leadsMeta = null;
+const PAGE_SIZE = 50;
 
 function humanize(value) {
   return labelValue(value);
@@ -107,12 +108,14 @@ function leadRow(lead) {
   `;
 }
 
-function renderLeadQueueCard(title, subtitle, leads, tone = '') {
+function renderLeadQueueCard(key, title, subtitle, queue, tone = '') {
+  const leads = queue?.sample || [];
+  const count = Number(queue?.count || 0);
   return `
     <section class="lead-queue-card ${tone}">
       <div class="lead-queue-head">
         <span>${escapeHtml(title)}</span>
-        <strong>${leads.length}</strong>
+        <strong>${count}</strong>
       </div>
       <p>${escapeHtml(subtitle)}</p>
       <div class="lead-queue-list">
@@ -125,49 +128,59 @@ function renderLeadQueueCard(title, subtitle, leads, tone = '') {
           </button>
         `).join('') || '<span class="muted">Пусто</span>'}
       </div>
+      ${count > leads.length ? `<button class="text-button lead-queue-open" type="button" data-queue-filter="${escapeHtml(key)}">Показать все</button>` : ''}
     </section>
   `;
 }
 
-function renderLeadQueues(leads) {
-  const queues = leadQueues(leads);
+function renderLeadQueues(queuePayload, fallbackLeads = []) {
+  const fallback = leadQueues(fallbackLeads);
+  const queues = queuePayload || {
+    new: { count: fallback.new.length, sample: fallback.new.slice(0, 5) },
+    stale: { count: fallback.stale.length, sample: fallback.stale.slice(0, 5) },
+    noResponsible: { count: fallback.noResponsible.length, sample: fallback.noResponsible.slice(0, 5) },
+    diagnostics: { count: fallback.diagnostics.length, sample: fallback.diagnostics.slice(0, 5) },
+    active: { count: fallback.active.length, sample: fallback.active.slice(0, 5) },
+  };
   return `
     <section class="lead-queue-grid">
-      ${renderLeadQueueCard('Новые', 'Ждут первого нормального контакта.', queues.new, queues.new.length ? 'success' : '')}
-      ${renderLeadQueueCard('Зависли', 'Не обновлялись 2 дня и больше.', queues.stale, queues.stale.length ? 'danger' : '')}
-      ${renderLeadQueueCard('Без ответственного', 'Нужно назначить менеджера.', queues.noResponsible, queues.noResponsible.length ? 'warning' : '')}
-      ${renderLeadQueueCard('Диагностика', 'Нужно довести до сделки.', queues.diagnostics)}
-      ${renderLeadQueueCard('Активные', 'Все заявки в работе без выигранных и отказов.', queues.active)}
+      ${renderLeadQueueCard('new', 'Новые', 'Ждут первого нормального контакта.', queues.new, queues.new.count ? 'success' : '')}
+      ${renderLeadQueueCard('stale', 'Зависли', 'Не обновлялись 2 дня и больше.', queues.stale, queues.stale.count ? 'danger' : '')}
+      ${renderLeadQueueCard('no_responsible', 'Без ответственного', 'Нужно назначить менеджера.', queues.noResponsible, queues.noResponsible.count ? 'warning' : '')}
+      ${renderLeadQueueCard('diagnostics', 'Диагностика', 'Нужно довести до сделки.', queues.diagnostics)}
+      ${renderLeadQueueCard('active', 'Активные', 'Все заявки в работе без выигранных и отказов.', queues.active)}
     </section>
   `;
 }
 
-function renderLeadsTable(leads, meta, allLoadedLeads = leads) {
-  if (!leads.length) {
-    return emptyState('Заявок пока нет', 'Новые заявки появятся здесь после создания или подключения источников.');
-  }
-
+function renderLeadsTable(leads, meta, queuePayload) {
   return `
-    ${renderLeadQueues(allLoadedLeads)}
+    ${renderLeadQueues(queuePayload, leads)}
     <div class="table-panel">
-      <table class="data-table leads-table">
-        <thead>
-          <tr>
-            <th>Клиент</th>
-            <th>Профиль</th>
-            <th>Контакт</th>
-            <th>Статус</th>
-            <th>Боль</th>
-            <th>Действие</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${leads.map(leadRow).join('')}
-        </tbody>
-      </table>
-      <div class="table-footer">
+      ${leads.length ? `
+        <table class="data-table leads-table">
+          <thead>
+            <tr>
+              <th>Клиент</th>
+              <th>Профиль</th>
+              <th>Контакт</th>
+              <th>Статус</th>
+              <th>Боль</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${leads.map(leadRow).join('')}
+          </tbody>
+        </table>
+      ` : emptyState('Заявок в этой выборке нет', 'Попробуйте другой фильтр или очередь.')}
+      <div class="table-footer paged-footer">
         <span>Показано ${leads.length} из ${meta.total}</span>
-        <span>Страница ${meta.page} / ${meta.pages}</span>
+        <div class="pager-actions">
+          <button class="secondary-button compact-button" type="button" data-leads-page="prev" ${meta.page <= 1 ? 'disabled' : ''}>Назад</button>
+          <span>Страница ${meta.page} / ${meta.pages}</span>
+          <button class="secondary-button compact-button" type="button" data-leads-page="next" ${meta.page >= meta.pages ? 'disabled' : ''}>Вперед</button>
+        </div>
       </div>
     </div>
   `;
@@ -311,6 +324,7 @@ export async function mountLeadsScreen() {
   const leadDirection = form.querySelector('[data-lead-direction]');
   const leadNiche = form.querySelector('[data-lead-niche]');
   const errorBox = form.querySelector('[data-lead-error]');
+  let currentPage = 1;
 
   const setModalOpen = (open) => {
     modal.classList.toggle('open', open);
@@ -335,31 +349,46 @@ export async function mountLeadsScreen() {
     nicheFilter.innerHTML = renderOptions(items);
   };
 
-  const loadLeads = async () => {
-    root.innerHTML = emptyState('Загружаем заявки', 'Обновляем список по выбранным фильтрам.');
-    const data = new FormData(filters);
+  const buildBaseParams = (data) => {
     const params = new URLSearchParams();
-    ['q', 'status', 'direction', 'niche'].forEach((key) => {
+    ['q', 'status', 'direction', 'niche', 'queue'].forEach((key) => {
       const value = String(data.get(key) || '').trim();
       if (value) params.set(key, value);
     });
-    params.set('sort', '-createdAt');
-    params.set('limit', '200');
+    return params;
+  };
 
-    const result = await get(`/api/leads?${params.toString()}`);
-    const queue = String(data.get('queue') || '');
-    const filteredLeads = result.data.filter((lead) => {
-      if (queue === 'new') return isNewLead(lead);
-      if (queue === 'stale') return isStaleLead(lead);
-      if (queue === 'no_responsible') return isNoResponsible(lead);
-      if (queue === 'diagnostics') return isInDiagnostics(lead);
-      if (queue === 'active') return isActiveLead(lead);
-      return true;
-    });
-    root.innerHTML = renderLeadsTable(filteredLeads, { ...result.meta, total: filteredLeads.length }, result.data);
+  const loadLeads = async (page = currentPage) => {
+    currentPage = page;
+    root.innerHTML = emptyState('Загружаем заявки', 'Обновляем список по выбранным фильтрам.');
+    const data = new FormData(filters);
+    const params = buildBaseParams(data);
+    params.set('sort', '-createdAt');
+    params.set('limit', String(PAGE_SIZE));
+    params.set('page', String(currentPage));
+
+    const queueParams = buildBaseParams(data);
+    queueParams.delete('queue');
+    const [result, queueResult] = await Promise.all([
+      get(`/api/leads?${params.toString()}`),
+      get(`/api/leads/work-queues?${queueParams.toString()}`).catch(() => ({ queues: null })),
+    ]);
+    root.innerHTML = renderLeadsTable(result.data, result.meta, queueResult.queues);
     root.querySelectorAll('[data-open-lead]').forEach((button) => {
       button.addEventListener('click', () => {
         navigate(`lead-detail/${button.dataset.openLead}`);
+      });
+    });
+    root.querySelectorAll('[data-queue-filter]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        filters.elements.queue.value = button.dataset.queueFilter;
+        await loadLeads(1).catch((error) => toast(error.message || 'Ошибка загрузки очереди', 'error'));
+      });
+    });
+    root.querySelectorAll('[data-leads-page]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const nextPage = button.dataset.leadsPage === 'next' ? currentPage + 1 : currentPage - 1;
+        await loadLeads(nextPage).catch((error) => toast(error.message || 'Ошибка загрузки страницы', 'error'));
       });
     });
   };
@@ -378,13 +407,13 @@ export async function mountLeadsScreen() {
 
   filters.addEventListener('submit', async (event) => {
     event.preventDefault();
-    await loadLeads().catch((error) => toast(error.message || 'Ошибка фильтрации заявок', 'error'));
+    await loadLeads(1).catch((error) => toast(error.message || 'Ошибка фильтрации заявок', 'error'));
   });
 
   filters.querySelector('[data-reset-lead-filters]').addEventListener('click', async () => {
     filters.reset();
     syncFilterNiches();
-    await loadLeads().catch((error) => toast(error.message || 'Ошибка загрузки заявок', 'error'));
+    await loadLeads(1).catch((error) => toast(error.message || 'Ошибка загрузки заявок', 'error'));
   });
 
   directionFilter.addEventListener('change', () => {

@@ -100,6 +100,12 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { success: true, analytics: await crm.analyticsSummary() });
     }
 
+    if (method === 'GET' && url.pathname === '/api/leads/work-queues') {
+      auth.require(user, PERMISSIONS.CRM_READ);
+      const filters = Object.fromEntries(url.searchParams.entries());
+      return sendJson(res, 200, { success: true, queues: await crm.leadWorkQueues(filters, user) });
+    }
+
     if (method === 'GET' && url.pathname === '/api/demo/snapshot') {
       auth.require(user, PERMISSIONS.CRM_READ);
       return sendJson(res, 200, { success: true, demo: await crm.demoSnapshot() });
