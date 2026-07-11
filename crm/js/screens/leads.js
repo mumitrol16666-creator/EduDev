@@ -30,12 +30,61 @@ function renderOptions(items, selected = '', placeholder = 'Все') {
   `;
 }
 
+function isActiveLead(lead) {
+  return !['won', 'lost'].includes(lead.status);
+}
+
+function isNewLead(lead) {
+  return ['new', 'contact_check'].includes(lead.status);
+}
+
+function isNoResponsible(lead) {
+  return !lead.responsibleId;
+}
+
+function isInDiagnostics(lead) {
+  return ['diagnostics', 'meeting'].includes(lead.status);
+}
+
+function isStaleLead(lead) {
+  if (!isActiveLead(lead)) return false;
+  const updated = new Date(lead.updatedAt || lead.createdAt);
+  if (Number.isNaN(updated.getTime())) return false;
+  return Date.now() - updated.getTime() >= 1000 * 60 * 60 * 24 * 2;
+}
+
+function leadQueues(leads) {
+  return {
+    new: leads.filter(isNewLead),
+    stale: leads.filter(isStaleLead),
+    noResponsible: leads.filter(isNoResponsible),
+    diagnostics: leads.filter(isInDiagnostics),
+    active: leads.filter(isActiveLead),
+  };
+}
+
+function leadRiskClass(lead) {
+  if (isStaleLead(lead)) return 'row-danger';
+  if (isNoResponsible(lead)) return 'row-warning';
+  return '';
+}
+
+function formatShortDate(value) {
+  if (!value) return 'нет даты';
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value));
+}
+
 function leadRow(lead) {
   return `
-    <tr>
+    <tr class="${leadRiskClass(lead)}">
       <td>
         <strong>${escapeHtml(lead.name)}</strong>
-        <small>${escapeHtml(lead.city || 'город не указан')}</small>
+        <small>${escapeHtml(lead.city || 'город не указан')} · обновлено ${escapeHtml(formatShortDate(lead.updatedAt || lead.createdAt))}</small>
       </td>
       <td>
         <span class="status-badge">${escapeHtml(directionLabel(lead.direction))}</span>
@@ -58,12 +107,48 @@ function leadRow(lead) {
   `;
 }
 
-function renderLeadsTable(leads, meta) {
+function renderLeadQueueCard(title, subtitle, leads, tone = '') {
+  return `
+    <section class="lead-queue-card ${tone}">
+      <div class="lead-queue-head">
+        <span>${escapeHtml(title)}</span>
+        <strong>${leads.length}</strong>
+      </div>
+      <p>${escapeHtml(subtitle)}</p>
+      <div class="lead-queue-list">
+        ${leads.slice(0, 5).map((lead) => `
+          <button type="button" data-open-lead="${escapeHtml(lead.id)}">
+            <span>
+              <strong>${escapeHtml(lead.name)}</strong>
+              <small>${escapeHtml(humanize(lead.status))} · ${escapeHtml(lead.city || 'город не указан')}</small>
+            </span>
+          </button>
+        `).join('') || '<span class="muted">Пусто</span>'}
+      </div>
+    </section>
+  `;
+}
+
+function renderLeadQueues(leads) {
+  const queues = leadQueues(leads);
+  return `
+    <section class="lead-queue-grid">
+      ${renderLeadQueueCard('Новые', 'Ждут первого нормального контакта.', queues.new, queues.new.length ? 'success' : '')}
+      ${renderLeadQueueCard('Зависли', 'Не обновлялись 2 дня и больше.', queues.stale, queues.stale.length ? 'danger' : '')}
+      ${renderLeadQueueCard('Без ответственного', 'Нужно назначить менеджера.', queues.noResponsible, queues.noResponsible.length ? 'warning' : '')}
+      ${renderLeadQueueCard('Диагностика', 'Нужно довести до сделки.', queues.diagnostics)}
+      ${renderLeadQueueCard('Активные', 'Все заявки в работе без выигранных и отказов.', queues.active)}
+    </section>
+  `;
+}
+
+function renderLeadsTable(leads, meta, allLoadedLeads = leads) {
   if (!leads.length) {
     return emptyState('Заявок пока нет', 'Новые заявки появятся здесь после создания или подключения источников.');
   }
 
   return `
+    ${renderLeadQueues(allLoadedLeads)}
     <div class="table-panel">
       <table class="data-table leads-table">
         <thead>
@@ -93,7 +178,7 @@ function renderLeadModal() {
     <div class="modal-backdrop" data-lead-modal>
       <div class="modal-panel">
         <div class="modal-header">
-          <h2>Создать лид</h2>
+          <h2>Создать заявку</h2>
         </div>
         <form data-lead-form>
           <div class="modal-body">
@@ -152,7 +237,7 @@ function renderLeadModal() {
           </div>
           <div class="modal-footer">
             <button class="secondary-button" type="button" data-close-lead-modal>Отмена</button>
-            <button class="primary-button" type="submit" data-save-lead>Создать лид</button>
+            <button class="primary-button" type="submit" data-save-lead>Создать заявку</button>
           </div>
         </form>
       </div>
@@ -164,8 +249,8 @@ export function renderLeadsScreen(screen) {
   return `
     ${pageHeader({
       title: screen.label || 'Заявки',
-      subtitle: 'Сырые входящие обращения. Лид становится сделкой только после диагностики.',
-      primaryAction: '<button class="primary-button" type="button" data-open-lead-modal>Создать лид</button>',
+      subtitle: 'Рабочие очереди входящих обращений. Заявка становится сделкой только после диагностики.',
+      primaryAction: '<button class="primary-button" type="button" data-open-lead-modal>Создать заявку</button>',
     })}
     <form class="filter-bar" data-leads-filters>
       <div class="field">
@@ -188,6 +273,17 @@ export function renderLeadsScreen(screen) {
         <label for="leadFilterNiche">Ниша</label>
         <select id="leadFilterNiche" name="niche" data-filter-niche>
           <option value="">Все</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="leadFilterQueue">Очередь</label>
+        <select id="leadFilterQueue" name="queue" data-filter-queue>
+          <option value="">Все заявки</option>
+          <option value="new">Новые</option>
+          <option value="stale">Зависли</option>
+          <option value="no_responsible">Без ответственного</option>
+          <option value="diagnostics">Диагностика</option>
+          <option value="active">Активные</option>
         </select>
       </div>
       <div class="filter-actions">
@@ -248,10 +344,19 @@ export async function mountLeadsScreen() {
       if (value) params.set(key, value);
     });
     params.set('sort', '-createdAt');
-    params.set('limit', '25');
+    params.set('limit', '200');
 
     const result = await get(`/api/leads?${params.toString()}`);
-    root.innerHTML = renderLeadsTable(result.data, result.meta);
+    const queue = String(data.get('queue') || '');
+    const filteredLeads = result.data.filter((lead) => {
+      if (queue === 'new') return isNewLead(lead);
+      if (queue === 'stale') return isStaleLead(lead);
+      if (queue === 'no_responsible') return isNoResponsible(lead);
+      if (queue === 'diagnostics') return isInDiagnostics(lead);
+      if (queue === 'active') return isActiveLead(lead);
+      return true;
+    });
+    root.innerHTML = renderLeadsTable(filteredLeads, { ...result.meta, total: filteredLeads.length }, result.data);
     root.querySelectorAll('[data-open-lead]').forEach((button) => {
       button.addEventListener('click', () => {
         navigate(`lead-detail/${button.dataset.openLead}`);
@@ -310,14 +415,14 @@ export async function mountLeadsScreen() {
     try {
       await post('/api/leads', payload);
       setModalOpen(false);
-      toast('Лид создан', 'success');
+      toast('Заявка создана', 'success');
       await loadLeads();
     } catch (error) {
-      errorBox.textContent = error.message || 'Не удалось создать лид';
+      errorBox.textContent = error.message || 'Не удалось создать заявку';
       errorBox.classList.remove('hidden');
     } finally {
       submit.disabled = false;
-      submit.textContent = 'Создать лид';
+      submit.textContent = 'Создать заявку';
     }
   });
 }
