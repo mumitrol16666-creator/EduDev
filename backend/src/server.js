@@ -236,10 +236,22 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 201, { success: true, proposal: await crm.createProposal(parts[2], body) });
     }
 
+    if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'proposals' && parts[4]) {
+      auth.require(user, PERMISSIONS.DEAL_WRITE);
+      const body = await readJson(req);
+      return sendJson(res, 200, { success: true, proposal: await crm.updateProposal(parts[2], parts[4], body) });
+    }
+
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'payments') {
       auth.require(user, PERMISSIONS.PAYMENT_WRITE);
       const body = await readJson(req);
       return sendJson(res, 201, { success: true, ...(await crm.recordPayment(parts[2], body)) });
+    }
+
+    if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'payments' && parts[4]) {
+      auth.require(user, PERMISSIONS.PAYMENT_WRITE);
+      const body = await readJson(req);
+      return sendJson(res, 200, { success: true, payment: await crm.updatePayment(parts[2], parts[4], body) });
     }
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'prepayments') {

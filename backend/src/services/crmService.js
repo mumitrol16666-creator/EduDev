@@ -727,6 +727,40 @@ class CrmService {
     return proposal;
   }
 
+  async updateProposal(dealId, proposalId, payload) {
+    const deal = await this.store.get('deals', dealId);
+    if (!deal) throw notFound('Deal not found');
+    const proposal = await this.store.get('proposals', proposalId);
+    if (!proposal || proposal.dealId !== dealId) throw notFound('Proposal not found');
+
+    const patch = {};
+    if (payload.amount !== undefined) {
+      const amount = Number(payload.amount);
+      if (!Number.isFinite(amount) || amount < 0) throw badRequest('Proposal amount must be a positive number or zero');
+      patch.amount = amount;
+    }
+    if (payload.packageId !== undefined) patch.packageId = payload.packageId || deal.packageId;
+    if (payload.sections !== undefined) patch.sections = Array.isArray(payload.sections) ? payload.sections : proposal.sections;
+    if (payload.status !== undefined) patch.status = payload.status || proposal.status;
+    if (payload.fileUrl !== undefined) patch.fileUrl = payload.fileUrl || null;
+    if (payload.validUntil !== undefined) patch.validUntil = payload.validUntil || null;
+    if (!Object.keys(patch).length) throw badRequest('Nothing to update');
+
+    const updated = await this.store.update('proposals', proposalId, patch);
+    const dealPatch = {};
+    if (patch.amount !== undefined) dealPatch.amount = patch.amount;
+    if (patch.packageId !== undefined) dealPatch.packageId = patch.packageId;
+    if (patch.sections !== undefined) dealPatch.selectedSections = patch.sections;
+    if (Object.keys(dealPatch).length) await this.store.update('deals', dealId, dealPatch);
+
+    await this.audit('proposal_updated', 'deal', dealId, {
+      proposalId,
+      previousAmount: proposal.amount,
+      nextAmount: updated.amount,
+    });
+    return updated;
+  }
+
   async recordPayment(dealId, payload) {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
@@ -804,6 +838,33 @@ class CrmService {
 
     await this.audit('prepayment_recorded', 'deal', dealId, { paymentId: payment.id, amount: payment.amount });
     return payment;
+  }
+
+  async updatePayment(dealId, paymentId, payload) {
+    const deal = await this.store.get('deals', dealId);
+    if (!deal) throw notFound('Deal not found');
+    const payment = await this.store.get('payments', paymentId);
+    if (!payment || payment.dealId !== dealId) throw notFound('Payment not found');
+
+    const patch = {};
+    if (payload.amount !== undefined) {
+      const amount = Number(payload.amount);
+      if (!Number.isFinite(amount) || amount < 0) throw badRequest('Payment amount must be a positive number or zero');
+      patch.amount = amount;
+    }
+    if (payload.method !== undefined) patch.method = payload.method || payment.method;
+    if (payload.paidAt !== undefined) patch.paidAt = payload.paidAt || payment.paidAt;
+    if (payload.status !== undefined) patch.status = payload.status || payment.status;
+    if (payload.note !== undefined) patch.note = payload.note || null;
+    if (!Object.keys(patch).length) throw badRequest('Nothing to update');
+
+    const updated = await this.store.update('payments', paymentId, patch);
+    await this.audit('payment_updated', 'deal', dealId, {
+      paymentId,
+      previousAmount: payment.amount,
+      nextAmount: updated.amount,
+    });
+    return updated;
   }
 
   async createSupportTicket(payload) {
@@ -1868,13 +1929,17 @@ const REFERENCE_LABELS = Object.freeze({
   paused: 'Пауза',
   payment: 'Оплата',
   payments_subscriptions_debts: 'Оплаты, абонементы и долги',
+  payment_recorded: 'Оплата записана',
+  payment_updated: 'Оплата изменена',
   prepare_proposal: 'Подготовить предложение',
   prepayment: 'Предоплата',
   presentation: 'Презентация',
   prepayment_recorded: 'Предоплата записана',
   pro: 'Про',
   proposal: 'Предложение',
+  proposal_created: 'Предложение создано',
   proposal_sent: 'Предложение отправлено',
+  proposal_updated: 'Предложение изменено',
   question: 'Вопрос',
   rejected: 'Отказ',
   repair_shop: 'СТО',

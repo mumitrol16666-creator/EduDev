@@ -25,6 +25,14 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function inputDateTime(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const offsetMs = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
+
 function renderOptions(items, selected = '') {
   return (items || []).map((item) => `
     <option value="${escapeHtml(item)}" ${item === selected ? 'selected' : ''}>${escapeHtml(humanize(item))}</option>
@@ -89,6 +97,39 @@ function renderPayment(payment) {
   `;
 }
 
+function paymentEditForm(payment, formId, title = 'Изменить оплату') {
+  return `
+    <form class="form-stack compact-edit-form" data-payment-update-form data-payment-id="${escapeHtml(payment.id)}" id="${escapeHtml(formId)}">
+      <h3>${escapeHtml(title)}</h3>
+      <div class="field-grid">
+        <div class="field">
+          <label for="${escapeHtml(formId)}Amount">Сумма, ₸</label>
+          <input id="${escapeHtml(formId)}Amount" name="amount" type="number" min="0" step="10000" value="${escapeHtml(payment.amount || 0)}" required />
+        </div>
+        <div class="field">
+          <label for="${escapeHtml(formId)}Method">Метод</label>
+          <select id="${escapeHtml(formId)}Method" name="method">
+            <option value="kaspi" ${payment.method === 'kaspi' ? 'selected' : ''}>Kaspi</option>
+            <option value="bank_transfer" ${payment.method === 'bank_transfer' ? 'selected' : ''}>Банк</option>
+            <option value="cash" ${payment.method === 'cash' ? 'selected' : ''}>Наличные</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="${escapeHtml(formId)}PaidAt">Дата оплаты</label>
+          <input id="${escapeHtml(formId)}PaidAt" name="paidAt" type="datetime-local" value="${escapeHtml(inputDateTime(payment.paidAt))}" />
+        </div>
+        <div class="field">
+          <label for="${escapeHtml(formId)}Note">Комментарий</label>
+          <input id="${escapeHtml(formId)}Note" name="note" value="${escapeHtml(payment.note || '')}" />
+        </div>
+      </div>
+      <button class="secondary-button" type="submit">Сохранить изменение</button>
+    </form>
+  `;
+}
+
 function userName(userId) {
   return dealUsers.find((user) => user.id === userId)?.name || 'Не назначен';
 }
@@ -114,7 +155,10 @@ function renderDealDetail(detail) {
   const latestProposal = proposals[0];
   const paidAmount = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
   const balance = Math.max(Number(deal.amount || latestProposal?.amount || 0) - paidAmount, 0);
-  const hasPrepayment = payments.length > 0;
+  const prepayment = payments.find((payment) => /предоплат/i.test(payment.note || ''))
+    || (!implementationProject && payments[0] ? payments[0] : null);
+  const finalPayments = prepayment ? payments.filter((payment) => payment.id !== prepayment.id) : payments;
+  const hasPrepayment = Boolean(prepayment);
   const canRecordPrepayment = proposals.length && !hasPrepayment && !implementationProject;
   const canRecordPayment = proposals.length && !implementationProject;
   const managerUsers = roleUsers(['manager', 'sales_lead', 'supervisor', 'owner']);
@@ -222,6 +266,40 @@ function renderDealDetail(detail) {
             </form>
           ` : `
             <div class="detail-list">${proposals.length ? proposals.map(renderProposal).join('') : emptyState('Предложений нет', 'Предложение уже не создаётся после оплаты.')}</div>
+            ${latestProposal ? `
+              <form class="form-stack compact-edit-form" data-proposal-update-form data-proposal-id="${escapeHtml(latestProposal.id)}">
+                <h3>Изменить предложение</h3>
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="proposalEditAmount">Сумма КП, ₸</label>
+                    <input id="proposalEditAmount" name="amount" type="number" min="0" step="10000" value="${escapeHtml(latestProposal.amount || deal.amount || 0)}" required />
+                  </div>
+                  <div class="field">
+                    <label for="proposalEditPackage">Пакет</label>
+                    <select id="proposalEditPackage" name="packageId">${renderOptions(packages, latestProposal.packageId || deal.packageId)}</select>
+                  </div>
+                </div>
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="proposalEditValidUntil">Действует до</label>
+                    <input id="proposalEditValidUntil" name="validUntil" type="datetime-local" value="${escapeHtml(inputDateTime(latestProposal.validUntil))}" />
+                  </div>
+                  <div class="field">
+                    <label for="proposalEditStatus">Статус</label>
+                    <select id="proposalEditStatus" name="status">
+                      <option value="sent" ${latestProposal.status === 'sent' ? 'selected' : ''}>Отправлено</option>
+                      <option value="accepted" ${latestProposal.status === 'accepted' ? 'selected' : ''}>Принято</option>
+                      <option value="rejected" ${latestProposal.status === 'rejected' ? 'selected' : ''}>Отклонено</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="proposalEditSections">Разделы через запятую</label>
+                  <input id="proposalEditSections" name="sections" value="${escapeHtml((latestProposal.sections || deal.selectedSections || []).join(', '))}" />
+                </div>
+                <button class="secondary-button" type="submit">Сохранить предложение</button>
+              </form>
+            ` : ''}
           `}
         </div>
 
@@ -252,14 +330,15 @@ function renderDealDetail(detail) {
               </div>
             </form>
           ` : `
-            <div class="detail-list">${hasPrepayment ? payments.slice(0, 1).map(renderPayment).join('') : emptyState('Предоплаты нет', 'Предоплату записываем после согласования предложения.')}</div>
+            <div class="detail-list">${hasPrepayment ? renderPayment(prepayment) : emptyState('Предоплаты нет', 'Предоплату записываем после согласования предложения.')}</div>
+            ${hasPrepayment ? paymentEditForm(prepayment, 'prepaymentEditForm', 'Изменить предоплату') : ''}
           `}
         </div>
 
         <div class="panel detail-section">
           <div class="detail-section-head">
             <h2>Финальная оплата</h2>
-            <span>${payments.length}</span>
+            <span>${finalPayments.length}</span>
           </div>
           ${canRecordPayment ? `
             <form class="form-stack" id="paymentForm" data-payment-form>
@@ -284,7 +363,8 @@ function renderDealDetail(detail) {
               <input type="hidden" name="implementationId" value="${escapeHtml(currentImplementationId)}" />
             </form>
           ` : `
-            <div class="detail-list">${payments.length ? payments.map(renderPayment).join('') : emptyState('Оплаты нет', 'Оплату записываем после отправки предложения.')}</div>
+            <div class="detail-list">${finalPayments.length ? finalPayments.map(renderPayment).join('') : emptyState('Финальной оплаты нет', 'Финальную оплату записываем после предоплаты или согласования.')}</div>
+            ${finalPayments.length ? finalPayments.map((payment, index) => paymentEditForm(payment, `paymentEditForm${index}`, index === 0 ? 'Изменить финальную оплату' : `Изменить финальную оплату ${index + 1}`)).join('') : ''}
           `}
         </div>
       </section>
@@ -442,6 +522,29 @@ function bindDealDetail(root, dealId, detail, reload) {
     }
   });
 
+  root.querySelector('[data-proposal-update-form]')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const sections = String(data.get('sections') || '')
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
+    try {
+      await patch(`/api/deals/${dealId}/proposals/${form.dataset.proposalId}`, {
+        amount: Number(data.get('amount') || 0),
+        packageId: String(data.get('packageId') || ''),
+        validUntil: String(data.get('validUntil') || '') || undefined,
+        status: String(data.get('status') || 'sent'),
+        sections,
+      });
+      toast('Предложение изменено', 'success');
+      await reload();
+    } catch (error) {
+      toast(error.message || 'Не удалось изменить предложение', 'error');
+    }
+  });
+
   root.querySelector('[data-prepayment-form]')?.addEventListener('submit', async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -456,6 +559,25 @@ function bindDealDetail(root, dealId, detail, reload) {
     } catch (error) {
       toast(error.message || 'Не удалось записать предоплату', 'error');
     }
+  });
+
+  root.querySelectorAll('[data-payment-update-form]').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      try {
+        await patch(`/api/deals/${dealId}/payments/${form.dataset.paymentId}`, {
+          amount: Number(data.get('amount') || 0),
+          method: String(data.get('method') || 'bank_transfer'),
+          paidAt: String(data.get('paidAt') || '') || undefined,
+          note: String(data.get('note') || '').trim(),
+        });
+        toast('Оплата изменена', 'success');
+        await reload();
+      } catch (error) {
+        toast(error.message || 'Не удалось изменить оплату', 'error');
+      }
+    });
   });
 
   root.querySelector('[data-payment-form]')?.addEventListener('submit', async (event) => {
