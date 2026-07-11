@@ -23,6 +23,30 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
+function isActiveDeal(deal) {
+  return !['won', 'lost'].includes(deal.stage);
+}
+
+function isOverdueStep(deal) {
+  return isActiveDeal(deal) && deal.nextActionAt && new Date(deal.nextActionAt) < new Date();
+}
+
+function needsNextStep(deal) {
+  return isActiveDeal(deal) && !deal.nextActionAt;
+}
+
+function riskDeals(deals) {
+  return deals
+    .filter((deal) => isOverdueStep(deal) || needsNextStep(deal))
+    .sort((a, b) => {
+      const aScore = isOverdueStep(a) ? 0 : 1;
+      const bScore = isOverdueStep(b) ? 0 : 1;
+      if (aScore !== bScore) return aScore - bScore;
+      return Number(b.amount || 0) - Number(a.amount || 0);
+    })
+    .slice(0, 8);
+}
+
 function renderOptions(items, selected = '', placeholder = 'Все') {
   return `
     <option value="">${escapeHtml(placeholder)}</option>
@@ -39,11 +63,15 @@ function directionLabel(value) {
   }[value] || humanize(value);
 }
 
+function dealTitle(deal) {
+  return humanize(deal.niche || 'Сделка');
+}
+
 function dealRow(deal) {
   return `
-    <tr>
+    <tr class="${isOverdueStep(deal) ? 'row-danger' : needsNextStep(deal) ? 'row-warning' : ''}">
       <td>
-        <strong>${escapeHtml(humanize(deal.niche))}</strong>
+        <strong>${escapeHtml(dealTitle(deal))}</strong>
         <small>${escapeHtml(directionLabel(deal.direction))} · ${escapeHtml(humanize(deal.packageId || 'пакет не указан'))}</small>
       </td>
       <td><span class="status-badge">${escapeHtml(humanize(deal.stage))}</span></td>
@@ -64,6 +92,73 @@ function dealRow(deal) {
   `;
 }
 
+function renderDealCard(deal) {
+  return `
+    <button class="deal-card ${isOverdueStep(deal) ? 'danger' : needsNextStep(deal) ? 'warning' : ''}" type="button" data-open-deal="${escapeHtml(deal.id)}">
+      <span>
+        <strong>${escapeHtml(dealTitle(deal))}</strong>
+        <small>${escapeHtml(directionLabel(deal.direction))} · ${escapeHtml(humanize(deal.packageId || 'пакет не указан'))}</small>
+      </span>
+      <b>${escapeHtml(formatMoney(deal.amount))}</b>
+      <small>${escapeHtml(isOverdueStep(deal) ? `Просрочено: ${formatDate(deal.nextActionAt)}` : needsNextStep(deal) ? 'Нет следующего шага' : `Следующий шаг: ${formatDate(deal.nextActionAt)}`)}</small>
+    </button>
+  `;
+}
+
+function renderRiskQueue(deals) {
+  const items = riskDeals(deals);
+  return `
+    <section class="dashboard-panel deal-risk-panel">
+      <div class="dashboard-panel-head">
+        <div>
+          <h2>Что может потеряться</h2>
+          <p>Сделки без следующего действия или с просроченным шагом. Их надо открывать первыми.</p>
+        </div>
+        <span>${items.length}</span>
+      </div>
+      <div class="work-list">
+        ${items.length ? items.map((deal) => `
+          <button class="work-item" type="button" data-open-deal="${escapeHtml(deal.id)}">
+            <span>
+              <strong>${escapeHtml(dealTitle(deal))}</strong>
+              <small>${escapeHtml(humanize(deal.stage))} · ${escapeHtml(isOverdueStep(deal) ? `просрочено ${formatDate(deal.nextActionAt)}` : 'нет следующего шага')}</small>
+            </span>
+            <b>${escapeHtml(formatMoney(deal.amount))}</b>
+          </button>
+        `).join('') : emptyState('Потерь нет', 'У активных сделок есть следующий шаг и нет просрочки.')}
+      </div>
+    </section>
+  `;
+}
+
+function renderPipeline(deals) {
+  const activeDeals = deals.filter(isActiveDeal);
+  const stages = Object.values(dealsMeta?.dealStages || {}).filter((stage) => !['won', 'lost'].includes(stage));
+  const fallbackStages = [...new Set(activeDeals.map((deal) => deal.stage))];
+  const columns = (stages.length ? stages : fallbackStages).map((stage) => {
+    const stageDeals = activeDeals.filter((deal) => deal.stage === stage);
+    const amount = stageDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
+    return `
+      <section class="pipeline-column">
+        <div class="pipeline-column-head">
+          <strong>${escapeHtml(humanize(stage))}</strong>
+          <span>${stageDeals.length} · ${escapeHtml(formatMoney(amount))}</span>
+        </div>
+        <div class="pipeline-column-list">
+          ${stageDeals.length ? stageDeals.slice(0, 8).map(renderDealCard).join('') : '<p class="muted pipeline-empty">Пусто</p>'}
+          ${stageDeals.length > 8 ? `<p class="muted pipeline-more">Еще ${stageDeals.length - 8}</p>` : ''}
+        </div>
+      </section>
+    `;
+  }).join('');
+
+  return `
+    <section class="pipeline-board" aria-label="Воронка сделок">
+      ${columns || emptyState('Активных сделок нет', 'После диагностики новые сделки появятся в воронке.')}
+    </section>
+  `;
+}
+
 function renderStageSummary(deals) {
   const activeDeals = deals.filter((deal) => !['won', 'lost'].includes(deal.stage));
   const pipelineAmount = activeDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
@@ -72,7 +167,6 @@ function renderStageSummary(deals) {
     return acc;
   }, {});
 
-  const stages = Object.values(dealsMeta?.dealStages || {});
   return `
     <div class="dashboard-counters deal-counters">
       <article class="dashboard-counter">
@@ -83,12 +177,18 @@ function renderStageSummary(deals) {
         <span>Активных сделок</span>
         <strong>${activeDeals.length}</strong>
       </article>
-      ${stages.slice(0, 3).map((stage) => `
-        <article class="dashboard-counter">
-          <span>${escapeHtml(humanize(stage))}</span>
-          <strong>${stageCounts[stage] || 0}</strong>
-        </article>
-      `).join('')}
+      <article class="dashboard-counter ${deals.filter(isOverdueStep).length ? 'danger' : ''}">
+        <span>Просрочен шаг</span>
+        <strong>${deals.filter(isOverdueStep).length}</strong>
+      </article>
+      <article class="dashboard-counter ${deals.filter(needsNextStep).length ? 'warning' : ''}">
+        <span>Нет шага</span>
+        <strong>${deals.filter(needsNextStep).length}</strong>
+      </article>
+      <article class="dashboard-counter">
+        <span>Предоплата</span>
+        <strong>${stageCounts.prepayment || 0}</strong>
+      </article>
     </div>
   `;
 }
@@ -100,6 +200,10 @@ function renderDealsTable(deals, meta) {
 
   return `
     ${renderStageSummary(deals)}
+    <div class="deal-operations-grid">
+      ${renderRiskQueue(deals)}
+    </div>
+    ${renderPipeline(deals)}
     <div class="table-panel">
       <table class="data-table deals-table">
         <thead>
@@ -151,6 +255,15 @@ export function renderDealsScreen(screen) {
         <label for="dealAmountFrom">Сумма от</label>
         <input id="dealAmountFrom" name="amountFrom" type="number" min="0" step="10000" />
       </div>
+      <div class="field">
+        <label for="dealFilterProblem">Контроль</label>
+        <select id="dealFilterProblem" name="problem" data-filter-problem>
+          <option value="">Все сделки</option>
+          <option value="overdue">Просрочен шаг</option>
+          <option value="no_next_action">Нет следующего шага</option>
+          <option value="active">Только активные</option>
+        </select>
+      </div>
       <div class="filter-actions">
         <button class="secondary-button" type="submit">Показать</button>
         <button class="secondary-button" type="button" data-reset-deal-filters>Сбросить</button>
@@ -178,10 +291,17 @@ export async function mountDealsScreen() {
       if (value) params.set(key, value);
     });
     params.set('sort', '-updatedAt,-createdAt');
-    params.set('limit', '25');
+    params.set('limit', '200');
 
     const result = await get(`/api/deals?${params.toString()}`);
-    root.innerHTML = renderDealsTable(result.data, result.meta);
+    const problem = String(data.get('problem') || '');
+    const filteredDeals = result.data.filter((deal) => {
+      if (problem === 'overdue') return isOverdueStep(deal);
+      if (problem === 'no_next_action') return needsNextStep(deal);
+      if (problem === 'active') return isActiveDeal(deal);
+      return true;
+    });
+    root.innerHTML = renderDealsTable(filteredDeals, { ...result.meta, total: filteredDeals.length });
     root.querySelectorAll('[data-open-deal]').forEach((button) => {
       button.addEventListener('click', () => {
         navigate(`deal-detail/${button.dataset.openDeal}`);

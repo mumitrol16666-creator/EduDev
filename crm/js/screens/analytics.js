@@ -19,6 +19,20 @@ function renderCounter(label, value, tone = '') {
   `;
 }
 
+function renderCounterGroup(title, subtitle, counters) {
+  return `
+    <section class="analytics-section">
+      <div class="analytics-section-head">
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(subtitle)}</p>
+      </div>
+      <div class="dashboard-counters analytics-counters">
+        ${counters.map((item) => renderCounter(item.label, item.value, item.tone || '')).join('')}
+      </div>
+    </section>
+  `;
+}
+
 function totalFromMap(map = {}) {
   return Object.values(map).reduce((sum, value) => sum + Number(value || 0), 0);
 }
@@ -55,39 +69,28 @@ function renderDistribution(title, subtitle, map = {}) {
 
 function renderAnalytics(analytics) {
   return `
-    <div class="dashboard-counters analytics-counters">
-      ${renderCounter('Лиды', analytics.leads.total)}
-      ${renderCounter('Сделки', analytics.deals.total)}
-      ${renderCounter('Воронка', formatMoney(analytics.deals.pipelineAmount))}
-      ${renderCounter('Оплачено', formatMoney(analytics.payments.paidAmount), 'success')}
-      ${renderCounter('Ежемесячно', formatMoney(analytics.subscriptions.monthlyRecurringAmount))}
-      ${renderCounter('Открытые долги', formatMoney(analytics.debts.openAmount), analytics.debts.open ? 'danger' : '')}
-      ${renderCounter('Внедрения', analytics.implementation.active)}
-      ${renderCounter('Поддержка', analytics.support.open, analytics.support.open ? 'warning' : '')}
-    </div>
+    ${renderCounterGroup('Продажи', 'От входящего потока до денег в воронке.', [
+      { label: 'Лиды', value: analytics.leads.total },
+      { label: 'Сделки', value: analytics.deals.total },
+      { label: 'Воронка', value: formatMoney(analytics.deals.pipelineAmount) },
+      { label: 'Задач открыто', value: analytics.tasks.open },
+      { label: 'Просрочено задач', value: analytics.tasks.overdue, tone: analytics.tasks.overdue ? 'danger' : '' },
+    ])}
 
-    <div class="analytics-focus-grid">
-      <section class="panel analytics-focus-card">
-        <span>Задачи</span>
-        <strong>${escapeHtml(analytics.tasks.open)}</strong>
-        <p class="${analytics.tasks.overdue ? 'danger-text' : ''}">Просрочено: ${escapeHtml(analytics.tasks.overdue)}</p>
-      </section>
-      <section class="panel analytics-focus-card">
-        <span>Подписки</span>
-        <strong>${escapeHtml(analytics.subscriptions.active)}</strong>
-        <p>Всего подписок: ${escapeHtml(analytics.subscriptions.total)}</p>
-      </section>
-      <section class="panel analytics-focus-card">
-        <span>Платежи</span>
-        <strong>${escapeHtml(analytics.payments.total)}</strong>
-        <p>Сумма оплат: ${escapeHtml(formatMoney(analytics.payments.paidAmount))}</p>
-      </section>
-      <section class="panel analytics-focus-card">
-        <span>Долги</span>
-        <strong>${escapeHtml(analytics.debts.open)}</strong>
-        <p class="${analytics.debts.open ? 'danger-text' : ''}">${escapeHtml(formatMoney(analytics.debts.openAmount))}</p>
-      </section>
-    </div>
+    ${renderCounterGroup('Финансы', 'Оплаты, регулярные платежи и долги отдельно от продаж.', [
+      { label: 'Платежей', value: analytics.payments.total },
+      { label: 'Оплачено', value: formatMoney(analytics.payments.paidAmount), tone: 'success' },
+      { label: 'Активные подписки', value: analytics.subscriptions.active },
+      { label: 'Ежемесячно', value: formatMoney(analytics.subscriptions.monthlyRecurringAmount) },
+      { label: 'Открытые долги', value: formatMoney(analytics.debts.openAmount), tone: analytics.debts.open ? 'danger' : '' },
+    ])}
+
+    ${renderCounterGroup('Операции', 'Что происходит после продажи: внедрение и поддержка.', [
+      { label: 'Активные внедрения', value: analytics.implementation.active },
+      { label: 'Обращения поддержки', value: analytics.support.open, tone: analytics.support.open ? 'warning' : '' },
+      { label: 'Всего подписок', value: analytics.subscriptions.total },
+      { label: 'Открытых долгов', value: analytics.debts.open, tone: analytics.debts.open ? 'danger' : '' },
+    ])}
 
     <div class="dashboard-grid">
       ${renderDistribution('Лиды по статусам', 'Где сейчас находится входящий поток.', analytics.leads.byStatus)}
