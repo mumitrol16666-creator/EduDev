@@ -51,3 +51,45 @@
   gap: 10px;
   justify-content: flex-end;
 }
+
+@media (max-width: 680px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .modal-panel,
+  .modal-panel.wide-modal {
+    border-radius: 14px 14px var(--radius) var(--radius);
+    max-height: calc(100svh - 20px - env(safe-area-inset-top));
+    max-width: none;
+    overflow: hidden;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 14px;
+  }
+
+  .modal-header h2 {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .modal-body {
+    max-height: calc(100svh - 190px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-footer {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+}

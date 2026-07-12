@@ -121,6 +121,12 @@ function renderShell() {
     renderLogin(app, renderShellAfterLogin);
   });
 
+  const host = app.querySelector('[data-screen-host]');
+  if (host) {
+    const observer = new MutationObserver(() => enhanceMobileTables(host));
+    observer.observe(host, { childList: true, subtree: true });
+  }
+
   renderCurrentRoute();
 }
 
@@ -128,6 +134,7 @@ function renderCurrentRoute() {
   const host = app.querySelector('[data-screen-host]');
   if (!host) return;
   renderRoute(host);
+  enhanceMobileTables(host);
   if (getState().route === 'dashboard') {
     mountDashboardScreen();
   }
@@ -190,6 +197,19 @@ function renderCurrentRoute() {
   const screen = getState().navigation.find((item) => item.id === route || item.id === base || (base === 'lead-detail' && item.id === 'leads'));
   const title = app.querySelector('[data-topbar-title]');
   if (title) title.textContent = base === 'lead-detail' ? 'Заявка' : base === 'deal-detail' ? 'Сделка' : base === 'client-detail' ? 'Клиент' : base === 'implementation-detail' ? 'Внедрение' : (screen ? menuLabel(screen) : 'CRM');
+}
+
+function enhanceMobileTables(root) {
+  root.querySelectorAll('.data-table').forEach((table) => {
+    const headers = [...table.querySelectorAll('thead th')].map((header) => header.textContent.trim());
+    table.querySelectorAll('tbody tr').forEach((row) => {
+      [...row.children].forEach((cell, index) => {
+        if (headers[index] && !cell.dataset.label) {
+          cell.dataset.label = headers[index];
+        }
+      });
+    });
+  });
 }
 
 window.addEventListener('hashchange', renderCurrentRoute);

@@ -1296,3 +1296,326 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 680px) {
+  .login-page {
+    align-items: start;
+    min-height: 100svh;
+    padding: 16px;
+  }
+
+  .login-shell {
+    gap: 18px;
+  }
+
+  .login-logo {
+    height: 38px;
+    margin-bottom: 18px;
+    width: 128px;
+  }
+
+  .login-copy h1 {
+    font-size: 34px;
+    line-height: 1.04;
+  }
+
+  .login-copy p {
+    font-size: 15px;
+  }
+
+  .login-card,
+  .panel {
+    box-shadow: 0 10px 34px rgba(20, 29, 38, 0.06);
+  }
+
+  .login-card {
+    padding: 18px;
+  }
+
+  .app-shell {
+    min-height: 100svh;
+  }
+
+  .sidebar {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 12px;
+    padding: calc(12px + env(safe-area-inset-top)) 12px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .brand {
+    margin-bottom: 0;
+  }
+
+  .brand-logo {
+    height: 34px;
+    width: 114px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    gap: 8px;
+    margin: 0 -12px;
+    overflow-x: auto;
+    padding: 0 12px 4px;
+    scroll-padding: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-link {
+    border-color: rgba(255, 255, 255, 0.08);
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 9px 12px;
+    white-space: nowrap;
+    width: auto;
+  }
+
+  .sidebar-footer {
+    align-items: center;
+    border-top: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .user-chip {
+    margin-bottom: 0;
+    min-width: 0;
+  }
+
+  .user-chip strong,
+  .user-chip span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar-footer .secondary-button {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
+  .topbar {
+    gap: 12px;
+    min-height: 58px;
+    padding: 10px 14px;
+    position: static;
+  }
+
+  .topbar-title {
+    min-width: 0;
+  }
+
+  .topbar-title strong {
+    font-size: 15px;
+  }
+
+  .topbar-title span {
+    display: none;
+  }
+
+  .notification-button {
+    min-height: 38px;
+    min-width: 40px;
+  }
+
+  .screen-host {
+    padding: 14px;
+  }
+
+  .page-header {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+    line-height: 1.15;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .page-header > div:last-child {
+    display: grid;
+    gap: 8px;
+  }
+
+  .dashboard-counters,
+  .analytics-counters,
+  .analytics-focus-grid,
+  .settings-meta-grid {
+    gap: 10px;
+  }
+
+  .dashboard-counter,
+  .analytics-focus-card,
+  .settings-meta-card,
+  .team-workload-card,
+  .lead-queue-card,
+  .detail-card,
+  .detail-section,
+  .dashboard-panel,
+  .settings-dictionary {
+    border-radius: var(--radius);
+  }
+
+  .dashboard-counter {
+    min-height: 82px;
+    padding: 12px;
+  }
+
+  .dashboard-counter strong,
+  .analytics-focus-card strong,
+  .money-preview {
+    font-size: 24px;
+  }
+
+  .dashboard-panel-head,
+  .detail-card-head,
+  .detail-section-head,
+  .timeline-row-head,
+  .metric-row-head,
+  .material-footer {
+    display: grid;
+    gap: 8px;
+  }
+
+  .dashboard-panel-head > span,
+  .metric-row-head span {
+    justify-self: start;
+  }
+
+  .work-item,
+  .material-list-item,
+  .detail-list-row {
+    align-items: stretch;
+    display: grid;
+    gap: 8px;
+  }
+
+  .work-item b,
+  .material-list-item b {
+    white-space: normal;
+  }
+
+  .pipeline-board {
+    grid-auto-columns: minmax(82vw, 1fr);
+    margin-left: -2px;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .pipeline-column {
+    min-width: 82vw;
+    scroll-snap-align: start;
+  }
+
+  .lead-queue-grid {
+    display: flex;
+    gap: 10px;
+    margin: 0 -14px 14px;
+    overflow-x: auto;
+    padding: 0 14px 4px;
+    scroll-padding: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lead-queue-card {
+    flex: 0 0 78vw;
+  }
+
+  .lead-queue-card p {
+    min-height: 0;
+  }
+
+  .phone-search-bar,
+  .finance-toolbar {
+    padding: 12px;
+  }
+
+  .phone-search-grid button {
+    min-height: 76px;
+  }
+
+  .materials-list-panel,
+  .material-detail,
+  .diagnostics-form,
+  .settings-dictionary,
+  .detail-card,
+  .detail-section {
+    padding: 12px;
+  }
+
+  .material-body,
+  .audit-json {
+    font-size: 14px;
+    max-height: 52svh;
+  }
+
+  .team-workload-metrics,
+  .tab-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-button {
+    flex: 0 0 auto;
+  }
+
+  .section-actions {
+    display: grid;
+    justify-content: stretch;
+  }
+
+  .section-actions > button,
+  .section-actions > a {
+    width: 100%;
+  }
+
+  .checklist-item {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .screen-host {
+    padding: 10px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .lead-queue-grid {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .lead-queue-card,
+  .pipeline-column {
+    flex-basis: 86vw;
+    min-width: 86vw;
+  }
+}

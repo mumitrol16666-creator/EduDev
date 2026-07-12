@@ -26,6 +26,7 @@
 html,
 body {
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -158,4 +159,35 @@ a {
 
 .toast.success {
   background: var(--green);
+}
+
+@media (max-width: 680px) {
+  body {
+    font-size: 14px;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .primary-button,
+  .secondary-button,
+  .danger-button {
+    min-height: 46px;
+    padding: 11px 14px;
+  }
+
+  .toast-host {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 12px;
+    right: 12px;
+  }
+
+  .toast {
+    max-width: none;
+    width: 100%;
+  }
 }

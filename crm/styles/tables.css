@@ -107,3 +107,118 @@
   font-size: 18px;
   margin-bottom: 6px;
 }
+
+@media (max-width: 680px) {
+  .table-panel {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .data-table,
+  .data-table thead,
+  .data-table tbody,
+  .data-table tr,
+  .data-table th,
+  .data-table td {
+    display: block;
+  }
+
+  .data-table thead {
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+  }
+
+  .data-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .data-table tr,
+  .data-table tr:last-child {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(20, 29, 38, 0.05);
+    overflow: hidden;
+  }
+
+  .data-table tr.row-danger td,
+  .data-table tr.row-warning td {
+    background: transparent;
+  }
+
+  .data-table tr.row-danger {
+    background: #fff8f8;
+    border-color: #e9c0c0;
+  }
+
+  .data-table tr.row-warning {
+    background: #fffaf0;
+    border-color: #ecd8a9;
+  }
+
+  .data-table td {
+    align-items: flex-start;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: 4px;
+    grid-template-columns: minmax(86px, 34%) minmax(0, 1fr);
+    padding: 10px 12px;
+  }
+
+  .data-table td::before {
+    color: var(--muted);
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  .data-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .data-table td small {
+    margin-top: 2px;
+  }
+
+  .leads-table th:last-child,
+  .leads-table td:last-child {
+    text-align: left;
+    width: auto;
+  }
+
+  .row-actions,
+  .data-table td:last-child .row-actions {
+    justify-content: stretch;
+  }
+
+  .data-table .compact-button,
+  .data-table td:last-child > button {
+    width: 100%;
+  }
+
+  .table-footer {
+    align-items: stretch;
+    background: transparent;
+    border: 0;
+    display: grid;
+    gap: 10px;
+    padding: 12px 0 0;
+  }
+
+  .pager-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .pager-actions span {
+    text-align: center;
+  }
+}
