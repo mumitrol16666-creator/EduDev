@@ -106,6 +106,11 @@ const server = http.createServer(async (req, res) => {
       return sendJson(res, 200, { success: true, queues: await crm.leadWorkQueues(filters, user) });
     }
 
+    if (method === 'GET' && url.pathname === '/api/search/phone') {
+      auth.require(user, PERMISSIONS.CRM_READ);
+      return sendJson(res, 200, { success: true, result: await crm.searchByPhone(url.searchParams.get('phone') || '', user) });
+    }
+
     if (method === 'GET' && url.pathname === '/api/demo/snapshot') {
       auth.require(user, PERMISSIONS.CRM_READ);
       return sendJson(res, 200, { success: true, demo: await crm.demoSnapshot() });

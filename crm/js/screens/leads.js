@@ -186,6 +186,38 @@ function renderLeadsTable(leads, meta, queuePayload) {
   `;
 }
 
+function renderPhoneSearchResults(result) {
+  const leads = result?.leads || [];
+  const clients = result?.clients || [];
+  const total = leads.length + clients.length;
+  return `
+    <section class="phone-search-results ${total ? 'open' : ''}" data-phone-search-results>
+      ${total ? `
+        <div class="phone-search-head">
+          <strong>Найдено по номеру: ${total}</strong>
+          <span>${escapeHtml(result.query || '')}</span>
+        </div>
+        <div class="phone-search-grid">
+          ${leads.map((lead) => `
+            <button type="button" data-open-lead="${escapeHtml(lead.id)}">
+              <span>Заявка</span>
+              <strong>${escapeHtml(lead.name)}</strong>
+              <small>${escapeHtml(lead.phone || lead.whatsapp || '')} · ${escapeHtml(humanize(lead.status))}</small>
+            </button>
+          `).join('')}
+          ${clients.map((client) => `
+            <button type="button" data-open-client="${escapeHtml(client.id)}">
+              <span>Клиент</span>
+              <strong>${escapeHtml(client.name)}</strong>
+              <small>${escapeHtml(client.phone || '')} · ${escapeHtml(humanize(client.status))}</small>
+            </button>
+          `).join('')}
+        </div>
+      ` : emptyState('По номеру ничего не найдено', 'Проверьте цифры или создайте новую заявку.')}
+    </section>
+  `;
+}
+
 function renderLeadModal() {
   return `
     <div class="modal-backdrop" data-lead-modal>
@@ -265,6 +297,15 @@ export function renderLeadsScreen(screen) {
       subtitle: 'Рабочие очереди входящих обращений. Заявка становится сделкой только после диагностики.',
       primaryAction: '<button class="primary-button" type="button" data-open-lead-modal>Создать заявку</button>',
     })}
+    <form class="phone-search-bar" data-phone-search-form>
+      <div class="field">
+        <label for="leadPhoneSearch">Быстрый поиск по номеру</label>
+        <input id="leadPhoneSearch" name="phone" inputmode="tel" placeholder="+77000000000" />
+      </div>
+      <button class="secondary-button" type="submit">Найти</button>
+      <button class="secondary-button" type="button" data-clear-phone-search>Очистить</button>
+    </form>
+    <div data-phone-search-host></div>
     <form class="filter-bar" data-leads-filters>
       <div class="field">
         <label for="leadSearch">Поиск</label>
@@ -316,6 +357,8 @@ export async function mountLeadsScreen() {
   const filters = document.querySelector('[data-leads-filters]');
   const modal = document.querySelector('[data-lead-modal]');
   const form = document.querySelector('[data-lead-form]');
+  const phoneSearchForm = document.querySelector('[data-phone-search-form]');
+  const phoneSearchHost = document.querySelector('[data-phone-search-host]');
   if (!root || !filters || !modal || !form) return;
 
   const statusSelect = filters.querySelector('[data-filter-status]');
@@ -379,6 +422,11 @@ export async function mountLeadsScreen() {
         navigate(`lead-detail/${button.dataset.openLead}`);
       });
     });
+    root.querySelectorAll('[data-open-client]').forEach((button) => {
+      button.addEventListener('click', () => {
+        navigate(`client-detail/${button.dataset.openClient}`);
+      });
+    });
     root.querySelectorAll('[data-queue-filter]').forEach((button) => {
       button.addEventListener('click', async () => {
         filters.elements.queue.value = button.dataset.queueFilter;
@@ -414,6 +462,33 @@ export async function mountLeadsScreen() {
     filters.reset();
     syncFilterNiches();
     await loadLeads(1).catch((error) => toast(error.message || 'Ошибка загрузки заявок', 'error'));
+  });
+
+  phoneSearchForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(phoneSearchForm);
+    const phone = String(data.get('phone') || '').trim();
+    if (!phone) {
+      toast('Введите номер для поиска', 'error');
+      return;
+    }
+    try {
+      const result = await get(`/api/search/phone?phone=${encodeURIComponent(phone)}`);
+      phoneSearchHost.innerHTML = renderPhoneSearchResults(result.result);
+      phoneSearchHost.querySelectorAll('[data-open-lead]').forEach((button) => {
+        button.addEventListener('click', () => navigate(`lead-detail/${button.dataset.openLead}`));
+      });
+      phoneSearchHost.querySelectorAll('[data-open-client]').forEach((button) => {
+        button.addEventListener('click', () => navigate(`client-detail/${button.dataset.openClient}`));
+      });
+    } catch (error) {
+      toast(error.message || 'Не удалось найти по номеру', 'error');
+    }
+  });
+
+  document.querySelector('[data-clear-phone-search]')?.addEventListener('click', () => {
+    phoneSearchForm.reset();
+    phoneSearchHost.innerHTML = '';
   });
 
   directionFilter.addEventListener('change', () => {

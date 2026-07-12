@@ -67,6 +67,8 @@ model Lead {
 
   @@index([status, updatedAt])
   @@index([niche, city])
+  @@index([phone])
+  @@index([whatsapp])
 }
 
 model Client {
@@ -98,6 +100,7 @@ model Client {
   communications Communication[]
 
   @@index([status, subscriptionStatus])
+  @@index([phone])
 }
 
 model Deal {

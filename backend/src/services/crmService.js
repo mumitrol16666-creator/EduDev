@@ -99,6 +99,29 @@ class CrmService {
     };
   }
 
+  async searchByPhone(phone, user) {
+    const variants = phoneLookupVariants(phone);
+    if (!variants.length) return { leads: [], clients: [] };
+
+    const found = typeof this.store.findPeopleByPhone === 'function'
+      ? await this.store.findPeopleByPhone(variants)
+      : {
+        leads: (await this.store.all('leads')).filter((lead) => phoneMatches(lead.phone, variants) || phoneMatches(lead.whatsapp, variants)),
+        clients: (await this.store.all('clients')).filter((client) => phoneMatches(client.phone, variants)),
+      };
+
+    const [leads, clients] = await Promise.all([
+      this.scopeItemsForUser('leads', found.leads || [], user),
+      this.scopeItemsForUser('clients', found.clients || [], user),
+    ]);
+
+    return {
+      query: phone,
+      leads: leads.slice(0, 20),
+      clients: clients.slice(0, 20),
+    };
+  }
+
   async enrichTasks(tasks = []) {
     if (!tasks.length) return [];
     const [leads, clients, deals, projects, tickets] = await Promise.all([
@@ -1851,6 +1874,35 @@ function filterLeadsByQueue(leads = [], queue = '') {
   if (queue === 'diagnostics') return leads.filter((lead) => [LEAD_STATUSES.DIAGNOSTICS, LEAD_STATUSES.MEETING].includes(lead.status));
   if (queue === 'active') return leads.filter(isActiveLeadRecord);
   return leads;
+}
+
+function phoneLookupVariants(phone = '') {
+  const raw = String(phone || '').trim();
+  const digits = raw.replace(/\D/g, '');
+  if (!digits) return [];
+  const variants = new Set([raw, digits, `+${digits}`]);
+  if (digits.length === 10) {
+    variants.add(`7${digits}`);
+    variants.add(`+7${digits}`);
+    variants.add(`8${digits}`);
+  }
+  if (digits.length === 11 && digits.startsWith('8')) {
+    variants.add(`7${digits.slice(1)}`);
+    variants.add(`+7${digits.slice(1)}`);
+  }
+  if (digits.length === 11 && digits.startsWith('7')) {
+    variants.add(`+${digits}`);
+    variants.add(`8${digits.slice(1)}`);
+  }
+  return [...variants];
+}
+
+function phoneMatches(value, variants) {
+  const valueDigits = String(value || '').replace(/\D/g, '');
+  return variants.some((variant) => {
+    const variantDigits = String(variant || '').replace(/\D/g, '');
+    return value === variant || (valueDigits && valueDigits === variantDigits);
+  });
 }
 
 function mapById(items = []) {

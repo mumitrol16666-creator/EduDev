@@ -40,6 +40,31 @@ class PrismaStore {
     return this.delegate(collection).findMany();
   }
 
+  async findPeopleByPhone(phoneVariants = []) {
+    const variants = [...new Set(phoneVariants.map((item) => String(item || '').trim()).filter(Boolean))];
+    if (!variants.length) return { leads: [], clients: [] };
+    const [leads, clients] = await Promise.all([
+      this.prisma.lead.findMany({
+        where: {
+          OR: [
+            { phone: { in: variants } },
+            { whatsapp: { in: variants } },
+          ],
+        },
+        orderBy: [{ updatedAt: 'desc' }],
+        take: 20,
+      }),
+      this.prisma.client.findMany({
+        where: {
+          phone: { in: variants },
+        },
+        orderBy: [{ updatedAt: 'desc' }],
+        take: 20,
+      }),
+    ]);
+    return { leads, clients };
+  }
+
   async health() {
     await this.prisma.$queryRaw`SELECT 1`;
     return { ok: true, mode: 'prisma' };

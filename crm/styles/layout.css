@@ -726,6 +726,73 @@
   margin-top: 3px;
 }
 
+.phone-search-bar {
+  align-items: end;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(280px, 1fr) auto auto;
+  margin-bottom: 14px;
+  padding: 14px;
+}
+
+.phone-search-results {
+  margin-bottom: 14px;
+}
+
+.phone-search-head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.phone-search-head span {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.phone-search-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.phone-search-grid button {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 12px;
+  text-align: left;
+}
+
+.phone-search-grid button:hover {
+  border-color: var(--green);
+}
+
+.phone-search-grid span,
+.phone-search-grid strong,
+.phone-search-grid small {
+  display: block;
+}
+
+.phone-search-grid span {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.phone-search-grid small {
+  color: var(--muted);
+  margin-top: 4px;
+}
+
 .materials-layout {
   align-items: start;
   display: grid;
@@ -1200,6 +1267,8 @@
   .dashboard-grid,
   .analytics-grid,
   .lead-queue-grid,
+  .phone-search-bar,
+  .phone-search-grid,
   .materials-layout,
   .team-workload-grid,
   .detail-layout,
