@@ -3,15 +3,111 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EduDev - учет и управление автосервисом</title>
+    <title>EduDev - CRM и учет для автосервиса, СТО, шиномонтажа и автомойки</title>
     <meta
       name="description"
-      content="Настройка учета для пунктов замены масла, шиномонтажек, СТО и автомоек в Казахстане."
+      content="EduDev внедряет CRM и учет для пунктов замены масла, шиномонтажек, СТО и автомоек в Казахстане: клиенты, авто, заказы, склад, оплаты, сотрудники и повторные визиты."
     />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0f1117" />
+    <link rel="canonical" href="https://edudev.kz/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_KZ" />
+    <meta property="og:site_name" content="EduDev" />
+    <meta property="og:title" content="EduDev - CRM и учет для автосервиса" />
+    <meta
+      property="og:description"
+      content="Внедряем учет для СТО, шиномонтажа, автомойки и пунктов замены масла: заказы, склад, деньги, сотрудники и повторные визиты."
+    />
+    <meta property="og:url" content="https://edudev.kz/" />
+    <meta property="og:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta property="og:image:alt" content="Экран EduDev для учета автосервиса" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EduDev - CRM и учет для автосервиса" />
+    <meta
+      name="twitter:description"
+      content="CRM и учет для автосервиса в Казахстане: клиенты, автомобили, заказы, склад, оплаты и напоминания."
+    />
+    <meta name="twitter:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://edudev.kz/#organization",
+            "name": "EduDev",
+            "url": "https://edudev.kz/",
+            "logo": "https://edudev.kz/assets/hero-auto-crm.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+7-778-275-0874",
+              "contactType": "sales",
+              "areaServed": "KZ",
+              "availableLanguage": ["ru"]
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://edudev.kz/#website",
+            "url": "https://edudev.kz/",
+            "name": "EduDev",
+            "inLanguage": "ru-KZ",
+            "publisher": {
+              "@id": "https://edudev.kz/#organization"
+            }
+          },
+          {
+            "@type": "Service",
+            "@id": "https://edudev.kz/#service",
+            "name": "CRM и учет для автосервиса",
+            "provider": {
+              "@id": "https://edudev.kz/#organization"
+            },
+            "areaServed": {
+              "@type": "Country",
+              "name": "Kazakhstan"
+            },
+            "serviceType": "Внедрение CRM и управленческого учета",
+            "description": "Настройка учета клиентов, автомобилей, заказов, склада, оплат, сотрудников, отчетов и повторных визитов для СТО, шиномонтажа, автомоек и пунктов замены масла."
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://edudev.kz/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Это просто программа для клиентов?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Нет. В EduDev ведутся клиенты, автомобили, заказы, склад, деньги и повторные визиты."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Если у нас маленький сервис?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Для небольших точек есть простой старт: учет заказов, клиентов, оплат и отчетов без лишней сложности."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Сотрудники будут пользоваться?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Экраны настраиваются под реальный процесс, а запуск включает обучение владельца, администратора и мастеров."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=8" />
+    <link rel="stylesheet" href="styles.css?v=9" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -30,6 +126,7 @@
         <a href="#suite">Возможности</a>
         <a href="#solution">Разделы</a>
         <a href="#segments">Для кого</a>
+        <a href="#seo-pages">Ниши</a>
         <a href="#implementation">Внедрение</a>
         <a href="#pricing">Тарифы</a>
         <a class="nav-cta" href="#contact" data-callback-open>Разобрать учет</a>
@@ -52,6 +149,7 @@
           </p>
           <div class="hero-actions">
             <a class="button primary" href="#contact" data-callback-open>Получить разбор учета</a>
+            <button class="button accent" type="button" data-quiz-open>Пройти мини-аудит</button>
             <a class="button secondary" href="#suite">Посмотреть возможности</a>
           </div>
           <div class="proof-row" aria-label="Ключевые преимущества">
@@ -88,6 +186,46 @@
           <strong>Казахстан</strong>
           <span>локальное внедрение и обучение команды</span>
         </article>
+      </section>
+
+      <section class="conversion-lab" aria-label="Быстрый аудит учета">
+        <div class="conversion-copy">
+          <p class="eyebrow">Быстрый аудит за 40 секунд</p>
+          <h2>Узнайте, где сервис теряет клиентов, склад и деньги уже сейчас</h2>
+          <p>
+            Отметьте пару симптомов, и мы покажем, какие разделы стоит подключить
+            первыми. После заявки можно сразу получить план запуска под ваш формат.
+          </p>
+          <div class="conversion-actions">
+            <button class="button primary" type="button" data-quiz-open>Запустить аудит</button>
+            <a class="button whatsapp-inline" href="#" data-whatsapp-link>Написать в WhatsApp</a>
+          </div>
+        </div>
+        <div class="conversion-board" data-live-board>
+          <div class="board-pulse">
+            <span></span>
+            <strong>Сейчас смотрим</strong>
+          </div>
+          <div class="conversion-score">
+            <span>Потенциал возврата</span>
+            <strong data-live-score>+18%</strong>
+            <small>за счет напоминаний и повторных визитов</small>
+          </div>
+          <div class="conversion-tasks">
+            <article class="active">
+              <span>01</span>
+              <strong>Собрать клиентов и авто в базу</strong>
+            </article>
+            <article>
+              <span>02</span>
+              <strong>Связать заказ со складом и оплатой</strong>
+            </article>
+            <article>
+              <span>03</span>
+              <strong>Запустить напоминания в WhatsApp</strong>
+            </article>
+          </div>
+        </div>
       </section>
 
       <section class="suite-section" id="suite">
@@ -579,6 +717,14 @@
             <output data-total>от 330 000 ₸ разовая настройка</output>
           </form>
         </div>
+        <div class="urgency-banner">
+          <div>
+            <span>Оффер для запуска</span>
+            <strong>Разбор учета + карта внедрения бесплатно</strong>
+            <p>Покажем, какие экраны нужны именно вашему сервису, где можно начать проще и что лучше не внедрять на первом этапе.</p>
+          </div>
+          <button class="button accent" type="button" data-quiz-open>Получить карту внедрения</button>
+        </div>
       </section>
 
       <section class="trust-section">
@@ -647,6 +793,39 @@
               <p>После внедрения остаемся на связи: помогаем с вопросами, настройками и доработками.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section class="seo-pages-section" id="seo-pages">
+        <div class="section-head">
+          <p class="eyebrow">Решения по нишам</p>
+          <h2>Отдельные сценарии учета для разных форматов автобизнеса</h2>
+          <p>
+            У пункта замены масла, шиномонтажа, СТО и автомойки разные ежедневные процессы.
+            Поэтому EduDev описывает и настраивает учет не общими словами, а под конкретную работу команды.
+          </p>
+        </div>
+        <div class="seo-pages-grid">
+          <a href="/crm-dlya-punkta-zameny-masla/">
+            <span>ПЗМ</span>
+            <strong>CRM для пункта замены масла</strong>
+            <small>Масла, фильтры, склад, повторные визиты и история обслуживания.</small>
+          </a>
+          <a href="/crm-dlya-shinomontazha/">
+            <span>Шины</span>
+            <strong>CRM для шиномонтажа</strong>
+            <small>Запись, сезонная очередь, хранение шин, напоминания и оплаты.</small>
+          </a>
+          <a href="/crm-dlya-sto/">
+            <span>СТО</span>
+            <strong>CRM для СТО</strong>
+            <small>Заказ-наряды, диагностика, работы, запчасти, мастера и прибыль.</small>
+          </a>
+          <a href="/crm-dlya-avtomoiki/">
+            <span>Мойка</span>
+            <strong>CRM для автомойки</strong>
+            <small>Боксы, запись, услуги, загрузка смены и возврат клиентов.</small>
+          </a>
         </div>
       </section>
 
@@ -721,6 +900,18 @@
       <span>Звонок</span>
     </button>
 
+    <a class="whatsapp-float" href="#" data-whatsapp-link aria-label="Написать в WhatsApp">
+      <span>WhatsApp</span>
+    </a>
+
+    <div class="sticky-cta" data-sticky-cta>
+      <div>
+        <strong>Хотите понять, что подключать первым?</strong>
+        <span>Мини-аудит покажет стартовый набор разделов.</span>
+      </div>
+      <button class="button primary" type="button" data-quiz-open>Пройти аудит</button>
+    </div>
+
     <div class="callback-modal" data-callback-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="callback-title">
       <div class="callback-backdrop" data-callback-close></div>
       <div class="callback-panel" role="document">
@@ -759,6 +950,43 @@
       </div>
     </div>
 
-    <script src="script.js?v=3"></script>
+    <div class="callback-modal quiz-modal" data-quiz-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+      <div class="callback-backdrop" data-quiz-close></div>
+      <div class="callback-panel quiz-panel" role="document">
+        <button class="callback-close" type="button" data-quiz-close aria-label="Закрыть окно">×</button>
+        <p class="eyebrow">Мини-аудит</p>
+        <h2 id="quiz-title">Что сейчас мешает сервису расти?</h2>
+        <p>Выберите формат и главные боли. Мы отправим заявку с контекстом, чтобы разговор был сразу предметным.</p>
+        <form class="quiz-form" data-quiz-form>
+          <label>
+            Формат бизнеса
+            <select name="business">
+              <option>Пункт замены масла</option>
+              <option>Шиномонтаж</option>
+              <option>СТО</option>
+              <option>Автомойка</option>
+              <option>Смешанный сервис</option>
+            </select>
+          </label>
+          <div class="quiz-options" aria-label="Главные проблемы">
+            <label><input type="checkbox" name="pain" value="теряется склад" checked /> Теряется склад</label>
+            <label><input type="checkbox" name="pain" value="нет повторных визитов" checked /> Нет повторных визитов</label>
+            <label><input type="checkbox" name="pain" value="не видно прибыль" /> Не видно прибыль</label>
+            <label><input type="checkbox" name="pain" value="сотрудники работают по памяти" /> Команда работает по памяти</label>
+          </div>
+          <div class="quiz-result" data-quiz-result>
+            <span>Рекомендуемый старт</span>
+            <strong>Заказы + склад + напоминания</strong>
+            <small>Обычно это дает владельцу контроль и быстрый возврат клиентов.</small>
+          </div>
+          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
+          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
+          <button class="button primary wide" type="submit">Получить план запуска</button>
+          <p class="form-note wide" data-quiz-note aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js?v=4"></script>
   </body>
 </html>
