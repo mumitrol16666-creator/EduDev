@@ -124,7 +124,7 @@ if (leadForm && formButton && formNote) {
 }
 
 const revealItems = document.querySelectorAll(
-  "section:not(.hero), .suite-card, .module-card, .pricing-grid article, .trust-points article, .timeline article"
+  "section:not(.hero):not(.seo-hero), .suite-card, .module-card, .pricing-grid article, .trust-points article, .timeline article"
 );
 
 if ("IntersectionObserver" in window) {
@@ -342,6 +342,46 @@ if (liveScore) {
     liveScore.textContent = scores[scoreIndex];
   }, 2800);
 }
+
+document.querySelectorAll("[data-pzm-simulator]").forEach((simulator) => {
+  const visitsInput = simulator.querySelector("input[name='visits']");
+  const ticketInput = simulator.querySelector("input[name='ticket']");
+  const lostInput = simulator.querySelector("input[name='lost']");
+  const visitsOutput = simulator.querySelector("[data-pzm-visits]");
+  const ticketOutput = simulator.querySelector("[data-pzm-ticket]");
+  const lostOutput = simulator.querySelector("[data-pzm-lost]");
+  const returnOutput = simulator.querySelector("[data-pzm-return]");
+  const revenueOutput = simulator.querySelector("[data-pzm-revenue]");
+  const stockOutput = simulator.querySelector("[data-pzm-stock]");
+  const gauge = simulator.querySelector(".pzm-gauge");
+  const gaugeValue = simulator.querySelector("[data-pzm-gauge-value]");
+  const money = (value) => `${new Intl.NumberFormat("ru-RU").format(Math.round(value / 1000) * 1000)} ₸`;
+
+  const update = () => {
+    const visits = Number(visitsInput?.value || 0);
+    const ticket = Number(ticketInput?.value || 0);
+    const lost = Number(lostInput?.value || 0);
+    const returnedClients = Math.round(visits * (lost / 100) * 0.62);
+    const revenue = returnedClients * ticket;
+    const stockRisk = Math.max(6, Math.round(visits / 15));
+    const control = Math.min(92, Math.max(36, Math.round(100 - lost * 0.55 + visits / 22)));
+    const angle = Math.round(control * 3.6);
+
+    if (visitsOutput) visitsOutput.textContent = String(visits);
+    if (ticketOutput) ticketOutput.textContent = money(ticket);
+    if (lostOutput) lostOutput.textContent = `${lost}%`;
+    if (returnOutput) returnOutput.textContent = `${returnedClients} клиентов`;
+    if (revenueOutput) revenueOutput.textContent = money(revenue);
+    if (stockOutput) stockOutput.textContent = `${stockRisk} позиций`;
+    if (gauge) gauge.style.setProperty("--pzm-gauge-angle", `${angle}deg`);
+    if (gaugeValue) gaugeValue.textContent = `${control}%`;
+  };
+
+  simulator.querySelectorAll("input[type='range']").forEach((input) => {
+    input.addEventListener("input", update);
+  });
+  update();
+});
 
 if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
   window.setTimeout(() => {

@@ -14,11 +14,11 @@
     <meta property="og:title" content="CRM для пункта замены масла | EduDev" />
     <meta property="og:description" content="Учет масел, фильтров, клиентов, оплат и повторных визитов для ПЗМ." />
     <meta property="og:url" content="https://edudev.kz/crm-dlya-punkta-zameny-masla/" />
-    <meta property="og:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta property="og:image" content="https://edudev.kz/assets/pzm-crm-workflow.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="CRM для пункта замены масла | EduDev" />
     <meta name="twitter:description" content="Масла, фильтры, склад, история обслуживания и напоминания клиентам." />
-    <meta name="twitter:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta name="twitter:image" content="https://edudev.kz/assets/pzm-crm-workflow.jpg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -45,7 +45,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=9" />
+    <link rel="stylesheet" href="/styles.css?v=10" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -63,15 +63,67 @@
           <p class="hero-lead">EduDev помогает пункту замены масла видеть, что заливали клиенту, какой фильтр ставили, когда нужна следующая замена и сколько денег приносит каждая смена.</p>
           <div class="hero-actions"><a class="button primary" href="/#contact">Получить разбор учета ПЗМ</a><a class="button whatsapp-inline" href="#" data-whatsapp-link>Написать в WhatsApp</a></div>
         </div>
-        <aside class="seo-hero-card">
-          <strong>Что важно для ПЗМ</strong>
-          <ul>
-            <li>История масла, фильтров и пробега по автомобилю.</li>
-            <li>Склад с остатками, себестоимостью и продажной ценой.</li>
-            <li>Быстрое оформление визита и оплаты.</li>
-            <li>Напоминания клиентам о следующей замене.</li>
-          </ul>
+        <aside class="seo-photo-card pzm-photo-card">
+          <img src="/assets/pzm-crm-workflow.jpg" alt="Пункт замены масла с планшетом CRM, маслами и фильтрами" />
+          <div class="seo-photo-metric metric-one"><span>Повторный визит</span><strong>через 7 000 км</strong></div>
+          <div class="seo-photo-metric metric-two"><span>Склад</span><strong>12 фильтров мало</strong></div>
+          <div class="seo-photo-metric metric-three"><span>Смена</span><strong>+31% контроль</strong></div>
         </aside>
+      </section>
+      <section class="pzm-dynamic-section" aria-label="Интерактивный расчет для пункта замены масла">
+        <div class="section-head narrow">
+          <p class="eyebrow">Живая модель ПЗМ</p>
+          <h2>Посмотрите, что меняется, когда визит, склад и напоминание связаны</h2>
+          <p>Передвиньте показатели. Это не обещание прибыли, а простой способ увидеть, где обычно появляется управляемость.</p>
+        </div>
+        <div class="pzm-simulator" data-pzm-simulator>
+          <div class="pzm-controls">
+            <label>
+              Визитов в месяц
+              <input type="range" min="60" max="420" value="180" step="10" name="visits" />
+              <strong data-pzm-visits>180</strong>
+            </label>
+            <label>
+              Средний чек
+              <input type="range" min="9000" max="36000" value="17000" step="1000" name="ticket" />
+              <strong data-pzm-ticket>17 000 ₸</strong>
+            </label>
+            <label>
+              Клиентов без напоминаний
+              <input type="range" min="10" max="70" value="35" step="5" name="lost" />
+              <strong data-pzm-lost>35%</strong>
+            </label>
+          </div>
+          <div class="pzm-live-panel">
+            <div class="pzm-gauge" aria-hidden="true">
+              <span data-pzm-gauge></span>
+              <b data-pzm-gauge-value>65%</b>
+            </div>
+            <div class="pzm-results">
+              <article>
+                <span>Повторные визиты</span>
+                <strong data-pzm-return>38 клиентов</strong>
+                <small>кого CRM помогает не забыть</small>
+              </article>
+              <article>
+                <span>Потенциал выручки</span>
+                <strong data-pzm-revenue>646 000 ₸</strong>
+                <small>если вернуть часть клиентов</small>
+              </article>
+              <article>
+                <span>Складовой риск</span>
+                <strong data-pzm-stock>12 позиций</strong>
+                <small>масла и фильтры под контролем</small>
+              </article>
+            </div>
+          </div>
+          <div class="pzm-flow">
+            <article><span>01</span><strong>Авто и пробег</strong><small>Фиксируем, что обслуживали и когда нужна следующая замена.</small></article>
+            <article><span>02</span><strong>Масло и фильтр</strong><small>Списание со склада, себестоимость и маржа остаются в заказе.</small></article>
+            <article><span>03</span><strong>Оплата и смена</strong><small>Касса, скидка, мастер и дневной отчет видны владельцу.</small></article>
+            <article><span>04</span><strong>Напоминание</strong><small>Клиент возвращается по пробегу или сроку, а не по случайности.</small></article>
+          </div>
+        </div>
       </section>
       <section class="seo-content-section">
         <div class="seo-layout">
@@ -97,6 +149,6 @@
       </section>
     </main>
     <footer class="site-footer"><div><strong>EduDev</strong><p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p></div><a href="/">На главную</a></footer>
-    <script src="/script.js?v=4"></script>
+    <script src="/script.js?v=5"></script>
   </body>
 </html>
