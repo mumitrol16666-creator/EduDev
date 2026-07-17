@@ -17,12 +17,12 @@
     <meta property="og:title" content="CRM для СТО - заказ-наряды, склад и учет работ" />
     <meta property="og:description" content="Система учета для СТО: клиенты, авто, заказ-наряды, запчасти, мастера, оплаты и отчеты." />
     <meta property="og:url" content="https://edudev.kz/crm-dlya-sto/" />
-    <meta property="og:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta property="og:image" content="https://edudev.kz/assets/sto-crm-workflow.jpg" />
     <meta property="og:image:alt" content="Интерфейс EduDev для учета СТО" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="CRM для СТО | EduDev" />
     <meta name="twitter:description" content="Заказ-наряды, склад, мастера, оплаты и отчеты для автосервиса." />
-    <meta name="twitter:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta name="twitter:image" content="https://edudev.kz/assets/sto-crm-workflow.jpg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -49,7 +49,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=9" />
+    <link rel="stylesheet" href="/styles.css?v=11" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -81,15 +81,53 @@
             <a class="button whatsapp-inline" href="#" data-whatsapp-link>Написать в WhatsApp</a>
           </div>
         </div>
-        <aside class="seo-hero-card">
-          <strong>Что закрывает EduDev для СТО</strong>
-          <ul>
-            <li>Заказ-наряд по каждому автомобилю.</li>
-            <li>Работы, запчасти, скидки и оплата в одной карточке.</li>
-            <li>Контроль мастеров, кассы, склада и прибыли.</li>
-            <li>История обслуживания и повторные обращения клиентов.</li>
-          </ul>
+        <aside class="seo-photo-card sto-photo-card">
+          <img src="/assets/sto-crm-workflow.jpg" alt="СТО с автомобилем на подъемнике и CRM на планшете" />
+          <div class="seo-photo-metric metric-one"><span>Заказ-наряд</span><strong>18 в работе</strong></div>
+          <div class="seo-photo-metric metric-two"><span>Запчасти</span><strong>5 ожиданий</strong></div>
+          <div class="seo-photo-metric metric-three"><span>Мастера</span><strong>загрузка 84%</strong></div>
         </aside>
+      </section>
+
+      <section class="pzm-dynamic-section" aria-label="Интерактивный расчет для СТО">
+        <div class="section-head narrow">
+          <p class="eyebrow">Живая модель СТО</p>
+          <h2>Заказ-наряд становится понятным, когда работы, склад и оплата связаны</h2>
+          <p>Передвиньте показатели. Это демонстрационная модель, а не обещание доходности.</p>
+        </div>
+        <div class="pzm-simulator" data-niche-simulator="sto">
+          <div class="pzm-controls">
+            <label>
+              Заказ-нарядов в месяц
+              <input type="range" min="40" max="360" value="140" step="10" name="volume" />
+              <strong data-niche-volume>140</strong>
+            </label>
+            <label>
+              Средний чек
+              <input type="range" min="18000" max="120000" value="52000" step="2000" name="ticket" />
+              <strong data-niche-ticket>52 000 ₸</strong>
+            </label>
+            <label>
+              Риск потерь на запчастях
+              <input type="range" min="5" max="35" value="16" step="1" name="factor" />
+              <strong data-niche-factor>16%</strong>
+            </label>
+          </div>
+          <div class="pzm-live-panel">
+            <div class="pzm-gauge" aria-hidden="true"><span></span><b data-niche-gauge>76%</b></div>
+            <div class="pzm-results">
+              <article><span>Контроль запчастей</span><strong data-niche-main>10%</strong><small>списания и согласования в заказе</small></article>
+              <article><span>Деньги под контролем</span><strong data-niche-money>407 000 ₸</strong><small>зона, где часто теряется маржа</small></article>
+              <article><span>Работы в учете</span><strong data-niche-extra>252 работ</strong><small>мастера, этапы и статусы</small></article>
+            </div>
+          </div>
+          <div class="pzm-flow">
+            <article><span>01</span><strong>Приемка</strong><small>Авто, жалоба клиента и диагностика фиксируются в одной карточке.</small></article>
+            <article><span>02</span><strong>Согласование</strong><small>Работы и запчасти не теряются между чатами и звонками.</small></article>
+            <article><span>03</span><strong>Склад</strong><small>Запчасти списываются в заказ-наряд, а остатки видны владельцу.</small></article>
+            <article><span>04</span><strong>Отчет</strong><small>Выручка, мастера, долги и прибыль собираются без ручной сводки.</small></article>
+          </div>
+        </div>
       </section>
 
       <section class="seo-content-section">
@@ -164,6 +202,6 @@
       <div><strong>EduDev</strong><p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p></div>
       <a href="/">На главную</a>
     </footer>
-    <script src="/script.js?v=4"></script>
+    <script src="/script.js?v=6"></script>
   </body>
 </html>

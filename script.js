@@ -383,6 +383,70 @@ document.querySelectorAll("[data-pzm-simulator]").forEach((simulator) => {
   update();
 });
 
+document.querySelectorAll("[data-niche-simulator]").forEach((simulator) => {
+  const type = simulator.dataset.nicheSimulator;
+  const volumeInput = simulator.querySelector("input[name='volume']");
+  const ticketInput = simulator.querySelector("input[name='ticket']");
+  const factorInput = simulator.querySelector("input[name='factor']");
+  const volumeOutput = simulator.querySelector("[data-niche-volume]");
+  const ticketOutput = simulator.querySelector("[data-niche-ticket]");
+  const factorOutput = simulator.querySelector("[data-niche-factor]");
+  const mainOutput = simulator.querySelector("[data-niche-main]");
+  const moneyOutput = simulator.querySelector("[data-niche-money]");
+  const extraOutput = simulator.querySelector("[data-niche-extra]");
+  const gauge = simulator.querySelector(".pzm-gauge");
+  const gaugeValue = simulator.querySelector("[data-niche-gauge]");
+  const money = (value) => `${new Intl.NumberFormat("ru-RU").format(Math.round(value / 1000) * 1000)} ₸`;
+
+  const update = () => {
+    const volume = Number(volumeInput?.value || 0);
+    const ticket = Number(ticketInput?.value || 0);
+    const factor = Number(factorInput?.value || 0);
+    let control = 70;
+    let main = "";
+    let amount = 0;
+    let extra = "";
+
+    if (type === "tire") {
+      const returned = Math.round(volume * (factor / 100) * 0.55);
+      control = Math.min(96, Math.max(44, Math.round(48 + volume / 10 + factor * 0.38)));
+      main = `${returned} клиентов`;
+      amount = returned * ticket;
+      extra = `${Math.max(8, Math.round(volume / 18))} слотов`;
+    }
+
+    if (type === "sto") {
+      const partsControl = Math.round(factor * 0.62);
+      control = Math.min(97, Math.max(42, Math.round(64 + volume / 16 - factor * 0.3)));
+      main = `${partsControl}%`;
+      amount = volume * ticket * (factor / 100) * 0.35;
+      extra = `${Math.round(volume * 1.8)} работ`;
+    }
+
+    if (type === "wash") {
+      const monthlyCars = volume * 30;
+      control = Math.min(94, Math.max(38, Math.round(volume / 1.4 + factor * 0.25)));
+      main = `${new Intl.NumberFormat("ru-RU").format(monthlyCars)} авто`;
+      amount = monthlyCars * ticket;
+      extra = `${Math.max(2, Math.round(volume / 18))} бокса`;
+    }
+
+    if (volumeOutput) volumeOutput.textContent = String(volume);
+    if (ticketOutput) ticketOutput.textContent = money(ticket);
+    if (factorOutput) factorOutput.textContent = `${factor}%`;
+    if (mainOutput) mainOutput.textContent = main;
+    if (moneyOutput) moneyOutput.textContent = money(amount);
+    if (extraOutput) extraOutput.textContent = extra;
+    if (gauge) gauge.style.setProperty("--pzm-gauge-angle", `${Math.round(control * 3.6)}deg`);
+    if (gaugeValue) gaugeValue.textContent = `${control}%`;
+  };
+
+  simulator.querySelectorAll("input[type='range']").forEach((input) => {
+    input.addEventListener("input", update);
+  });
+  update();
+});
+
 if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
   window.setTimeout(() => {
     if (window.scrollY < 420 || callbackModal?.classList.contains("open")) return;

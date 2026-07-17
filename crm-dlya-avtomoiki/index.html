@@ -14,11 +14,11 @@
     <meta property="og:title" content="CRM для автомойки | EduDev" />
     <meta property="og:description" content="Запись, боксы, услуги, оплаты, сотрудники и повторные визиты для автомойки." />
     <meta property="og:url" content="https://edudev.kz/crm-dlya-avtomoiki/" />
-    <meta property="og:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta property="og:image" content="https://edudev.kz/assets/wash-crm-workflow.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="CRM для автомойки | EduDev" />
     <meta name="twitter:description" content="Система учета для автомойки: запись, боксы, услуги, загрузка и деньги." />
-    <meta name="twitter:image" content="https://edudev.kz/assets/hero-auto-crm.png" />
+    <meta name="twitter:image" content="https://edudev.kz/assets/wash-crm-workflow.jpg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -31,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=9" />
+    <link rel="stylesheet" href="/styles.css?v=11" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -47,7 +47,52 @@
           <p class="hero-lead">EduDev помогает автомойке видеть очередь, загрузку боксов, услуги, оплаты и повторные визиты, чтобы администратор работал быстрее, а владелец видел реальную выручку.</p>
           <div class="hero-actions"><a class="button primary" href="/#contact">Получить разбор автомойки</a><a class="button whatsapp-inline" href="#" data-whatsapp-link>Написать в WhatsApp</a></div>
         </div>
-        <aside class="seo-hero-card"><strong>Что закрывает CRM</strong><ul><li>Запись клиентов и автомобилей.</li><li>Загрузка боксов и смен.</li><li>Услуги, пакеты, допродажи и оплата.</li><li>Повторные визиты и отчеты владельца.</li></ul></aside>
+        <aside class="seo-photo-card wash-photo-card">
+          <img src="/assets/wash-crm-workflow.jpg" alt="Автомойка с CRM расписанием на планшете и автомобилем в боксе" />
+          <div class="seo-photo-metric metric-one"><span>Запись</span><strong>36 авто в день</strong></div>
+          <div class="seo-photo-metric metric-two"><span>Боксы</span><strong>загрузка 72%</strong></div>
+          <div class="seo-photo-metric metric-three"><span>Повторы</span><strong>+24 клиента</strong></div>
+        </aside>
+      </section>
+      <section class="pzm-dynamic-section" aria-label="Интерактивный расчет для автомойки">
+        <div class="section-head narrow">
+          <p class="eyebrow">Живая модель автомойки</p>
+          <h2>Загрузка боксов понятнее, когда запись, услуги и оплаты видны сразу</h2>
+          <p>Передвиньте показатели. Это демонстрационная модель, а не обещание доходности.</p>
+        </div>
+        <div class="pzm-simulator" data-niche-simulator="wash">
+          <div class="pzm-controls">
+            <label>
+              Авто в день
+              <input type="range" min="12" max="90" value="36" step="3" name="volume" />
+              <strong data-niche-volume>36</strong>
+            </label>
+            <label>
+              Средний чек
+              <input type="range" min="2500" max="18000" value="6500" step="500" name="ticket" />
+              <strong data-niche-ticket>6 500 ₸</strong>
+            </label>
+            <label>
+              Повторные клиенты
+              <input type="range" min="10" max="80" value="32" step="2" name="factor" />
+              <strong data-niche-factor>32%</strong>
+            </label>
+          </div>
+          <div class="pzm-live-panel">
+            <div class="pzm-gauge" aria-hidden="true"><span></span><b data-niche-gauge>68%</b></div>
+            <div class="pzm-results">
+              <article><span>Месячный поток</span><strong data-niche-main>1 080 авто</strong><small>запись и услуги в одном экране</small></article>
+              <article><span>Оборот в учете</span><strong data-niche-money>7 020 000 ₸</strong><small>касса, скидки и сотрудники</small></article>
+              <article><span>Нагрузка на боксы</span><strong data-niche-extra>2 бокса</strong><small>видно до очереди у ворот</small></article>
+            </div>
+          </div>
+          <div class="pzm-flow">
+            <article><span>01</span><strong>Запись</strong><small>Администратор видит время, бокс, услугу и автомобиль клиента.</small></article>
+            <article><span>02</span><strong>Услуги</strong><small>Пакеты, допродажи, скидки и оплата остаются в заказе.</small></article>
+            <article><span>03</span><strong>Смена</strong><small>Загрузка, сотрудники и выручка собираются без ручных таблиц.</small></article>
+            <article><span>04</span><strong>Повторы</strong><small>Постоянных клиентов проще вернуть через историю визитов.</small></article>
+          </div>
+        </div>
       </section>
       <section class="seo-content-section">
         <div class="seo-layout">
@@ -62,6 +107,6 @@
       <section class="seo-crosslinks"><div class="section-head"><p class="eyebrow">Другие решения</p><h2>Похожие страницы EduDev</h2></div><div class="seo-pages-grid"><a href="/crm-dlya-punkta-zameny-masla/"><span>ПЗМ</span><strong>CRM для пункта замены масла</strong><small>Масла, фильтры и повторные визиты.</small></a><a href="/crm-dlya-shinomontazha/"><span>Шины</span><strong>CRM для шиномонтажа</strong><small>Запись и хранение шин.</small></a><a href="/crm-dlya-sto/"><span>СТО</span><strong>CRM для СТО</strong><small>Заказ-наряды и запчасти.</small></a><a href="/"><span>Главная</span><strong>EduDev для автобизнеса</strong><small>Общая система учета.</small></a></div></section>
     </main>
     <footer class="site-footer"><div><strong>EduDev</strong><p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p></div><a href="/">На главную</a></footer>
-    <script src="/script.js?v=4"></script>
+    <script src="/script.js?v=6"></script>
   </body>
 </html>

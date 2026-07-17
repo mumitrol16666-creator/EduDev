@@ -778,7 +778,10 @@ section {
   width: 100%;
 }
 
-.pzm-photo-card::after {
+.pzm-photo-card::after,
+.tire-photo-card::after,
+.sto-photo-card::after,
+.wash-photo-card::after {
   background:
     linear-gradient(90deg, rgba(7, 11, 20, 0.72), transparent 42%),
     linear-gradient(0deg, rgba(7, 11, 20, 0.74), transparent 44%);
