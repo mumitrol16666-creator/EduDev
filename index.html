@@ -952,7 +952,7 @@
               <option>Смешанный сервис</option>
             </select>
           </label>
-          <label>Город <input type="text" name="city" placeholder="Ваш город" /></label>
+          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
           <label class="wide">Что хотите навести в порядок?
             <textarea name="message" rows="4" placeholder="Например: склад, заказы, записи, касса, сотрудники или повторные клиенты"></textarea>
           </label>
@@ -1018,6 +1018,7 @@
               <option>Смешанный сервис</option>
             </select>
           </label>
+          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
           <button class="button primary wide" type="submit">Жду звонка</button>
           <p class="form-note wide" data-callback-note aria-live="polite"></p>
         </form>
@@ -1055,12 +1056,13 @@
           </div>
           <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
           <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
+          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
           <button class="button primary wide" type="submit">Получить план запуска</button>
           <p class="form-note wide" data-quiz-note aria-live="polite"></p>
         </form>
       </div>
     </div>
 
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=11"></script>
   </body>
 </html>

@@ -2,7 +2,7 @@ import { get, patch, post } from '../api.js';
 import { labelValue } from '../labels.js';
 import { getState } from '../state.js';
 import { navigate, routeParam } from '../router.js';
-import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
+import { emptyState, escapeHtml, journeyBar, pageHeader, toast } from '../ui.js';
 
 let implementationDetailMeta = null;
 
@@ -197,6 +197,7 @@ function renderImplementationDetail(detail) {
       subtitle: 'Рабочая карточка запуска: данные клиента, настройка, чек-лист, задачи и переход в поддержку.',
       primaryAction: canImplement ? '<button class="primary-button" type="button" data-open-data-modal>Запросить данные</button>' : '',
     })}
+    ${journeyBar(project.status === 'support' || project.status === 'done' ? 5 : 4)}
     <div class="detail-layout">
       <section class="detail-main">
         <div class="panel detail-card">
@@ -205,7 +206,7 @@ function renderImplementationDetail(detail) {
               <p class="eyebrow">${escapeHtml(humanize(project.packageId))}</p>
               <h2>${escapeHtml(humanize(project.niche))}</h2>
             </div>
-            <span class="status-badge">${escapeHtml(humanize(project.status))}</span>
+            <span class="status-badge" data-status="${escapeHtml(project.status)}">${escapeHtml(humanize(project.status))}</span>
           </div>
           <div class="info-grid">
             <div class="info-item"><span>Клиент</span><strong>${escapeHtml(client?.name || 'Клиент не найден')}</strong></div>

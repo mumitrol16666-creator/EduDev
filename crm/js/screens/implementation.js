@@ -53,7 +53,7 @@ function projectRow(project, client) {
         <strong>${escapeHtml(humanize(project.niche))}</strong>
         <small>${escapeHtml(humanize(project.packageId))}</small>
       </td>
-      <td><span class="status-badge">${escapeHtml(humanize(project.status))}</span></td>
+      <td><span class="status-badge" data-status="${escapeHtml(project.status)}">${escapeHtml(humanize(project.status))}</span></td>
       <td>
         <strong>${itemProgress.percent}%</strong>
         <small>${itemProgress.done}/${itemProgress.total} пунктов</small>

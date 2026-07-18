@@ -74,7 +74,7 @@ function taskRow(task) {
         <strong>${escapeHtml(task.title)}</strong>
         <small>${escapeHtml(humanize(task.type))} · ${escapeHtml(linkedEntity(task))}</small>
       </td>
-      <td><span class="status-badge">${escapeHtml(humanize(task.status || 'open'))}</span></td>
+      <td><span class="status-badge" data-status="${escapeHtml(task.status || 'open')}">${escapeHtml(humanize(task.status || 'open'))}</span></td>
       <td>
         <strong class="${overdue ? 'danger-text' : ''}">${escapeHtml(formatDate(task.dueAt))}</strong>
         <small>${overdue ? 'просрочено' : escapeHtml(humanize(task.priority || 'medium'))}</small>

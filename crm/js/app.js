@@ -1,6 +1,7 @@
 import { hydrateSession, logout } from './auth.js';
+import { patch } from './api.js';
 import { labelValue } from './labels.js';
-import { getState, setToken } from './state.js';
+import { getState, setNotifications, setToken } from './state.js';
 import { firstAllowedRoute, navigate, registerScreen, renderRoute, routeBase } from './router.js';
 import { mountAuditScreen, renderAuditScreen } from './screens/audit.js';
 import { mountAnalyticsScreen, renderAnalyticsScreen } from './screens/analytics.js';
@@ -85,6 +86,14 @@ function renderShell() {
             </button>
           `).join('')}
         </nav>
+        <label class="mobile-nav">
+          <span>Раздел CRM</span>
+          <select data-mobile-nav>
+            ${nav.map((item) => `
+              <option value="${escapeHtml(item.id)}" ${item.id === routeBase(activeRoute) ? 'selected' : ''}>${escapeHtml(menuLabel(item))}</option>
+            `).join('')}
+          </select>
+        </label>
         <div class="sidebar-footer">
           <div class="user-chip">
             <strong>${escapeHtml(state.user?.name || 'Пользователь')}</strong>
@@ -100,26 +109,43 @@ function renderShell() {
             <span>Меню и доступы настроены по вашей роли</span>
           </div>
           <div class="topbar-actions">
-            <button class="notification-button" type="button" aria-label="Уведомления">
-              !
+            <button class="notification-button" type="button" aria-label="Уведомления" aria-expanded="false" data-notifications-toggle>
+              <span aria-hidden="true">Уведомления</span>
               ${state.notifications.unreadCount ? `<span class="notification-count">${state.notifications.unreadCount}</span>` : ''}
             </button>
           </div>
         </header>
         <section class="screen-host" data-screen-host></section>
       </main>
+      <div class="notification-backdrop" data-notifications-backdrop></div>
+      <aside class="notification-drawer" aria-label="Уведомления" aria-hidden="true" data-notifications-drawer>
+        <div class="notification-drawer-head">
+          <div>
+            <strong>Уведомления</strong>
+            <span>${state.notifications.unreadCount ? `Новых: ${state.notifications.unreadCount}` : 'Всё прочитано'}</span>
+          </div>
+          <button class="secondary-button compact-button" type="button" data-notifications-close>Закрыть</button>
+        </div>
+        <div class="notification-list">
+          ${renderNotifications(state.notifications.notifications)}
+        </div>
+        ${state.notifications.unreadCount ? '<button class="secondary-button notification-read-all" type="button" data-notifications-read-all>Прочитать все</button>' : ''}
+      </aside>
     </div>
   `;
 
   app.querySelectorAll('[data-nav-id]').forEach((button) => {
     button.addEventListener('click', () => navigate(button.dataset.navId));
   });
+  app.querySelector('[data-mobile-nav]')?.addEventListener('change', (event) => navigate(event.currentTarget.value));
 
   app.querySelector('[data-logout]').addEventListener('click', async () => {
     await logout();
     window.location.hash = '';
     renderLogin(app, renderShellAfterLogin);
   });
+
+  mountNotifications();
 
   const host = app.querySelector('[data-screen-host]');
   if (host) {
@@ -128,6 +154,96 @@ function renderShell() {
   }
 
   renderCurrentRoute();
+}
+
+function renderNotifications(notifications) {
+  if (!notifications.length) {
+    return '<div class="notification-empty"><strong>Пока тихо</strong><span>Новые назначения и важные события появятся здесь.</span></div>';
+  }
+  return notifications.map((item) => `
+    <button class="notification-item ${item.status === 'unread' ? 'unread' : ''}" type="button"
+      data-notification-id="${escapeHtml(item.id)}"
+      data-entity-type="${escapeHtml(item.entityType || '')}"
+      data-entity-id="${escapeHtml(item.entityId || '')}">
+      <strong>${escapeHtml(item.title || 'Уведомление')}</strong>
+      ${item.body ? `<span>${escapeHtml(item.body)}</span>` : ''}
+      <small>${escapeHtml(formatNotificationDate(item.createdAt))}</small>
+    </button>
+  `).join('');
+}
+
+function formatNotificationDate(value) {
+  if (!value) return '';
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value));
+}
+
+function notificationRoute(entityType, entityId) {
+  if (!entityId) return '';
+  return {
+    lead: `lead-detail/${entityId}`,
+    deal: `deal-detail/${entityId}`,
+    client: `client-detail/${entityId}`,
+    implementation_project: `implementation-detail/${entityId}`,
+    support_ticket: 'support',
+    task: 'tasks',
+  }[entityType] || '';
+}
+
+function mountNotifications() {
+  const drawer = app.querySelector('[data-notifications-drawer]');
+  const backdrop = app.querySelector('[data-notifications-backdrop]');
+  const toggle = app.querySelector('[data-notifications-toggle]');
+  const setOpen = (open) => {
+    drawer?.classList.toggle('open', open);
+    backdrop?.classList.toggle('open', open);
+    drawer?.setAttribute('aria-hidden', String(!open));
+    toggle?.setAttribute('aria-expanded', String(open));
+  };
+
+  toggle?.addEventListener('click', () => setOpen(!drawer?.classList.contains('open')));
+  backdrop?.addEventListener('click', () => setOpen(false));
+  app.querySelector('[data-notifications-close]')?.addEventListener('click', () => setOpen(false));
+
+  app.querySelectorAll('[data-notification-id]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const state = getState();
+      const item = state.notifications.notifications.find((notification) => notification.id === button.dataset.notificationId);
+      if (item?.status === 'unread') {
+        try {
+          await patch(`/api/notifications/${item.id}/read`);
+          item.status = 'read';
+          setNotifications({
+            notifications: state.notifications.notifications,
+            unreadCount: Math.max(0, state.notifications.unreadCount - 1),
+          });
+        } catch (error) {
+          toast(error.message || 'Не удалось прочитать уведомление', 'error');
+        }
+      }
+      const route = notificationRoute(button.dataset.entityType, button.dataset.entityId);
+      if (route) navigate(route);
+      renderShell();
+    });
+  });
+
+  app.querySelector('[data-notifications-read-all]')?.addEventListener('click', async () => {
+    try {
+      await patch('/api/notifications/read-all');
+      const state = getState();
+      setNotifications({
+        notifications: state.notifications.notifications.map((item) => ({ ...item, status: 'read' })),
+        unreadCount: 0,
+      });
+      renderShell();
+    } catch (error) {
+      toast(error.message || 'Не удалось прочитать уведомления', 'error');
+    }
+  });
 }
 
 function renderCurrentRoute() {

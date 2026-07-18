@@ -17,7 +17,11 @@
   background: var(--panel);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  max-height: calc(100svh - 44px);
   max-width: 520px;
+  overflow: hidden;
   width: 100%;
 }
 
@@ -43,6 +47,7 @@
 .modal-body {
   color: var(--muted);
   line-height: 1.6;
+  overflow-y: auto;
 }
 
 .modal-footer {

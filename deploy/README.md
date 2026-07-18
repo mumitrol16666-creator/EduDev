@@ -41,7 +41,7 @@ CRM_STORE=prisma
 NODE_ENV=production
 HOST=127.0.0.1
 PORT=4100
-CORS_ORIGIN="https://crm.edudev.kz"
+CORS_ORIGIN="https://crm.edudev.kz,https://edudev.kz,https://www.edudev.kz"
 ```
 
 `HOST=127.0.0.1` is recommended because Nginx is the public entrypoint.

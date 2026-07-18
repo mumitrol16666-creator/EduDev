@@ -12,6 +12,7 @@
     "ai:dispatch-reminders": "node src/modules/ai-consultant/dispatch-reminders.js",
     "ai:scaffold-project": "node src/modules/ai-consultant/scaffold-project.js",
     "smoke": "node test/smoke.js",
+    "test:crm-integrity": "node test/crm-integrity.js",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:migrate:deploy": "prisma migrate deploy",

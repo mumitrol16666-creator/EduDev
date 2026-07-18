@@ -113,7 +113,7 @@ function ticketRow(ticket) {
         <small>${escapeHtml(ticket.projectId ? 'привязано к внедрению' : 'без внедрения')}</small>
       </td>
       <td>
-        <span class="status-badge">${escapeHtml(humanize(ticket.status))}</span>
+        <span class="status-badge" data-status="${escapeHtml(ticket.status)}">${escapeHtml(humanize(ticket.status))}</span>
         <small>${escapeHtml(formatDate(ticket.dueAt))}</small>
       </td>
       <td>${escapeHtml(userName(ticket.responsibleId))}</td>

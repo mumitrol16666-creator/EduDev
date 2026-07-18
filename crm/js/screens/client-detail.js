@@ -2,7 +2,7 @@ import { get, patch, post } from '../api.js';
 import { labelValue } from '../labels.js';
 import { getState } from '../state.js';
 import { navigate, routeParam } from '../router.js';
-import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
+import { emptyState, escapeHtml, journeyBar, pageHeader, toast } from '../ui.js';
 
 let clientMeta = null;
 
@@ -308,6 +308,7 @@ function renderClientDetail(detail, timeline) {
       subtitle: 'Карточка клиента: история, внедрение, обращения, подписки, долги и задачи в одном месте.',
       primaryAction: canSupport ? '<button class="primary-button" type="button" data-open-support-modal>Создать обращение</button>' : '',
     })}
+    ${journeyBar(implementationProjects.length ? 4 : 3)}
     <div class="detail-layout">
       <section class="detail-main">
         <div class="panel detail-card">
@@ -316,7 +317,7 @@ function renderClientDetail(detail, timeline) {
               <p class="eyebrow">${escapeHtml(directionLabel(client.direction))}</p>
               <h2>${escapeHtml(humanize(client.niche))}</h2>
             </div>
-            <span class="status-badge">${escapeHtml(humanize(client.subscriptionStatus))}</span>
+            <span class="status-badge" data-status="${escapeHtml(client.subscriptionStatus)}">${escapeHtml(humanize(client.subscriptionStatus))}</span>
           </div>
           <div class="info-grid">
             <div class="info-item"><span>Город</span><strong>${escapeHtml(client.city || lead?.city || 'не указан')}</strong></div>

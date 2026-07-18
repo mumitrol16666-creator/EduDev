@@ -1,7 +1,7 @@
 import { del, get, post } from '../api.js';
 import { labelValue } from '../labels.js';
 import { navigate, routeParam } from '../router.js';
-import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
+import { emptyState, escapeHtml, journeyBar, pageHeader, toast } from '../ui.js';
 
 function humanize(value) {
   return labelValue(value);
@@ -86,6 +86,7 @@ function renderLeadDetail(detail) {
         ? `<button class="secondary-button" type="button" data-open-deal="${escapeHtml(deals[0]?.id || '')}">Открыть сделку</button>`
         : '<button class="primary-button" type="button" data-start-diagnostics>Начать диагностику</button>',
     })}
+    ${journeyBar(hasDiagnostics ? 1 : 0)}
     <div class="detail-layout">
       <section class="detail-main">
         <div class="panel detail-card">
@@ -94,7 +95,7 @@ function renderLeadDetail(detail) {
               <p class="eyebrow">${escapeHtml(lead.direction === 'edutech' ? 'EduTech' : 'AutoTech')}</p>
               <h2>${escapeHtml(humanize(lead.niche))}</h2>
             </div>
-            <span class="status-badge">${escapeHtml(humanize(lead.status))}</span>
+            <span class="status-badge" data-status="${escapeHtml(lead.status)}">${escapeHtml(humanize(lead.status))}</span>
           </div>
           <div class="info-grid">
             ${renderInfoItem('Город', lead.city)}

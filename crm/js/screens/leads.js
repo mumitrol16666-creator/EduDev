@@ -96,7 +96,7 @@ function leadRow(lead) {
         <small>${escapeHtml(lead.whatsapp || lead.phone || '')}</small>
       </td>
       <td>
-        <span class="status-badge">${escapeHtml(humanize(lead.status))}</span>
+        <span class="status-badge" data-status="${escapeHtml(lead.status)}">${escapeHtml(humanize(lead.status))}</span>
       </td>
       <td>
         <span>${escapeHtml(lead.pain || 'не указано')}</span>

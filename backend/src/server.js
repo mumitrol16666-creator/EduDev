@@ -62,7 +62,7 @@ const server = http.createServer(async (req, res) => {
 
     if (method === 'POST' && url.pathname === '/api/public/leads') {
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, lead: await crm.createLead(publicLeadPayload(body)) });
+      return sendJson(res, 201, { success: true, lead: await crm.createLead(publicLeadPayload(body), 'website') });
     }
 
     const user = await auth.authenticate(req);
@@ -80,7 +80,7 @@ const server = http.createServer(async (req, res) => {
     if (method === 'GET' && url.pathname === '/api/workbench/today') {
       auth.require(user, PERMISSIONS.CRM_READ);
       const requestedResponsibleId = url.searchParams.get('responsibleId') || undefined;
-      const responsibleId = user.role === ROLES.MANAGER ? user.id : requestedResponsibleId;
+      const responsibleId = user.role === ROLES.MANAGER ? user.id : requestedResponsibleId || 'all';
       return sendJson(res, 200, {
         success: true,
         workbench: await crm.managerToday(responsibleId),
@@ -208,55 +208,63 @@ const server = http.createServer(async (req, res) => {
     if (method === 'POST' && url.pathname === '/api/leads') {
       auth.require(user, PERMISSIONS.LEAD_WRITE);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, lead: await crm.createLead(body) });
+      return sendJson(res, 201, { success: true, lead: await crm.createLead(body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'leads' && parts[2]) {
       auth.require(user, PERMISSIONS.LEAD_WRITE);
+      await crm.assertRecordAccess('leads', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, lead: await crm.updateLead(parts[2], body) });
+      return sendJson(res, 200, { success: true, lead: await crm.updateLead(parts[2], body, user.id) });
     }
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'leads' && parts[3] === 'diagnostics') {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('leads', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, ...(await crm.addDiagnostics(parts[2], body)) });
+      return sendJson(res, 201, { success: true, ...(await crm.addDiagnostics(parts[2], body, user.id)) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'stage') {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, deal: await crm.advanceDeal(parts[2], body) });
+      return sendJson(res, 200, { success: true, deal: await crm.advanceDeal(parts[2], body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'amount') {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, deal: await crm.updateDealAmount(parts[2], body) });
+      return sendJson(res, 200, { success: true, deal: await crm.updateDealAmount(parts[2], body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'responsibles') {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, ...(await crm.updateDealResponsibles(parts[2], body)) });
+      return sendJson(res, 200, { success: true, ...(await crm.updateDealResponsibles(parts[2], body, user.id)) });
     }
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'proposals') {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, proposal: await crm.createProposal(parts[2], body) });
+      return sendJson(res, 201, { success: true, proposal: await crm.createProposal(parts[2], body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'proposals' && parts[4]) {
       auth.require(user, PERMISSIONS.DEAL_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, proposal: await crm.updateProposal(parts[2], parts[4], body) });
+      return sendJson(res, 200, { success: true, proposal: await crm.updateProposal(parts[2], parts[4], body, user.id) });
     }
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'payments') {
       auth.require(user, PERMISSIONS.PAYMENT_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, ...(await crm.recordPayment(parts[2], body)) });
+      return sendJson(res, 201, { success: true, ...(await crm.recordPayment(parts[2], body, user.id)) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'payments' && parts[4]) {
@@ -267,20 +275,23 @@ const server = http.createServer(async (req, res) => {
 
     if (method === 'POST' && parts[0] === 'api' && parts[1] === 'deals' && parts[3] === 'prepayments') {
       auth.require(user, PERMISSIONS.PAYMENT_WRITE);
+      await crm.assertRecordAccess('deals', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, payment: await crm.recordPrepayment(parts[2], body) });
+      return sendJson(res, 201, { success: true, payment: await crm.recordPrepayment(parts[2], body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'tasks' && parts[3] === 'complete') {
       auth.require(user, PERMISSIONS.CRM_READ);
+      await crm.assertRecordAccess('tasks', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, task: await crm.completeTask(parts[2], body) });
+      return sendJson(res, 200, { success: true, task: await crm.completeTask(parts[2], body, user.id) });
     }
 
     if (method === 'PATCH' && parts[0] === 'api' && parts[1] === 'tasks' && parts[3] === 'reschedule') {
       auth.require(user, PERMISSIONS.CRM_READ);
+      await crm.assertRecordAccess('tasks', parts[2], user);
       const body = await readJson(req);
-      return sendJson(res, 200, { success: true, task: await crm.rescheduleTask(parts[2], body) });
+      return sendJson(res, 200, { success: true, task: await crm.rescheduleTask(parts[2], body, user.id) });
     }
 
     if (method === 'POST' && url.pathname === '/api/tasks') {
@@ -292,13 +303,17 @@ const server = http.createServer(async (req, res) => {
     if (method === 'POST' && url.pathname === '/api/notes') {
       auth.require(user, PERMISSIONS.CRM_READ);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, note: await crm.addNote(body) });
+      await assertEntityAccess(crm, body.entityType, body.entityId, user);
+      return sendJson(res, 201, { success: true, note: await crm.addNote(body, user.id) });
     }
 
     if (method === 'POST' && url.pathname === '/api/communications') {
       auth.require(user, PERMISSIONS.CRM_READ);
       const body = await readJson(req);
-      return sendJson(res, 201, { success: true, communication: await crm.addCommunication(body) });
+      const entityType = body.dealId ? 'deal' : 'lead';
+      const entityId = body.dealId || body.leadId;
+      await assertEntityAccess(crm, entityType, entityId, user);
+      return sendJson(res, 201, { success: true, communication: await crm.addCommunication(body, user.id) });
     }
 
     if (method === 'DELETE' && parts[0] === 'api' && parts[1] === 'communications' && parts[2]) {
@@ -398,6 +413,23 @@ function collectionFromPath(pathPart) {
     'reference-items': 'referenceItems',
     'audit-logs': 'auditLogs',
   }[pathPart] || null;
+}
+
+async function assertEntityAccess(service, entityType, entityId, user) {
+  const collection = {
+    lead: 'leads',
+    deal: 'deals',
+    client: 'clients',
+    task: 'tasks',
+    implementation_project: 'implementationProjects',
+    support_ticket: 'supportTickets',
+  }[entityType];
+  if (!collection || !entityId) {
+    const error = new Error('Unknown or missing related entity');
+    error.status = 400;
+    throw error;
+  }
+  await service.assertRecordAccess(collection, entityId, user);
 }
 
 if (require.main === module) {

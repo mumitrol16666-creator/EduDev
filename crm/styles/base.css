@@ -134,6 +134,44 @@ a {
   padding: 5px 9px;
 }
 
+.status-badge[data-status="new"],
+.status-badge[data-status="open"],
+.status-badge[data-status="in_progress"],
+.status-badge[data-status="diagnostics"],
+.status-badge[data-status="presentation"],
+.status-badge[data-status="configuration"],
+.status-badge[data-status="testing"] {
+  background: #edf4ff;
+  border-color: #b8d0ed;
+  color: var(--blue);
+}
+
+.status-badge[data-status="contact_check"],
+.status-badge[data-status="first_touch"],
+.status-badge[data-status="meeting"],
+.status-badge[data-status="proposal"],
+.status-badge[data-status="follow_up"],
+.status-badge[data-status="prepayment"],
+.status-badge[data-status="payment"],
+.status-badge[data-status="waiting_client"],
+.status-badge[data-status="waiting_start"],
+.status-badge[data-status="data_collection"],
+.status-badge[data-status="training"],
+.status-badge[data-status="due_soon"] {
+  background: #fff8e8;
+  border-color: #ead4a2;
+  color: #93600a;
+}
+
+.status-badge[data-status="lost"],
+.status-badge[data-status="overdue"],
+.status-badge[data-status="cancelled"],
+.status-badge[data-status="paused"] {
+  background: #fff1f1;
+  border-color: #e8bcbc;
+  color: var(--red);
+}
+
 .toast-host {
   bottom: 18px;
   display: grid;

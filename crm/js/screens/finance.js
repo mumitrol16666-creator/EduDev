@@ -103,7 +103,7 @@ function subscriptionRow(subscription) {
         <strong>${escapeHtml(formatMoney(subscription.amount))}</strong>
         <small>${escapeHtml(subscription.renewalPeriodMonths || 1)} мес.</small>
       </td>
-      <td><span class="status-badge">${escapeHtml(humanize(subscription.status))}</span></td>
+      <td><span class="status-badge" data-status="${escapeHtml(subscription.status)}">${escapeHtml(humanize(subscription.status))}</span></td>
       <td>
         <strong>${escapeHtml(formatDate(subscription.endsAt))}</strong>
         <small>старт ${escapeHtml(formatDate(subscription.startsAt))}</small>
@@ -127,7 +127,7 @@ function debtRow(debt) {
         <small>${escapeHtml(debt.reason)}</small>
       </td>
       <td><strong>${escapeHtml(formatMoney(debt.amount))}</strong></td>
-      <td><span class="status-badge">${escapeHtml(humanize(debt.status))}</span></td>
+      <td><span class="status-badge" data-status="${escapeHtml(debt.status)}">${escapeHtml(humanize(debt.status))}</span></td>
       <td>
         <strong class="${overdue ? 'danger-text' : ''}">${escapeHtml(formatDate(debt.dueAt))}</strong>
         <small>${debt.paidAt ? `оплачено ${escapeHtml(formatDate(debt.paidAt))}` : 'ожидает оплаты'}</small>

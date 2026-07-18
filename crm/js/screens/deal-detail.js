@@ -1,7 +1,8 @@
 import { get, patch, post } from '../api.js';
 import { labelValue } from '../labels.js';
 import { navigate, routeParam } from '../router.js';
-import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
+import { getState } from '../state.js';
+import { emptyState, escapeHtml, journeyBar, pageHeader, toast } from '../ui.js';
 
 let dealMeta = null;
 let dealUsers = [];
@@ -39,7 +40,7 @@ function renderOptions(items, selected = '') {
   `).join('');
 }
 
-function primaryAction(detail) {
+function primaryAction(detail, canFinance) {
   const { deal, client, proposals, payments } = detail;
   const paidAmount = payments.reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
   const balance = Math.max(Number(deal.amount || 0) - paidAmount, 0);
@@ -47,6 +48,7 @@ function primaryAction(detail) {
     return `<button class="secondary-button" type="button" data-open-client="${escapeHtml(client.id)}">Открыть клиента</button>`;
   }
   if (proposals.length) {
+    if (!canFinance) return '';
     return payments.length && balance > 0
       ? '<button class="primary-button" type="submit" form="paymentForm">Записать финальную оплату</button>'
       : balance > 0
@@ -150,6 +152,7 @@ function roleUsers(roles) {
 }
 
 function renderDealDetail(detail) {
+  const canFinance = ['owner', 'supervisor', 'sales_lead'].includes(getState().user?.role);
   const { deal, lead, client, diagnostics, proposals, payments, implementationProject, tasks } = detail;
   const canCreateProposal = !proposals.length && !payments.length && !deal.clientId;
   const latestProposal = proposals[0];
@@ -159,8 +162,8 @@ function renderDealDetail(detail) {
     || (!implementationProject && payments[0] ? payments[0] : null);
   const finalPayments = prepayment ? payments.filter((payment) => payment.id !== prepayment.id) : payments;
   const hasPrepayment = Boolean(prepayment);
-  const canRecordPrepayment = proposals.length && !hasPrepayment && !implementationProject;
-  const canRecordPayment = proposals.length && !implementationProject;
+  const canRecordPrepayment = canFinance && proposals.length && !hasPrepayment && !implementationProject;
+  const canRecordPayment = canFinance && proposals.length && !implementationProject;
   const managerUsers = roleUsers(['manager', 'sales_lead', 'supervisor', 'owner']);
   const implementationUsers = roleUsers(['developer', 'implementation', 'supervisor', 'owner']);
   const currentImplementationId = implementationProject?.responsibleId || deal.implementationResponsibleId || '';
@@ -171,8 +174,9 @@ function renderDealDetail(detail) {
     ${pageHeader({
       title: lead?.name || humanize(deal.niche),
       subtitle: 'Сделка после диагностики: этап, сумма, предложение, оплата и передача во внедрение.',
-      primaryAction: primaryAction(detail),
+      primaryAction: primaryAction(detail, canFinance),
     })}
+    ${journeyBar(implementationProject ? 4 : payments.length ? 3 : 2)}
     <div class="detail-layout">
       <section class="detail-main">
         <div class="panel detail-card">
@@ -181,7 +185,7 @@ function renderDealDetail(detail) {
               <p class="eyebrow">${escapeHtml(deal.direction === 'edutech' ? 'EduTech' : 'AutoTech')}</p>
               <h2>${escapeHtml(humanize(deal.niche))}</h2>
             </div>
-            <span class="status-badge">${escapeHtml(humanize(deal.stage))}</span>
+            <span class="status-badge" data-status="${escapeHtml(deal.stage)}">${escapeHtml(humanize(deal.stage))}</span>
           </div>
           <div class="info-grid">
             <div class="info-item"><span>Сумма</span><strong>${escapeHtml(formatMoney(deal.amount))}</strong></div>
@@ -331,7 +335,7 @@ function renderDealDetail(detail) {
             </form>
           ` : `
             <div class="detail-list">${hasPrepayment ? renderPayment(prepayment) : emptyState('Предоплаты нет', 'Предоплату записываем после согласования предложения.')}</div>
-            ${hasPrepayment ? paymentEditForm(prepayment, 'prepaymentEditForm', 'Изменить предоплату') : ''}
+            ${hasPrepayment && canFinance ? paymentEditForm(prepayment, 'prepaymentEditForm', 'Изменить предоплату') : ''}
           `}
         </div>
 
@@ -364,7 +368,7 @@ function renderDealDetail(detail) {
             </form>
           ` : `
             <div class="detail-list">${finalPayments.length ? finalPayments.map(renderPayment).join('') : emptyState('Финальной оплаты нет', 'Финальную оплату записываем после предоплаты или согласования.')}</div>
-            ${finalPayments.length ? finalPayments.map((payment, index) => paymentEditForm(payment, `paymentEditForm${index}`, index === 0 ? 'Изменить финальную оплату' : `Изменить финальную оплату ${index + 1}`)).join('') : ''}
+            ${finalPayments.length && canFinance ? finalPayments.map((payment, index) => paymentEditForm(payment, `paymentEditForm${index}`, index === 0 ? 'Изменить финальную оплату' : `Изменить финальную оплату ${index + 1}`)).join('') : ''}
           `}
         </div>
       </section>

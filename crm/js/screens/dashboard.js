@@ -5,6 +5,7 @@ import { getState } from '../state.js';
 import { emptyState, escapeHtml, pageHeader, toast } from '../ui.js';
 
 const analyticsRoles = new Set(['owner', 'supervisor', 'sales_lead']);
+let selectedResponsibleId = 'all';
 
 function formatDate(value) {
   if (!value) return 'Без срока';
@@ -48,7 +49,7 @@ function renderTaskItem(task, isOverdue = false) {
 
 function renderLeadItem(lead) {
   return `
-    <button class="work-item" type="button" data-route="leads" data-entity-id="${escapeHtml(lead.id)}">
+    <button class="work-item" type="button" data-route="lead-detail/${escapeHtml(lead.id)}">
       <span>
         <strong>${escapeHtml(lead.name)}</strong>
         <small>${escapeHtml(lead.city || 'город не указан')} · ${escapeHtml(labelValue(lead.niche || 'профиль не указан'))}</small>
@@ -60,7 +61,7 @@ function renderLeadItem(lead) {
 
 function renderDealItem(deal) {
   return `
-    <button class="work-item" type="button" data-route="deals" data-entity-id="${escapeHtml(deal.id)}">
+    <button class="work-item" type="button" data-route="deal-detail/${escapeHtml(deal.id)}">
       <span>
         <strong>${escapeHtml(labelValue(deal.niche || 'Сделка'))}</strong>
         <small>${escapeHtml(labelValue(deal.stage || ''))} · ${escapeHtml(labelValue(deal.packageId || ''))}</small>
@@ -130,17 +131,34 @@ export async function mountDashboardScreen() {
 
   try {
     const user = getState().user;
-    const [workbenchResult, analyticsResult] = await Promise.all([
-      get('/api/workbench/today'),
+    const canSelectResponsible = analyticsRoles.has(user?.role);
+    const [workbenchResult, analyticsResult, usersResult] = await Promise.all([
+      get(`/api/workbench/today${selectedResponsibleId ? `?responsibleId=${encodeURIComponent(selectedResponsibleId)}` : ''}`),
       analyticsRoles.has(user?.role)
         ? get('/api/analytics/summary').catch(() => null)
         : Promise.resolve(null),
+      canSelectResponsible
+        ? get('/api/team/assignment-options').catch(() => ({ users: [] }))
+        : Promise.resolve({ users: [] }),
     ]);
 
     const workbench = workbenchResult.workbench;
     const analytics = analyticsResult?.analytics || null;
 
     root.innerHTML = `
+      ${canSelectResponsible ? `
+        <div class="dashboard-toolbar">
+          <label>
+            <span>Рабочий стол сотрудника</span>
+            <select data-dashboard-responsible>
+              <option value="all" ${selectedResponsibleId === 'all' ? 'selected' : ''}>Команда целиком</option>
+              ${(usersResult.users || []).filter((item) => ['manager', 'sales_lead'].includes(item.role)).map((item) => `
+                <option value="${escapeHtml(item.id)}" ${item.id === selectedResponsibleId ? 'selected' : ''}>${escapeHtml(item.name)}</option>
+              `).join('')}
+            </select>
+          </label>
+        </div>
+      ` : ''}
       <div class="dashboard-counters">
         ${renderCounter('Сегодня', workbench.counters.todayTasks)}
         ${renderCounter('Просрочено', workbench.counters.overdueTasks, workbench.counters.overdueTasks ? 'danger' : '')}
@@ -197,6 +215,10 @@ export async function mountDashboardScreen() {
 
     root.querySelectorAll('[data-route]').forEach((button) => {
       button.addEventListener('click', () => navigate(button.dataset.route));
+    });
+    root.querySelector('[data-dashboard-responsible]')?.addEventListener('change', async (event) => {
+      selectedResponsibleId = event.currentTarget.value;
+      await mountDashboardScreen();
     });
   } catch (error) {
     root.innerHTML = emptyState('Не удалось загрузить рабочий стол', error.message || 'Проверьте подключение и сессию.');

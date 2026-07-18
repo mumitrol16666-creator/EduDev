@@ -42,13 +42,13 @@ export function renderRoute(host) {
 
   const screen = getState().navigation.find((item) => item.id === route || item.id === base || item.id === parentRoutes[base]);
   const renderer = screenRenderers.get(base);
-  if (!screen && !renderer) {
-    host.innerHTML = renderPlaceholderScreen({
-      id: route,
-      label: 'Недоступный раздел',
-      api: [],
-      entities: [],
-    });
+  if (!screen) {
+    host.innerHTML = `
+      <div class="empty-state access-denied">
+        <strong>Нет доступа к разделу</strong>
+        <span>Выберите доступный пункт меню или обратитесь к управляющему.</span>
+      </div>
+    `;
     return;
   }
 

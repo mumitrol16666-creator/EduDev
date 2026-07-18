@@ -115,7 +115,7 @@ const calculator = document.querySelector("[data-calculator]");
 const API_BASE_URL = window.EDUDEV_API_BASE_URL
   || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:4100"
-    : "https://api.edudev.kz");
+    : "");
 const WHATSAPP_PHONE = window.EDUDEV_WHATSAPP_PHONE || "77782750874";
 const WHATSAPP_TEXT = "Здравствуйте! Хочу разобрать учет EduDev для автосервиса.";
 
@@ -518,6 +518,11 @@ if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
     if (sessionStorage.getItem("edudevQuizShown")) return;
     if (callbackModal?.classList.contains("open") || quizModal.classList.contains("open")) return;
     if (document.body.classList.contains("nav-open")) return;
+    const leadFormRect = leadForm?.getBoundingClientRect();
+    const contactFormIsVisible = leadFormRect
+      && leadFormRect.top < window.innerHeight
+      && leadFormRect.bottom > 0;
+    if (window.location.hash === "#contact" || contactFormIsVisible || leadForm?.contains(document.activeElement)) return;
     if (getScrollProgress() < 0.25) return;
 
     openQuiz();
@@ -542,13 +547,25 @@ function formDataToLeadPayload(data, source) {
 }
 
 async function submitLead(payload) {
-  const response = await fetch(`${API_BASE_URL}/api/public/leads`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 12000);
+  let response;
+  try {
+    response = await fetch(`${API_BASE_URL}/api/public/leads`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    throw new Error(error.name === "AbortError"
+      ? "Сервис долго не отвечает. Напишите нам в WhatsApp или попробуйте ещё раз."
+      : "Не удалось связаться с CRM. Проверьте интернет или отправьте заявку ещё раз.");
+  } finally {
+    window.clearTimeout(timeout);
+  }
   const data = await response.json().catch(() => ({}));
   if (!response.ok || data.success === false) {
     throw new Error(data.error || "Ошибка отправки заявки");

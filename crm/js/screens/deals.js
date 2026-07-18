@@ -74,7 +74,7 @@ function dealRow(deal) {
         <strong>${escapeHtml(dealTitle(deal))}</strong>
         <small>${escapeHtml(directionLabel(deal.direction))} · ${escapeHtml(humanize(deal.packageId || 'пакет не указан'))}</small>
       </td>
-      <td><span class="status-badge">${escapeHtml(humanize(deal.stage))}</span></td>
+      <td><span class="status-badge" data-status="${escapeHtml(deal.stage)}">${escapeHtml(humanize(deal.stage))}</span></td>
       <td>
         <strong>${escapeHtml(formatMoney(deal.amount))}</strong>
         <small>Вероятность ${escapeHtml(deal.probability || 0)}%</small>

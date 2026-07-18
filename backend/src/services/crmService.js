@@ -164,6 +164,11 @@ class CrmService {
     return await this.detail(collection, id);
   }
 
+  async assertRecordAccess(collection, id, user) {
+    await this.detailForUser(collection, id, user);
+    return true;
+  }
+
   async scopeItemsForUser(collection, items, user) {
     if (!user) return [];
     if ([ROLES.OWNER, ROLES.SUPERVISOR, ROLES.SALES_LEAD].includes(user.role)) return items;
@@ -582,7 +587,7 @@ class CrmService {
     };
   }
 
-  async createLead(payload) {
+  async createLead(payload, actorId = 'system') {
     requireFields(payload, ['name', 'niche', 'city', 'phone']);
     const direction = payload.direction || DIRECTIONS.AUTOTECH;
     if (!(await this.allowedNiches(direction)).includes(payload.niche)) {
@@ -614,20 +619,25 @@ class CrmService {
       priority: 'high',
     });
 
-    await this.audit('lead_created', 'lead', lead.id, { name: lead.name, niche: lead.niche });
+    await this.audit('lead_created', 'lead', lead.id, { name: lead.name, niche: lead.niche }, actorId);
     return lead;
   }
 
-  async updateLead(id, payload) {
+  async updateLead(id, payload, actorId = 'system') {
     const lead = await this.store.update('leads', id, payload);
     if (!lead) throw notFound('Lead not found');
-    await this.audit('lead_updated', 'lead', id, payload);
+    await this.audit('lead_updated', 'lead', id, payload, actorId);
     return lead;
   }
 
-  async addDiagnostics(leadId, payload) {
+  async addDiagnostics(leadId, payload, actorId = 'system') {
     const lead = await this.store.get('leads', leadId);
     if (!lead) throw notFound('Lead not found');
+    const existingDiagnostics = (await this.store.all('diagnostics')).find((item) => item.leadId === leadId);
+    const existingDeal = (await this.store.all('deals')).find((item) => item.leadId === leadId);
+    if (existingDiagnostics || existingDeal) {
+      throw conflict('Diagnostics and deal already exist for this lead');
+    }
 
     const diagnostics = await this.store.insert('diagnostics', {
       leadId,
@@ -659,6 +669,7 @@ class CrmService {
       objections: [],
       lostReason: null,
     });
+    await this.store.update('diagnostics', diagnostics.id, { dealId: deal.id });
 
     await this.createTask({
       type: TASK_TYPES.MEETING,
@@ -670,11 +681,11 @@ class CrmService {
       priority: 'high',
     });
 
-    await this.audit('diagnostics_created', 'lead', leadId, { diagnosticsId: diagnostics.id, dealId: deal.id });
-    return { diagnostics, deal };
+    await this.audit('diagnostics_created', 'lead', leadId, { diagnosticsId: diagnostics.id, dealId: deal.id }, actorId);
+    return { diagnostics: { ...diagnostics, dealId: deal.id }, deal };
   }
 
-  async advanceDeal(id, payload) {
+  async advanceDeal(id, payload, actorId = 'system') {
     const deal = await this.store.get('deals', id);
     if (!deal) throw notFound('Deal not found');
     const stage = payload.stage;
@@ -691,12 +702,13 @@ class CrmService {
       lostReason: stage === DEAL_STAGES.LOST ? payload.lostReason || 'not_specified' : deal.lostReason,
     };
     const updated = await this.store.update('deals', id, patch);
+    await this.syncLeadStatusForDeal(updated);
     await this.createStageTask(updated);
-    await this.audit('deal_stage_changed', 'deal', id, { stage });
+    await this.audit('deal_stage_changed', 'deal', id, { stage }, actorId);
     return updated;
   }
 
-  async updateDealAmount(id, payload) {
+  async updateDealAmount(id, payload, actorId = 'system') {
     const deal = await this.store.get('deals', id);
     if (!deal) throw notFound('Deal not found');
     requireFields(payload, ['amount', 'reason']);
@@ -714,11 +726,11 @@ class CrmService {
       previousAmount,
       nextAmount,
       reason: payload.reason,
-    });
+    }, actorId);
     return updated;
   }
 
-  async updateDealResponsibles(id, payload) {
+  async updateDealResponsibles(id, payload, actorId = 'system') {
     const deal = await this.store.get('deals', id);
     if (!deal) throw notFound('Deal not found');
     const patch = {};
@@ -748,11 +760,11 @@ class CrmService {
     await this.audit('deal_responsibles_updated', 'deal', id, {
       managerId: updatedDeal.responsibleId || null,
       implementationId: updatedDeal.implementationResponsibleId || project?.responsibleId || null,
-    });
+    }, actorId);
     return { deal: updatedDeal, implementationProject: project };
   }
 
-  async createProposal(dealId, payload) {
+  async createProposal(dealId, payload, actorId = 'system') {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
     requireFields(payload, ['amount']);
@@ -767,7 +779,7 @@ class CrmService {
       validUntil: payload.validUntil || addDays(7),
     });
 
-    await this.store.update('deals', dealId, {
+    const updatedDeal = await this.store.update('deals', dealId, {
       stage: DEAL_STAGES.FOLLOW_UP,
       amount: proposal.amount,
       packageId: proposal.packageId,
@@ -775,6 +787,7 @@ class CrmService {
       nextActionAt: addDays(1),
       probability: 55,
     });
+    await this.syncLeadStatusForDeal(updatedDeal);
 
     await this.createTask({
       type: TASK_TYPES.FOLLOW_UP,
@@ -786,11 +799,11 @@ class CrmService {
       priority: 'medium',
     });
 
-    await this.audit('proposal_created', 'deal', dealId, { proposalId: proposal.id, amount: proposal.amount });
+    await this.audit('proposal_created', 'deal', dealId, { proposalId: proposal.id, amount: proposal.amount }, actorId);
     return proposal;
   }
 
-  async updateProposal(dealId, proposalId, payload) {
+  async updateProposal(dealId, proposalId, payload, actorId = 'system') {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
     const proposal = await this.store.get('proposals', proposalId);
@@ -820,11 +833,11 @@ class CrmService {
       proposalId,
       previousAmount: proposal.amount,
       nextAmount: updated.amount,
-    });
+    }, actorId);
     return updated;
   }
 
-  async recordPayment(dealId, payload) {
+  async recordPayment(dealId, payload, actorId = 'system') {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
     requireFields(payload, ['amount']);
@@ -847,6 +860,7 @@ class CrmService {
       probability: 90,
       nextActionAt: addDays(0),
     });
+    await this.syncLeadStatusForDeal(updatedDeal);
 
     const project = await this.createImplementationProject(updatedDeal, client, payload.implementationId || deal.implementationResponsibleId || null);
     await this.createTask({
@@ -860,11 +874,11 @@ class CrmService {
       priority: 'high',
     });
 
-    await this.audit('payment_recorded', 'deal', dealId, { paymentId: payment.id, projectId: project.id });
+    await this.audit('payment_recorded', 'deal', dealId, { paymentId: payment.id, projectId: project.id }, actorId);
     return { payment, client, deal: updatedDeal, project };
   }
 
-  async recordPrepayment(dealId, payload) {
+  async recordPrepayment(dealId, payload, actorId = 'system') {
     const deal = await this.store.get('deals', dealId);
     if (!deal) throw notFound('Deal not found');
     requireFields(payload, ['amount']);
@@ -881,12 +895,13 @@ class CrmService {
       note: payload.note || 'Предоплата',
     });
 
-    await this.store.update('deals', dealId, {
+    const updatedDeal = await this.store.update('deals', dealId, {
       clientId: client.id,
       stage: DEAL_STAGES.PAYMENT,
       probability: 80,
       nextActionAt: addDays(0),
     });
+    await this.syncLeadStatusForDeal(updatedDeal);
 
     await this.createTask({
       type: TASK_TYPES.PAYMENT,
@@ -899,7 +914,7 @@ class CrmService {
       priority: 'high',
     });
 
-    await this.audit('prepayment_recorded', 'deal', dealId, { paymentId: payment.id, amount: payment.amount });
+    await this.audit('prepayment_recorded', 'deal', dealId, { paymentId: payment.id, amount: payment.amount }, actorId);
     return payment;
   }
 
@@ -1149,7 +1164,7 @@ class CrmService {
     return updated;
   }
 
-  async addNote(payload) {
+  async addNote(payload, actorId = 'system') {
     requireFields(payload, ['entityType', 'entityId', 'text']);
     const note = await this.store.insert('notes', {
       entityType: payload.entityType,
@@ -1158,11 +1173,11 @@ class CrmService {
       text: payload.text,
       authorId: payload.authorId || (await this.defaultManagerId()),
     });
-    await this.audit('note_created', payload.entityType, payload.entityId, { noteId: note.id, type: note.type });
+    await this.audit('note_created', payload.entityType, payload.entityId, { noteId: note.id, type: note.type }, actorId);
     return note;
   }
 
-  async addCommunication(payload) {
+  async addCommunication(payload, actorId = 'system') {
     requireFields(payload, ['channel', 'result']);
     if (!Object.values(COMMUNICATION_RESULTS).includes(payload.result)) {
       throw badRequest(`Unknown communication result: ${payload.result}`);
@@ -1181,10 +1196,11 @@ class CrmService {
     });
 
     await this.applyCommunicationRule(communication);
+    await this.syncLeadStatusForCommunication(communication);
     await this.audit('communication_created', payload.dealId ? 'deal' : 'lead', payload.dealId || payload.leadId || communication.id, {
       communicationId: communication.id,
       result: communication.result,
-    });
+    }, actorId);
     return communication;
   }
 
@@ -1239,7 +1255,7 @@ class CrmService {
     }
   }
 
-  async completeTask(id, payload = {}) {
+  async completeTask(id, payload = {}, actorId = 'system') {
     const task = await this.store.get('tasks', id);
     if (!task) throw notFound('Task not found');
     if (!payload.result) throw badRequest('Task result is required');
@@ -1248,11 +1264,11 @@ class CrmService {
       result: payload.result || 'done',
       completedAt: new Date().toISOString(),
     });
-    await this.audit('task_completed', 'task', id, { result: updated.result });
+    await this.audit('task_completed', 'task', id, { result: updated.result }, actorId);
     return updated;
   }
 
-  async rescheduleTask(id, payload = {}) {
+  async rescheduleTask(id, payload = {}, actorId = 'system') {
     const task = await this.store.get('tasks', id);
     if (!task) throw notFound('Task not found');
     if (!payload.dueAt || !payload.comment) {
@@ -1263,23 +1279,24 @@ class CrmService {
       rescheduleComment: payload.comment,
       status: task.status === 'done' ? 'open' : task.status,
     });
-    await this.audit('task_rescheduled', 'task', id, { dueAt: payload.dueAt, comment: payload.comment });
+    await this.audit('task_rescheduled', 'task', id, { dueAt: payload.dueAt, comment: payload.comment }, actorId);
     return updated;
   }
 
   async managerToday(responsibleId = null) {
     if (!responsibleId) responsibleId = await this.defaultManagerId();
+    const includeTeam = responsibleId === 'all';
     const now = new Date();
     const allTasks = await this.store.all('tasks');
-    const tasks = allTasks.filter((task) => task.responsibleId === responsibleId && task.status !== 'done');
+    const tasks = allTasks.filter((task) => (includeTeam || task.responsibleId === responsibleId) && task.status !== 'done');
     const overdueTasks = tasks.filter((task) => new Date(task.dueAt) < now);
     const todayTasks = tasks.filter((task) => sameDay(task.dueAt, now));
     const allLeads = await this.store.all('leads');
     const newLeads = allLeads.filter((lead) => {
-      return lead.responsibleId === responsibleId && [LEAD_STATUSES.NEW, LEAD_STATUSES.CONTACT_CHECK].includes(lead.status);
+      return (includeTeam || lead.responsibleId === responsibleId) && [LEAD_STATUSES.NEW, LEAD_STATUSES.CONTACT_CHECK].includes(lead.status);
     });
     const allDeals = await this.store.all('deals');
-    const deals = allDeals.filter((deal) => deal.responsibleId === responsibleId);
+    const deals = allDeals.filter((deal) => includeTeam || deal.responsibleId === responsibleId);
     const dealsWithoutNextAction = deals.filter((deal) => !deal.nextActionAt && ![DEAL_STAGES.WON, DEAL_STAGES.LOST].includes(deal.stage));
     const stalledDeals = deals.filter((deal) => {
       if ([DEAL_STAGES.WON, DEAL_STAGES.LOST].includes(deal.stage)) return false;
@@ -1706,15 +1723,58 @@ class CrmService {
       || (await this.defaultImplementationId());
   }
 
-  async audit(action, entityType, entityId, details) {
+  async syncLeadStatusForDeal(deal) {
+    if (!deal?.leadId) return null;
+    const status = leadStatusForDealStage(deal.stage);
+    if (!status) return null;
+    const lead = await this.store.get('leads', deal.leadId);
+    if (!lead || lead.status === status) return lead;
+    return await this.store.update('leads', lead.id, { status });
+  }
+
+  async syncLeadStatusForCommunication(communication) {
+    if (!communication?.leadId) return null;
+    const status = leadStatusForCommunicationResult(communication.result);
+    if (!status) return null;
+    const lead = await this.store.get('leads', communication.leadId);
+    if (!lead || lead.status === status) return lead;
+    return await this.store.update('leads', lead.id, { status });
+  }
+
+  async audit(action, entityType, entityId, details, actorId = 'system') {
     await this.store.insert('auditLogs', {
       action,
       entityType,
       entityId,
       details,
-      actorId: 'system',
+      actorId: actorId || 'system',
     });
   }
+}
+
+function leadStatusForDealStage(stage) {
+  return {
+    [DEAL_STAGES.DIAGNOSTICS]: LEAD_STATUSES.DIAGNOSTICS,
+    [DEAL_STAGES.PRESENTATION]: LEAD_STATUSES.MEETING,
+    [DEAL_STAGES.PROPOSAL]: LEAD_STATUSES.PROPOSAL,
+    [DEAL_STAGES.FOLLOW_UP]: LEAD_STATUSES.PROPOSAL,
+    [DEAL_STAGES.PREPAYMENT]: LEAD_STATUSES.PROPOSAL,
+    [DEAL_STAGES.PAYMENT]: LEAD_STATUSES.PROPOSAL,
+    [DEAL_STAGES.IMPLEMENTATION]: LEAD_STATUSES.WON,
+    [DEAL_STAGES.WON]: LEAD_STATUSES.WON,
+    [DEAL_STAGES.LOST]: LEAD_STATUSES.LOST,
+  }[stage] || null;
+}
+
+function leadStatusForCommunicationResult(result) {
+  return {
+    [COMMUNICATION_RESULTS.NO_ANSWER]: LEAD_STATUSES.FIRST_TOUCH,
+    [COMMUNICATION_RESULTS.INTERESTED]: LEAD_STATUSES.DIAGNOSTICS,
+    [COMMUNICATION_RESULTS.MEETING_SET]: LEAD_STATUSES.MEETING,
+    [COMMUNICATION_RESULTS.PROPOSAL_SENT]: LEAD_STATUSES.PROPOSAL,
+    [COMMUNICATION_RESULTS.REJECTED]: LEAD_STATUSES.LOST,
+    [COMMUNICATION_RESULTS.RETURN_LATER]: LEAD_STATUSES.FIRST_TOUCH,
+  }[result] || null;
 }
 
 function recommendSections(niche, problems) {
@@ -2298,6 +2358,12 @@ function requireFields(payload, fields) {
 function badRequest(message) {
   const error = new Error(message);
   error.status = 400;
+  return error;
+}
+
+function conflict(message) {
+  const error = new Error(message);
+  error.status = 409;
   return error;
 }
 

@@ -50,6 +50,20 @@ export function emptyState(title, text) {
   `;
 }
 
+export function journeyBar(activeStep = 0) {
+  const steps = ['Заявка', 'Диагностика', 'Сделка', 'Оплата', 'Внедрение', 'Поддержка'];
+  return `
+    <nav class="journey-bar" aria-label="Путь клиента">
+      ${steps.map((step, index) => `
+        <span class="journey-step ${index < activeStep ? 'done' : ''} ${index === activeStep ? 'active' : ''}">
+          <b>${index + 1}</b>
+          <span>${escapeHtml(step)}</span>
+        </span>
+      `).join('')}
+    </nav>
+  `;
+}
+
 export function toast(message, type = '') {
   let host = document.querySelector('[data-toast-host]');
   if (!host) {
