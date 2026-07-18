@@ -107,7 +107,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=9" />
+    <link rel="stylesheet" href="styles.css?v=12" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -135,6 +135,8 @@
 
     <main id="top">
       <section class="hero">
+        <div class="rolling-wheel hero-wheel-one" aria-hidden="true"><span></span></div>
+        <div class="rolling-wheel hero-wheel-two" aria-hidden="true"><span></span></div>
         <div class="hero-copy">
           <p class="eyebrow">Решения для бизнеса · Казахстан</p>
           <div class="hero-brand" aria-label="EduDev">
@@ -189,6 +191,7 @@
       </section>
 
       <section class="conversion-lab" aria-label="Быстрый аудит учета">
+        <div class="rolling-wheel conversion-wheel" aria-hidden="true"><span></span></div>
         <div class="conversion-copy">
           <p class="eyebrow">Быстрый аудит за 40 секунд</p>
           <h2>Узнайте, где сервис теряет клиентов, склад и деньги уже сейчас</h2>
@@ -226,6 +229,38 @@
             </article>
           </div>
         </div>
+      </section>
+
+      <section class="before-after-section" aria-label="Сравнение ручного учета и EduDev CRM">
+        <div class="section-head narrow">
+          <p class="eyebrow">До и после внедрения</p>
+          <h2>От тетрадки, чеков и усталости к чистому рабочему экрану</h2>
+          <p>
+            Слева привычный хаос ручного учета в сервисе. Справа тот же процесс,
+            но уже через EduDev CRM: заказы, склад, оплаты и напоминания в одном месте.
+          </p>
+        </div>
+        <figure class="before-after-visual">
+          <img
+            src="assets/service-before-after-crm.jpg"
+            alt="Сравнение ручного учета в тетрадке и работы с EduDev CRM на планшете в автосервисе"
+            loading="lazy"
+            width="1672"
+            height="941"
+          />
+          <div class="before-after-motion" aria-hidden="true">
+            <span class="paper-chip paper-one"></span>
+            <span class="paper-chip paper-two"></span>
+            <span class="paper-chip paper-three"></span>
+            <span class="crm-glow glow-one"></span>
+            <span class="crm-glow glow-two"></span>
+            <span class="divider-light"></span>
+          </div>
+          <figcaption>
+            <span>Ручной учет</span>
+            <strong>EduDev CRM</strong>
+          </figcaption>
+        </figure>
       </section>
 
       <section class="suite-section" id="suite">
