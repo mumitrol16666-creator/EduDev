@@ -61,7 +61,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/styles.css?v=12" />
+    <link rel="stylesheet" href="/styles.css?v=17" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -69,14 +69,34 @@
         <span class="brand-mark" aria-hidden="true">e›</span>
         <span><strong>EduDev</strong><small>Учет сервиса</small></span>
       </a>
-      <button class="nav-toggle" type="button" aria-label="Открыть меню" data-nav-toggle><span></span><span></span></button>
+      <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" data-nav-toggle><span></span><span></span></button>
       <nav class="main-nav" data-nav>
         <a href="/#suite">Возможности</a>
+        <a href="/#solution">Разделы</a>
         <a href="/#segments">Для кого</a>
+        <details class="nav-menu-group">
+          <summary>Направления</summary>
+          <div class="nav-submenu">
+            <a href="/crm-dlya-punkta-zameny-masla/"><span>ПЗМ</span><small>Масла, фильтры, склад, повторные визиты</small></a>
+            <a href="/crm-dlya-shinomontazha/"><span>Шиномонтаж</span><small>Запись, сезон, хранение шин, оплаты</small></a>
+            <a href="/crm-dlya-sto/"><span>СТО</span><small>Заказ-наряды, запчасти, мастера</small></a>
+            <a href="/crm-dlya-avtomoiki/"><span>Автомойка</span><small>Боксы, смены, услуги, возврат клиентов</small></a>
+          </div>
+        </details>
+        <a href="/#seo-pages">Ниши</a>
         <a href="/#implementation">Внедрение</a>
         <a href="/#pricing">Тарифы</a>
+        <details class="nav-menu-group nav-faq-group">
+          <summary>FAQ</summary>
+          <div class="nav-submenu nav-faq-submenu">
+            <a href="/#faq"><span>Это просто программа для клиентов?</span><small>Нет, внутри клиенты, авто, заказы, склад и деньги.</small></a>
+            <a href="/#faq"><span>Если у нас маленький сервис?</span><small>Можно начать с простого учета без лишних разделов.</small></a>
+            <a href="/#faq"><span>Сотрудники будут пользоваться?</span><small>Запуск включает обучение команды под ваш процесс.</small></a>
+          </div>
+        </details>
         <a class="nav-cta" href="/#contact">Разобрать учет</a>
       </nav>
+      <button class="nav-backdrop" type="button" aria-label="Закрыть меню" data-nav-backdrop hidden></button>
     </header>
 
     <main>
@@ -227,6 +247,6 @@
       <div><strong>EduDev</strong><p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p></div>
       <a href="/">На главную</a>
     </footer>
-    <script src="/script.js?v=6"></script>
+    <script src="/script.js?v=9"></script>
   </body>
 </html>

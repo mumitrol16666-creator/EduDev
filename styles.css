@@ -161,6 +161,10 @@ textarea {
   transform: rotate(180deg);
 }
 
+.nav-menu-group:not([open]) .nav-submenu {
+  display: none;
+}
+
 .nav-submenu {
   background: rgba(15, 17, 23, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -227,6 +231,19 @@ textarea {
 
 .nav-backdrop {
   display: none;
+}
+
+html.nav-open,
+body.nav-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body.nav-open {
+  left: 0;
+  position: fixed;
+  right: 0;
+  width: 100%;
 }
 
 .hero {
@@ -2689,7 +2706,7 @@ output {
   max-width: 840px;
 }
 
-details {
+.faq-list details {
   background: white;
   border: 1px solid #dfe3ea;
   border-radius: 8px;
@@ -2697,12 +2714,12 @@ details {
   padding: 18px 20px;
 }
 
-summary {
+.faq-list summary {
   cursor: pointer;
   font-weight: 900;
 }
 
-details p {
+.faq-list details p {
   margin: 12px 0 0;
 }
 
@@ -3291,11 +3308,14 @@ details p {
     left: 14px;
     max-height: calc(100vh - 74px);
     overflow: auto;
+    overscroll-behavior: contain;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     right: 14px;
     top: 58px;
+    touch-action: pan-y;
     z-index: 30;
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav-backdrop:not([hidden]) {
@@ -3305,6 +3325,7 @@ details p {
     inset: 0;
     padding: 0;
     position: fixed;
+    touch-action: none;
     z-index: 29;
     backdrop-filter: blur(4px);
   }

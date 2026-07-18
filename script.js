@@ -3,10 +3,28 @@ const nav = document.querySelector("[data-nav]");
 const navBackdrop = document.querySelector("[data-nav-backdrop]");
 
 if (navToggle && nav) {
+  let lockedScrollY = 0;
+
+  const lockPageScroll = () => {
+    lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add("nav-open");
+    document.body.classList.add("nav-open");
+    document.body.style.top = `-${lockedScrollY}px`;
+  };
+
+  const unlockPageScroll = () => {
+    document.documentElement.classList.remove("nav-open");
+    document.body.classList.remove("nav-open");
+    document.body.style.top = "";
+    window.scrollTo(0, lockedScrollY);
+  };
+
   const closeNav = () => {
+    if (!nav.classList.contains("open")) return;
     nav.classList.remove("open");
     navToggle.setAttribute("aria-expanded", "false");
     navBackdrop?.setAttribute("hidden", "");
+    unlockPageScroll();
     nav.querySelectorAll("details[open]").forEach((item) => {
       item.open = false;
     });
@@ -16,6 +34,7 @@ if (navToggle && nav) {
     const isOpen = nav.classList.toggle("open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
     if (isOpen) {
+      lockPageScroll();
       navBackdrop?.removeAttribute("hidden");
     }
     if (!isOpen) {
@@ -24,6 +43,16 @@ if (navToggle && nav) {
   });
 
   navBackdrop?.addEventListener("click", closeNav);
+  navBackdrop?.addEventListener("touchmove", (event) => event.preventDefault(), { passive: false });
+
+  nav.querySelectorAll("details").forEach((details) => {
+    details.addEventListener("toggle", () => {
+      if (!details.open) return;
+      nav.querySelectorAll("details[open]").forEach((item) => {
+        if (item !== details) item.open = false;
+      });
+    });
+  });
 
   nav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", closeNav);
