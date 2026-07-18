@@ -508,13 +508,25 @@ document.querySelectorAll("[data-niche-simulator]").forEach((simulator) => {
 });
 
 if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
-  window.setTimeout(() => {
-    const width = Math.min(window.innerWidth || 0, document.documentElement.clientWidth || window.innerWidth || 0);
-    const isMobile = width <= 760 || window.matchMedia("(max-width: 760px)").matches;
-    if ((!isMobile && window.scrollY < 420) || callbackModal?.classList.contains("open") || quizModal.classList.contains("open")) return;
+  const getScrollProgress = () => {
+    const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollableHeight <= 0) return 0;
+    return window.scrollY / scrollableHeight;
+  };
+
+  const maybeOpenQuizOnScroll = () => {
+    if (sessionStorage.getItem("edudevQuizShown")) return;
+    if (callbackModal?.classList.contains("open") || quizModal.classList.contains("open")) return;
+    if (document.body.classList.contains("nav-open")) return;
+    if (getScrollProgress() < 0.25) return;
+
     openQuiz();
     sessionStorage.setItem("edudevQuizShown", "1");
-  }, 14000);
+    window.removeEventListener("scroll", maybeOpenQuizOnScroll);
+  };
+
+  window.addEventListener("scroll", maybeOpenQuizOnScroll, { passive: true });
+  window.addEventListener("load", maybeOpenQuizOnScroll, { once: true });
 }
 
 function formDataToLeadPayload(data, source) {
