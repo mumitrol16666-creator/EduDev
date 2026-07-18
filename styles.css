@@ -225,6 +225,10 @@ textarea {
   width: 22px;
 }
 
+.nav-backdrop {
+  display: none;
+}
+
 .hero {
   align-items: center;
   background:
@@ -3252,9 +3256,23 @@ details p {
   }
 
   .nav-toggle {
-    display: block;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    display: grid;
     position: relative;
     z-index: 31;
+  }
+
+  .nav-toggle[aria-expanded="true"] {
+    background: #111722;
+    border-color: rgba(25, 195, 125, 0.44);
+    box-shadow: 0 12px 28px rgba(25, 195, 125, 0.16);
+  }
+
+  .nav-toggle[aria-expanded="true"] span {
+    background: #19c37d;
   }
 
   .main-nav {
@@ -3277,7 +3295,22 @@ details p {
     z-index: 30;
   }
 
+  .nav-backdrop:not([hidden]) {
+    background: rgba(5, 8, 16, 0.58);
+    border: 0;
+    display: block;
+    inset: 0;
+    padding: 0;
+    position: fixed;
+    z-index: 29;
+    backdrop-filter: blur(4px);
+  }
+
   .main-nav.open {
+    background:
+      radial-gradient(circle at 88% 0%, rgba(78, 123, 255, 0.24), transparent 34%),
+      #0f1117 !important;
+    border-color: rgba(255, 255, 255, 0.14);
     display: flex;
   }
 

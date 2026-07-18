@@ -1,20 +1,44 @@
 const navToggle = document.querySelector("[data-nav-toggle]");
 const nav = document.querySelector("[data-nav]");
+const navBackdrop = document.querySelector("[data-nav-backdrop]");
 
 if (navToggle && nav) {
+  const closeNav = () => {
+    nav.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
+    navBackdrop?.setAttribute("hidden", "");
+    nav.querySelectorAll("details[open]").forEach((item) => {
+      item.open = false;
+    });
+  };
+
   navToggle.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) {
+      navBackdrop?.removeAttribute("hidden");
+    }
+    if (!isOpen) {
+      closeNav();
+    }
   });
 
+  navBackdrop?.addEventListener("click", closeNav);
+
   nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      nav.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      nav.querySelectorAll("details[open]").forEach((item) => {
-        item.open = false;
-      });
-    });
+    link.addEventListener("click", closeNav);
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!nav.classList.contains("open")) return;
+    if (nav.contains(event.target) || navToggle.contains(event.target)) return;
+    closeNav();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && nav.classList.contains("open")) {
+      closeNav();
+    }
   });
 }
 
