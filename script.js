@@ -3,11 +3,18 @@ const nav = document.querySelector("[data-nav]");
 
 if (navToggle && nav) {
   navToggle.addEventListener("click", () => {
-    nav.classList.toggle("open");
+    const isOpen = nav.classList.toggle("open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
   });
 
   nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => nav.classList.remove("open"));
+    link.addEventListener("click", () => {
+      nav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      nav.querySelectorAll("details[open]").forEach((item) => {
+        item.open = false;
+      });
+    });
   });
 }
 
@@ -449,10 +456,12 @@ document.querySelectorAll("[data-niche-simulator]").forEach((simulator) => {
 
 if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
   window.setTimeout(() => {
-    if (window.scrollY < 420 || callbackModal?.classList.contains("open")) return;
+    const width = Math.min(window.innerWidth || 0, document.documentElement.clientWidth || window.innerWidth || 0);
+    const isMobile = width <= 760 || window.matchMedia("(max-width: 760px)").matches;
+    if ((!isMobile && window.scrollY < 420) || callbackModal?.classList.contains("open") || quizModal.classList.contains("open")) return;
     openQuiz();
     sessionStorage.setItem("edudevQuizShown", "1");
-  }, 18000);
+  }, 14000);
 }
 
 function formDataToLeadPayload(data, source) {

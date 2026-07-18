@@ -127,6 +127,80 @@ textarea {
   color: white;
 }
 
+.nav-menu-group {
+  position: relative;
+}
+
+.nav-menu-group summary {
+  color: var(--soft);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.nav-menu-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-menu-group summary::after {
+  content: "⌄";
+  display: inline-block;
+  font-size: 13px;
+  margin-left: 6px;
+  transition: transform 0.18s ease;
+}
+
+.nav-menu-group[open] summary,
+.nav-menu-group summary:hover {
+  color: white;
+}
+
+.nav-menu-group[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.nav-submenu {
+  background: rgba(15, 17, 23, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 8px;
+  min-width: 300px;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 14px);
+  z-index: 25;
+}
+
+.nav-submenu a {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  white-space: normal;
+}
+
+.nav-submenu a:hover {
+  background: rgba(78, 123, 255, 0.14);
+  border-color: rgba(78, 123, 255, 0.38);
+}
+
+.nav-submenu span {
+  color: white;
+  font-weight: 900;
+}
+
+.nav-submenu small {
+  color: #b9bec8;
+  line-height: 1.35;
+}
+
 .nav-cta {
   background: var(--brand-gradient);
   border-radius: 8px;
@@ -3179,21 +3253,28 @@ details p {
 
   .nav-toggle {
     display: block;
+    position: relative;
+    z-index: 31;
   }
 
   .main-nav {
-    background: var(--paper);
-    border: 1px solid var(--line);
+    background:
+      radial-gradient(circle at 88% 0%, rgba(78, 123, 255, 0.24), transparent 34%),
+      #0f1117;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     box-shadow: var(--shadow);
     display: none;
     flex-direction: column;
     align-items: stretch;
     left: 18px;
+    max-height: calc(100vh - 86px);
+    overflow: auto;
     padding: 14px;
     position: absolute;
     right: 18px;
     top: 66px;
+    z-index: 30;
   }
 
   .main-nav.open {
@@ -3201,7 +3282,74 @@ details p {
   }
 
   .main-nav a {
-    padding: 8px 4px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #f5f7fa;
+    font-weight: 850;
+    padding: 12px 13px;
+    white-space: normal;
+  }
+
+  .main-nav > a:hover {
+    background: rgba(78, 123, 255, 0.14);
+    border-color: rgba(78, 123, 255, 0.36);
+  }
+
+  .nav-menu-group {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .nav-menu-group summary {
+    align-items: center;
+    color: #f5f7fa;
+    display: flex;
+    font-size: 15px;
+    font-weight: 900;
+    justify-content: space-between;
+    min-height: 48px;
+    padding: 0 13px;
+  }
+
+  .nav-menu-group summary::after {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    color: #19c37d;
+    content: "⌄";
+    display: grid;
+    height: 28px;
+    margin-left: 10px;
+    place-items: center;
+    width: 28px;
+  }
+
+  .nav-submenu {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    min-width: 0;
+    padding: 0 10px 10px;
+    position: static;
+  }
+
+  .nav-submenu a {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.11);
+    padding: 12px;
+  }
+
+  .nav-submenu small {
+    color: #b9bec8;
+    font-size: 12px;
+  }
+
+  .nav-cta {
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
   }
 
   .hero {
