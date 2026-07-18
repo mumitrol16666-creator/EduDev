@@ -1058,6 +1058,42 @@ section {
   color: white;
 }
 
+.seo-faq-section {
+  background: #ffffff;
+  color: #0f1117;
+}
+
+.seo-faq-section p {
+  color: #5d6470;
+}
+
+.seo-faq-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.seo-faq-grid article {
+  background: #f5f7fa;
+  border: 1px solid rgba(138, 143, 152, 0.26);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  min-height: 220px;
+  padding: 24px;
+}
+
+.seo-faq-grid h3 {
+  color: #0f1117;
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.seo-faq-grid p {
+  margin: 0;
+}
+
 .seo-crosslinks p {
   color: #b9bec8;
 }
@@ -2810,6 +2846,7 @@ details p {
   .pain-grid,
   .pricing-grid,
   .seo-pages-grid,
+  .seo-faq-grid,
   .pzm-controls,
   .pzm-results,
   .pzm-flow,
@@ -2899,6 +2936,7 @@ details p {
   .pain-grid,
   .pricing-grid,
   .seo-pages-grid,
+  .seo-faq-grid,
   .pzm-controls,
   .pzm-results,
   .pzm-flow,
