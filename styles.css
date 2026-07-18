@@ -3252,7 +3252,7 @@ details p {
 
 @media (max-width: 760px) {
   .site-header {
-    padding: 12px 18px;
+    padding: 10px 14px;
   }
 
   .nav-toggle {
@@ -3261,7 +3261,9 @@ details p {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     display: grid;
+    height: 36px;
     position: relative;
+    width: 36px;
     z-index: 31;
   }
 
@@ -3285,13 +3287,14 @@ details p {
     display: none;
     flex-direction: column;
     align-items: stretch;
-    left: 18px;
-    max-height: calc(100vh - 86px);
+    gap: 8px;
+    left: 14px;
+    max-height: calc(100vh - 74px);
     overflow: auto;
-    padding: 14px;
+    padding: 10px;
     position: absolute;
-    right: 18px;
-    top: 66px;
+    right: 14px;
+    top: 58px;
     z-index: 30;
   }
 
@@ -3319,8 +3322,10 @@ details p {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     color: #f5f7fa;
+    font-size: 14px;
     font-weight: 850;
-    padding: 12px 13px;
+    min-height: 40px;
+    padding: 9px 11px;
     white-space: normal;
   }
 
@@ -3340,11 +3345,11 @@ details p {
     align-items: center;
     color: #f5f7fa;
     display: flex;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 900;
     justify-content: space-between;
-    min-height: 48px;
-    padding: 0 13px;
+    min-height: 40px;
+    padding: 0 11px;
   }
 
   .nav-menu-group summary::after {
@@ -3353,10 +3358,10 @@ details p {
     color: #19c37d;
     content: "⌄";
     display: grid;
-    height: 28px;
-    margin-left: 10px;
+    height: 24px;
+    margin-left: 8px;
     place-items: center;
-    width: 28px;
+    width: 24px;
   }
 
   .nav-submenu {
@@ -3364,14 +3369,15 @@ details p {
     border: 0;
     box-shadow: none;
     min-width: 0;
-    padding: 0 10px 10px;
+    padding: 0 8px 8px;
     position: static;
   }
 
   .nav-submenu a {
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.11);
-    padding: 12px;
+    min-height: 0;
+    padding: 9px 10px;
   }
 
   .nav-submenu small {
@@ -3382,7 +3388,7 @@ details p {
   .nav-cta {
     align-items: center;
     justify-content: center;
-    min-height: 48px;
+    min-height: 42px;
   }
 
   .hero {
