@@ -117,7 +117,7 @@ const API_BASE_URL = window.EDUDEV_API_BASE_URL
     ? "http://127.0.0.1:4100"
     : "");
 const WHATSAPP_PHONE = window.EDUDEV_WHATSAPP_PHONE || "77782750874";
-const WHATSAPP_TEXT = "Здравствуйте! Хочу разобрать учет EduDev для автосервиса.";
+const WHATSAPP_TEXT = "Здравствуйте! Хочу посмотреть CRM EduDev для пункта замены масла.";
 
 document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
   link.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
@@ -127,31 +127,39 @@ document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
 
 if (calculator) {
   const output = calculator.querySelector("[data-total]");
-  const basePrices = {
-    start: 80000,
-    business: 180000,
-    pro: 400000,
-    network: 800000,
-  };
-  const modulePrices = {
-    warehouse: 80000,
-    reminders: 70000,
-    analytics: 120000,
-    multi: 250000,
-  };
+  const outputPeriod = calculator.querySelector("[data-total-period]");
+  const formulaOutput = calculator.querySelector("[data-total-formula]");
+  const setupPrice = 79000;
+  const partnerMonthlyPrice = 14900;
+  const standardMonthlyPrice = 24900;
 
   const format = (value) => new Intl.NumberFormat("ru-RU").format(value);
 
   const updateTotal = () => {
     const data = new FormData(calculator);
-    let total = basePrices[data.get("base")] || basePrices.business;
+    const months = Number(data.get("period") || 12);
+    const partnerMonths = Math.max(0, Math.min(months - 1, 11));
+    const standardMonths = Math.max(0, months - 12);
+    const total = setupPrice
+      + partnerMonths * partnerMonthlyPrice
+      + standardMonths * standardMonthlyPrice;
+    const parts = [`${format(setupPrice)} ₸`];
 
-    Object.entries(modulePrices).forEach(([name, price]) => {
-      if (data.get(name)) total += price;
-    });
+    if (partnerMonths) parts.push(`${partnerMonths} × ${format(partnerMonthlyPrice)} ₸`);
+    if (standardMonths) parts.push(`${standardMonths} × ${format(standardMonthlyPrice)} ₸`);
 
-    output.value = `от ${format(total)} ₸ разовая настройка`;
-    output.textContent = output.value;
+    output.textContent = `${format(total)} ₸`;
+    if (outputPeriod) {
+      const periodLabels = {
+        1: "внедрение и первый месяц",
+        3: "за 3 месяца",
+        6: "за 6 месяцев",
+        12: "за первый год",
+        24: "за два года",
+      };
+      outputPeriod.textContent = periodLabels[months] || `за ${months} месяцев`;
+    }
+    if (formulaOutput) formulaOutput.textContent = `${parts.join(" + ")} = ${format(total)} ₸`;
   };
 
   calculator.addEventListener("change", updateTotal);
@@ -171,14 +179,14 @@ if (leadForm && formButton && formNote) {
 
     try {
       await submitLead(formDataToLeadPayload(new FormData(leadForm), "website_contact"));
-      formNote.textContent = "Заявка отправлена. Мы свяжемся с вами и разберем учет.";
+      formNote.textContent = "Заявка отправлена. Мы свяжемся с вами и покажем решение для ПЗМ.";
       leadForm.reset();
       if (selectedModulesInput) selectedModulesInput.value = selectedModulesOutput?.textContent || "Клиенты, авто и заказы";
     } catch (error) {
       formNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
     } finally {
       formButton.disabled = false;
-      formButton.textContent = "Получить разбор учета";
+      formButton.textContent = "Получить демонстрацию ПЗМ";
     }
   });
 }
