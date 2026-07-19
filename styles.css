@@ -254,13 +254,6 @@ body.nav-open {
   overscroll-behavior: none;
 }
 
-body.nav-open {
-  left: 0;
-  position: fixed;
-  right: 0;
-  width: 100%;
-}
-
 .hero {
   align-items: center;
   background:

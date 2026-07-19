@@ -4,25 +4,25 @@ const navBackdrop = document.querySelector("[data-nav-backdrop]");
 
 if (navToggle && nav) {
   let lockedScrollY = 0;
+  let navTouchY = 0;
 
   const lockPageScroll = () => {
     lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.documentElement.classList.add("nav-open");
     document.body.classList.add("nav-open");
-    document.body.style.top = `-${lockedScrollY}px`;
   };
 
   const unlockPageScroll = () => {
     document.documentElement.classList.remove("nav-open");
     document.body.classList.remove("nav-open");
-    document.body.style.top = "";
     window.scrollTo(0, lockedScrollY);
   };
 
   const closeNav = () => {
-    if (!nav.classList.contains("open")) return;
+    if (!nav.classList.contains("open") && !document.body.classList.contains("nav-open")) return;
     nav.classList.remove("open");
     navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "Открыть меню");
     navBackdrop?.setAttribute("hidden", "");
     unlockPageScroll();
     nav.querySelectorAll("details[open]").forEach((item) => {
@@ -31,19 +31,41 @@ if (navToggle && nav) {
   };
 
   navToggle.addEventListener("click", () => {
-    const isOpen = nav.classList.toggle("open");
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-    if (isOpen) {
-      lockPageScroll();
-      navBackdrop?.removeAttribute("hidden");
-    }
-    if (!isOpen) {
+    if (nav.classList.contains("open")) {
       closeNav();
+      return;
     }
+
+    nav.classList.add("open");
+    navToggle.setAttribute("aria-expanded", "true");
+    navToggle.setAttribute("aria-label", "Закрыть меню");
+    lockPageScroll();
+    navBackdrop?.removeAttribute("hidden");
   });
 
   navBackdrop?.addEventListener("click", closeNav);
   navBackdrop?.addEventListener("touchmove", (event) => event.preventDefault(), { passive: false });
+
+  nav.addEventListener("touchstart", (event) => {
+    navTouchY = event.touches[0]?.clientY || 0;
+  }, { passive: true });
+
+  nav.addEventListener("touchmove", (event) => {
+    const nextTouchY = event.touches[0]?.clientY || navTouchY;
+    const movingDown = nextTouchY > navTouchY;
+    const atTop = nav.scrollTop <= 0;
+    const atBottom = Math.ceil(nav.scrollTop + nav.clientHeight) >= nav.scrollHeight;
+
+    if (nav.scrollHeight <= nav.clientHeight || (movingDown && atTop) || (!movingDown && atBottom)) {
+      event.preventDefault();
+    }
+    navTouchY = nextTouchY;
+  }, { passive: false });
+
+  document.addEventListener("touchmove", (event) => {
+    if (!nav.classList.contains("open") || nav.contains(event.target)) return;
+    event.preventDefault();
+  }, { passive: false });
 
   nav.querySelectorAll("details").forEach((details) => {
     details.addEventListener("toggle", () => {
@@ -66,6 +88,12 @@ if (navToggle && nav) {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && nav.classList.contains("open")) {
+      closeNav();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900 && nav.classList.contains("open")) {
       closeNav();
     }
   });
