@@ -467,6 +467,14 @@ function publicLeadPayload(body = {}) {
   const message = String(body.message || '').trim();
   const selectedModules = String(body.selectedModules || body.selected_modules || '').trim();
   const preferredTime = String(body.preferredTime || body.time || '').trim();
+  const pageUrl = String(body.pageUrl || '').trim();
+  const referrer = String(body.referrer || '').trim();
+  const utmSource = String(body.utmSource || '').trim();
+  const utmMedium = String(body.utmMedium || '').trim();
+  const utmCampaign = String(body.utmCampaign || '').trim();
+  const utmContent = String(body.utmContent || '').trim();
+  const utmTerm = String(body.utmTerm || '').trim();
+  const privacyConsentAt = String(body.privacyConsentAt || '').trim();
 
   return {
     name: name ? `${name}${business ? ` - ${business}` : ''}` : business || 'Заявка с сайта',
@@ -483,6 +491,16 @@ function publicLeadPayload(body = {}) {
       selectedModules ? `Выбранные разделы: ${selectedModules}` : '',
       preferredTime ? `Удобное время: ${preferredTime}` : '',
       business ? `Тип бизнеса: ${business}` : '',
+      pageUrl ? `Страница заявки: ${pageUrl}` : '',
+      referrer ? `Источник перехода: ${referrer}` : '',
+      utmSource ? `UTM source: ${utmSource}` : '',
+      utmMedium ? `UTM medium: ${utmMedium}` : '',
+      utmCampaign ? `UTM campaign: ${utmCampaign}` : '',
+      utmContent ? `UTM content: ${utmContent}` : '',
+      utmTerm ? `UTM term: ${utmTerm}` : '',
+      body.privacyConsent === true
+        ? `Согласие на обработку данных: получено${privacyConsentAt ? ` (${privacyConsentAt})` : ''}`
+        : '',
     ].filter(Boolean).join('\n'),
   };
 }

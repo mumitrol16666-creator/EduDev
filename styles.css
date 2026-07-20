@@ -3220,6 +3220,31 @@ output {
   margin: 0;
 }
 
+.form-consent {
+  align-items: flex-start;
+  color: #4f5665;
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 10px;
+  line-height: 1.45;
+}
+
+.form-consent input {
+  accent-color: var(--accent);
+  flex: 0 0 auto;
+  height: 17px;
+  margin: 1px 0 0;
+  width: 17px;
+}
+
+.form-consent a {
+  color: #5d3fd3;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(22px);
@@ -3676,6 +3701,109 @@ output {
   margin: 6px 0 0;
 }
 
+.footer-links {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.footer-links a {
+  color: #d8dbe4;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.legal-header {
+  position: relative;
+}
+
+.legal-home-link {
+  min-height: 42px;
+  padding: 10px 16px;
+}
+
+.legal-page {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 76px var(--page-x) 100px;
+}
+
+.legal-heading {
+  margin-bottom: 38px;
+}
+
+.legal-heading h1,
+.not-found-page h1 {
+  font-size: clamp(36px, 5vw, 62px);
+  letter-spacing: 0;
+  line-height: 1.04;
+  margin: 10px 0 16px;
+}
+
+.legal-heading > p:last-child,
+.not-found-page p {
+  color: var(--muted);
+}
+
+.legal-content {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #20232c;
+  padding: clamp(24px, 5vw, 54px);
+}
+
+.legal-content section + section {
+  border-top: 1px solid #e7e9ee;
+  margin-top: 28px;
+  padding-top: 28px;
+}
+
+.legal-content h2 {
+  font-size: 22px;
+  letter-spacing: 0;
+  margin: 0 0 10px;
+}
+
+.legal-content p {
+  color: #555c69;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.legal-content a {
+  color: #5d3fd3;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legal-source {
+  border-top: 1px solid #e7e9ee;
+  margin-top: 28px !important;
+  padding-top: 28px;
+}
+
+.not-found-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: 40px var(--page-x) 90px;
+}
+
+.not-found-page > div {
+  max-width: 700px;
+}
+
+.not-found-page .hero-actions {
+  margin-top: 28px;
+}
+
 @media (max-width: 1460px) {
   .site-header {
     gap: 14px;
@@ -4128,6 +4256,16 @@ output {
     align-items: flex-start;
     flex-direction: column;
     gap: 18px;
+  }
+
+  .footer-links {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .legal-header {
+    flex-direction: row;
   }
 
   .callback-float {

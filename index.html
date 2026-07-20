@@ -69,7 +69,16 @@
               "name": "Kazakhstan"
             },
             "serviceType": "Внедрение CRM для пункта замены масла",
-            "description": "Настройка учета клиентов, автомобилей, истории замен, масел, фильтров, склада, оплат, сотрудников, отчетов и повторных визитов для ПЗМ."
+            "description": "Настройка учета клиентов, автомобилей, истории замен, масел, фильтров, склада, оплат, сотрудников, отчетов и повторных визитов для ПЗМ.",
+            "offers": {
+              "@type": "Offer",
+              "name": "EduDev PZM — партнёрский запуск",
+              "url": "https://edudev.kz/#pricing",
+              "price": "79000",
+              "priceCurrency": "KZT",
+              "description": "Внедрение одной точки ПЗМ за 79 000 ₸. Первый месяц включён, со второго по двенадцатый месяц — 14 900 ₸ в месяц, после первого года — 24 900 ₸ в месяц.",
+              "availability": "https://schema.org/LimitedAvailability"
+            }
           },
           {
             "@type": "FAQPage",
@@ -107,7 +116,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="styles.css?v=21" />
   </head>
   <body>
     <header class="site-header" data-header>
@@ -202,7 +213,14 @@
         </div>
         <div class="hero-visual" aria-label="EduDev в пункте замены масла">
           <div class="hero-image-card hero-pzm-card">
-            <img src="assets/pzm-crm-workflow.jpg" alt="Мастер, масла, фильтры и планшет с CRM в пункте замены масла" />
+            <img
+              src="assets/pzm-crm-workflow.jpg"
+              alt="Мастер, масла, фильтры и планшет с CRM в пункте замены масла"
+              width="1672"
+              height="941"
+              decoding="async"
+              fetchpriority="high"
+            />
             <div class="hero-image-badge">
               <strong>Пункт замены масла под контролем</strong>
               <span>масло · фильтр · пробег · следующий визит</span>
@@ -288,9 +306,9 @@
             <strong>Сейчас смотрим</strong>
           </div>
           <div class="conversion-score">
-            <span>Потенциал возврата</span>
-            <strong data-live-score>+18%</strong>
-            <small>за счет напоминаний и повторных визитов</small>
+            <span>Стартовый контур</span>
+            <strong>3 шага</strong>
+            <small>заказ, склад и следующий визит клиента</small>
           </div>
           <div class="conversion-tasks">
             <article class="active">
@@ -323,6 +341,7 @@
             src="assets/service-before-after-crm.jpg"
             alt="Сравнение ручного учета в тетрадке и работы с EduDev CRM на планшете в автосервисе"
             loading="lazy"
+            decoding="async"
             width="1672"
             height="941"
           />
@@ -382,23 +401,23 @@
           </article>
           <article class="suite-card">
             <span class="suite-kicker">Склад</span>
-            <h3>Остатки списываются из заказа</h3>
-            <p>Масла, фильтры, запчасти, химия и расходники перестают жить отдельно от продаж.</p>
+            <h3>Масла и фильтры списываются из заказа</h3>
+            <p>Продажа, фактический расход и остаток каждой позиции остаются в одном движении.</p>
             <div class="stock-widget">
               <div><span>Масло 5W-30</span><b>18 л</b></div>
               <div><span>Фильтр Toyota</span><b>7 шт</b></div>
-              <div><span>Химия мойка</span><b>12 л</b></div>
-              <div class="low"><span>Грузики</span><b>мало</b></div>
+              <div><span>Масло 0W-20</span><b>12 л</b></div>
+              <div class="low"><span>Фильтр Hyundai</span><b>мало</b></div>
             </div>
           </article>
           <article class="suite-card">
             <span class="suite-kicker">Повторные визиты</span>
-            <h3>Клиентов возвращают вовремя</h3>
-            <p>После замены масла, ремонта, мойки или сезона шин система ставит задачу напомнить клиенту.</p>
+            <h3>Следующая замена не теряется</h3>
+            <p>После закрытия заказа система сохраняет пробег и ставит задачу связаться с клиентом по сроку или километражу.</p>
             <div class="reminder-stack">
               <b><span>Замена масла</span><small>через 4 месяца</small></b>
-              <b><span>Сезон шин</span><small>15 октября</small></b>
-              <b><span>Повторная мойка</span><small>через 14 дней</small></b>
+              <b><span>Следующий пробег</span><small>91 200 км</small></b>
+              <b><span>Связаться с клиентом</span><small>за 7 дней</small></b>
             </div>
           </article>
           <article class="suite-card wide">
@@ -435,12 +454,12 @@
           <article>
             <span class="icon">▦</span>
             <h3>Склад живет отдельно</h3>
-            <p>Масла, фильтры, химия, шины и запчасти считаются “на глаз”, поэтому появляются потери и зависшие остатки.</p>
+            <p>Масла и фильтры считаются “на глаз”, поэтому фактический расход не сходится с продажами и остатками.</p>
           </article>
           <article>
             <span class="icon">↻</span>
             <h3>Клиенты не возвращаются</h3>
-            <p>После замены масла, ремонта, мойки или сезона шин клиенту никто вовремя не пишет.</p>
+            <p>Пробег следующей замены остается в тетради, и клиенту никто вовремя не напоминает о визите.</p>
           </article>
           <article>
             <span class="icon">✓</span>
@@ -497,7 +516,7 @@
             <article class="module-card" data-module="Напоминания клиентам">
               <span>Возврат</span>
               <h3>Напоминания клиентам</h3>
-              <p>Чтобы клиенту вовремя напомнили о замене масла, сезоне шин, повторной мойке или следующем ремонте.</p>
+              <p>Чтобы следующая замена рассчитывалась по сроку или пробегу и не зависела от памяти администратора.</p>
             </article>
             <article class="module-card" data-module="Деньги и отчеты">
               <span>Контроль</span>
@@ -894,7 +913,7 @@
             </article>
             <article>
               <h3>Показ на вашем процессе</h3>
-              <p>Перед запуском показываем, как система будет работать именно для замены масла, шиномонтажа, СТО или мойки.</p>
+              <p>Перед запуском показываем путь ПЗМ: автомобиль, пробег, масло, фильтр, оплата, склад и следующий визит.</p>
             </article>
             <article>
               <h3>Контроль сотрудников</h3>
@@ -994,6 +1013,10 @@
           <label class="wide">Что хотите навести в порядок?
             <textarea name="message" rows="4" placeholder="Например: склад, заказы, записи, касса, сотрудники или повторные клиенты"></textarea>
           </label>
+          <label class="form-consent wide">
+            <input type="checkbox" name="privacy_consent" required />
+            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
+          </label>
           <button class="button primary wide" type="submit" data-form-button>Получить демонстрацию ПЗМ</button>
           <p class="form-note wide" data-form-note aria-live="polite"></p>
         </form>
@@ -1003,9 +1026,13 @@
     <footer class="site-footer">
       <div>
         <strong>EduDev</strong>
-        <p>Учет и управление автобизнесом: клиенты, заказы, склад, деньги, сотрудники и отчеты.</p>
+        <p>CRM и учет для пунктов замены масла и автобизнеса.</p>
       </div>
-      <a href="#top">Наверх</a>
+      <div class="footer-links">
+        <a href="tel:+77782750874">+7 778 275 0874</a>
+        <a href="/privacy/">Политика данных</a>
+        <a href="#top">Наверх</a>
+      </div>
     </footer>
 
     <button class="callback-float" type="button" data-callback-open aria-label="Заказать обратный звонок">
@@ -1057,6 +1084,10 @@
             </select>
           </label>
           <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
+          <label class="form-consent wide">
+            <input type="checkbox" name="privacy_consent" required />
+            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
+          </label>
           <button class="button primary wide" type="submit">Жду звонка</button>
           <p class="form-note wide" data-callback-note aria-live="polite"></p>
         </form>
@@ -1095,12 +1126,16 @@
           <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
           <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
           <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
+          <label class="form-consent wide">
+            <input type="checkbox" name="privacy_consent" required />
+            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
+          </label>
           <button class="button primary wide" type="submit">Получить план запуска</button>
           <p class="form-note wide" data-quiz-note aria-live="polite"></p>
         </form>
       </div>
     </div>
 
-    <script src="script.js?v=14"></script>
+    <script src="script.js?v=15"></script>
   </body>
 </html>

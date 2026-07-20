@@ -146,11 +146,47 @@ const API_BASE_URL = window.EDUDEV_API_BASE_URL
     : "");
 const WHATSAPP_PHONE = window.EDUDEV_WHATSAPP_PHONE || "77782750874";
 const WHATSAPP_TEXT = "Здравствуйте! Хочу посмотреть CRM EduDev для пункта замены масла.";
+const trackedScrollDepths = new Set();
+
+function trackEvent(name, parameters = {}) {
+  const payload = {
+    event: name,
+    page_path: window.location.pathname,
+    ...parameters,
+  };
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
+
+  if (typeof window.gtag === "function") {
+    window.gtag("event", name, parameters);
+  }
+
+  if (typeof window.ym === "function" && window.EDUDEV_METRIKA_ID) {
+    window.ym(window.EDUDEV_METRIKA_ID, "reachGoal", name, parameters);
+  }
+}
+
+function campaignContext() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    pageUrl: window.location.href,
+    referrer: document.referrer,
+    utmSource: params.get("utm_source") || "",
+    utmMedium: params.get("utm_medium") || "",
+    utmCampaign: params.get("utm_campaign") || "",
+    utmContent: params.get("utm_content") || "",
+    utmTerm: params.get("utm_term") || "",
+  };
+}
 
 document.querySelectorAll("[data-whatsapp-link]").forEach((link) => {
   link.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_TEXT)}`;
   link.target = "_blank";
   link.rel = "noopener";
+  link.addEventListener("click", () => trackEvent("whatsapp_click", {
+    placement: link.classList.contains("whatsapp-float") ? "floating_button" : "inline_button",
+  }));
 });
 
 if (calculator) {
@@ -190,7 +226,12 @@ if (calculator) {
     if (formulaOutput) formulaOutput.textContent = `${parts.join(" + ")} = ${format(total)} ₸`;
   };
 
-  calculator.addEventListener("change", updateTotal);
+  calculator.addEventListener("change", () => {
+    updateTotal();
+    trackEvent("pricing_period_change", {
+      period_months: Number(new FormData(calculator).get("period") || 12),
+    });
+  });
   updateTotal();
 }
 
@@ -208,10 +249,12 @@ if (leadForm && formButton && formNote) {
     try {
       await submitLead(formDataToLeadPayload(new FormData(leadForm), "website_contact"));
       formNote.textContent = "Заявка отправлена. Мы свяжемся с вами и покажем решение для ПЗМ.";
+      trackEvent("lead_submit_success", { form_type: "contact" });
       leadForm.reset();
       if (selectedModulesInput) selectedModulesInput.value = selectedModulesOutput?.textContent || "Клиенты, авто и заказы";
     } catch (error) {
       formNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
+      trackEvent("lead_submit_error", { form_type: "contact" });
     } finally {
       formButton.disabled = false;
       formButton.textContent = "Получить демонстрацию ПЗМ";
@@ -271,13 +314,13 @@ const quizForm = document.querySelector("[data-quiz-form]");
 const quizNote = document.querySelector("[data-quiz-note]");
 const quizResult = document.querySelector("[data-quiz-result]");
 const stickyCta = document.querySelector("[data-sticky-cta]");
-const liveScore = document.querySelector("[data-live-score]");
 
 const openCallback = () => {
   if (!callbackModal) return;
   callbackModal.classList.add("open");
   callbackModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
+  trackEvent("callback_open");
   const firstInput = callbackModal.querySelector("input");
   firstInput?.focus();
 };
@@ -294,6 +337,7 @@ const openQuiz = () => {
   quizModal.classList.add("open");
   quizModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
+  trackEvent("quiz_open");
   const firstInput = quizModal.querySelector("select, input");
   firstInput?.focus();
 };
@@ -354,9 +398,11 @@ if (callbackForm && callbackNote) {
         message: "Заявка на обратный звонок",
       });
       callbackNote.textContent = "Заявка отправлена. Перезвоним в выбранное время.";
+      trackEvent("lead_submit_success", { form_type: "callback" });
       callbackForm.reset();
     } catch (error) {
       callbackNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
+      trackEvent("lead_submit_error", { form_type: "callback" });
     } finally {
       if (submit) {
         submit.disabled = false;
@@ -409,10 +455,12 @@ if (quizForm && quizNote) {
         selectedModules: recommendation,
       });
       quizNote.textContent = "Готово. Мы свяжемся с вами и покажем карту внедрения.";
+      trackEvent("lead_submit_success", { form_type: "quiz" });
       quizForm.reset();
       updateQuizResult();
     } catch (error) {
       quizNote.textContent = error.message || "Не удалось отправить заявку. Попробуйте еще раз.";
+      trackEvent("lead_submit_error", { form_type: "quiz" });
     } finally {
       if (submit) {
         submit.disabled = false;
@@ -428,15 +476,6 @@ if (stickyCta) {
   };
   window.addEventListener("scroll", toggleStickyCta, { passive: true });
   toggleStickyCta();
-}
-
-if (liveScore) {
-  const scores = ["+18%", "+24%", "+31%", "+16%"];
-  let scoreIndex = 0;
-  window.setInterval(() => {
-    scoreIndex = (scoreIndex + 1) % scores.length;
-    liveScore.textContent = scores[scoreIndex];
-  }, 2800);
 }
 
 document.querySelectorAll("[data-pzm-simulator]").forEach((simulator) => {
@@ -572,6 +611,7 @@ if (quizModal && !sessionStorage.getItem("edudevQuizShown")) {
 
 function formDataToLeadPayload(data, source) {
   return {
+    ...campaignContext(),
     source,
     name: String(data.get("name") || "").trim(),
     phone: String(data.get("phone") || "").trim(),
@@ -579,6 +619,8 @@ function formDataToLeadPayload(data, source) {
     city: String(data.get("city") || "").trim(),
     message: String(data.get("message") || "").trim(),
     selectedModules: String(data.get("selected_modules") || "").trim(),
+    privacyConsent: data.get("privacy_consent") === "on",
+    privacyConsentAt: new Date().toISOString(),
   };
 }
 
@@ -608,3 +650,15 @@ async function submitLead(payload) {
   }
   return data.lead;
 }
+
+window.addEventListener("scroll", () => {
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  if (scrollable <= 0) return;
+  const progress = Math.round((window.scrollY / scrollable) * 100);
+
+  [25, 50, 75, 90].forEach((depth) => {
+    if (progress < depth || trackedScrollDepths.has(depth)) return;
+    trackedScrollDepths.add(depth);
+    trackEvent("scroll_depth", { percent: depth });
+  });
+}, { passive: true });
