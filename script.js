@@ -144,7 +144,7 @@ const API_BASE_URL = window.EDUDEV_API_BASE_URL
   || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:4100"
     : "");
-const WHATSAPP_PHONE = window.EDUDEV_WHATSAPP_PHONE || "77782750874";
+const WHATSAPP_PHONE = window.EDUDEV_WHATSAPP_PHONE || "77782508349";
 const WHATSAPP_TEXT = "Здравствуйте! Хочу посмотреть CRM EduDev для пункта замены масла.";
 const trackedScrollDepths = new Set();
 

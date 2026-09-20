@@ -1,0 +1,240 @@
+.brief-form {
+  padding-top: 7px;
+}
+.brief-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 29px;
+  min-width: 0;
+}
+.brief-form legend {
+  padding: 0;
+  margin-bottom: 17px;
+  font-size: 13px;
+}
+.brief-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.brief-choices label {
+  position: relative;
+  cursor: pointer;
+}
+.brief-choices input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.brief-choices label > span {
+  display: block;
+  padding: 10px 17px;
+  min-height: 44px;
+  border: 1px solid #515548;
+  border-radius: 99px;
+  font-size: 12px;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.brief-choices input:checked + span {
+  background: var(--lime);
+  color: var(--bg);
+  border-color: var(--lime);
+}
+.brief-choices input:focus-visible + span {
+  outline: 3px solid var(--lime);
+  outline-offset: 4px;
+}
+.brief-choices label:hover > span {
+  border-color: var(--lime);
+}
+.form-field {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 25px;
+}
+.form-field input,
+.form-field textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #515548;
+  border-radius: 0;
+  color: var(--text);
+  font-size: 15px;
+  margin-top: 7px;
+  resize: vertical;
+  max-height: 280px;
+}
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: #9ca28f;
+}
+.form-field input:focus,
+.form-field textarea:focus {
+  border-color: var(--lime);
+}
+.brief-form > .button {
+  width: 100%;
+  margin-top: 7px;
+}
+.form-note {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 15px;
+}
+.form-feedback,
+.form-fallback {
+  font-size: 12px;
+  margin-top: 14px;
+  color: var(--lime);
+}
+.form-fallback {
+  text-decoration: underline;
+}
+.project-dialog {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0;
+  border-radius: 15px;
+  width: min(900px, calc(100% - 40px));
+  max-height: 90dvh;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.project-dialog::backdrop {
+  background: #080a08cc;
+  backdrop-filter: blur(6px);
+}
+.dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  z-index: 1;
+  border-bottom: 1px solid var(--border);
+}
+.dialog-top .eyebrow {
+  color: var(--muted);
+  font-size: 10px;
+}
+.dialog-close {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 27px;
+  line-height: 1;
+  flex: none;
+}
+.dialog-close:hover {
+  background: var(--lime);
+  color: var(--bg);
+}
+.dialog-image {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  object-position: top;
+}
+.dialog-content {
+  padding: 35px;
+}
+.dialog-content h2 {
+  font-size: 46px;
+}
+.case-intro {
+  color: var(--muted);
+  margin-top: 17px;
+  max-width: 620px;
+}
+.case-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  margin-top: 30px;
+}
+.case-columns h3 {
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.case-columns p,
+.case-columns li {
+  font-size: 13px;
+  color: var(--muted);
+}
+.case-columns ul {
+  padding-left: 18px;
+  margin: 0;
+}
+.case-columns li + li {
+  margin-top: 7px;
+}
+.case-columns li::marker {
+  color: var(--lime);
+}
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 30px;
+}
+.dialog-actions > .text-link {
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .brief-form {
+    padding: 0;
+  }
+  .brief-choices label > span {
+    font-size: 11px;
+    padding-inline: 14px;
+  }
+  .project-dialog {
+    width: calc(100% - 24px);
+    max-height: 94dvh;
+  }
+  .dialog-top {
+    padding: 12px 16px;
+  }
+  .dialog-top .eyebrow {
+    font-size: 8px;
+  }
+  .dialog-content {
+    padding: 24px;
+  }
+  .dialog-content h2 {
+    font-size: 34px;
+  }
+  .case-intro {
+    font-size: 14px;
+  }
+  .case-columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .dialog-actions {
+    gap: 12px;
+  }
+  .dialog-actions .button {
+    width: 100%;
+    font-size: 12px;
+  }
+  .dialog-image {
+    max-height: 230px;
+  }
+}

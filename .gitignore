@@ -18,6 +18,7 @@ backend/data/*.json
 
 # Generated/local artifacts
 outputs/
+.playwright-cli/
 .DS_Store
 
 # Logs

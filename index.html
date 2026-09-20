@@ -1,1141 +1,705 @@
 <!doctype html>
 <html lang="ru">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRM для пункта замены масла в Казахстане | EduDev</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EduDev — сайты, системы и цифровизация бизнеса</title>
     <meta
       name="description"
-      content="EduDev внедряет CRM для пунктов замены масла в Казахстане: клиенты, автомобили, история замен, масла, фильтры, склад, оплаты и повторные визиты."
+      content="Помогаем бизнесу работать в цифре. Создаём сайты, CRM, личные кабинеты, автоматизируем процессы и готовим контент. EduDev, Казахстан."
     />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#0f1117" />
+    <meta name="theme-color" content="#141612" />
     <link rel="canonical" href="https://edudev.kz/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_KZ" />
     <meta property="og:site_name" content="EduDev" />
-    <meta property="og:title" content="CRM для пункта замены масла | EduDev" />
+    <meta property="og:title" content="EduDev — ваш бизнес в цифровой форме" />
     <meta
       property="og:description"
-      content="Учет масел, фильтров, пробега, заказов, склада, оплат и повторных визитов в одной системе для ПЗМ."
+      content="Сайты, автоматизация, CRM и контент. От первой идеи до ежедневной работы команды."
     />
     <meta property="og:url" content="https://edudev.kz/" />
-    <meta property="og:image" content="https://edudev.kz/assets/pzm-crm-workflow.jpg" />
-    <meta property="og:image:alt" content="CRM EduDev в пункте замены масла" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="CRM для пункта замены масла | EduDev" />
     <meta
-      name="twitter:description"
-      content="CRM для ПЗМ в Казахстане: масла, фильтры, пробег, склад, оплаты и напоминания клиентам."
+      property="og:image"
+      content="https://edudev.kz/assets/og-edudev.jpg"
     />
-    <meta name="twitter:image" content="https://edudev.kz/assets/pzm-crm-workflow.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="assets/fonts/onest-cyrillic-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <script type="module" src="js/main.js"></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Organization",
-            "@id": "https://edudev.kz/#organization",
-            "name": "EduDev",
-            "url": "https://edudev.kz/",
-            "logo": "https://edudev.kz/assets/hero-auto-crm.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+7-778-275-0874",
-              "contactType": "sales",
-              "areaServed": "KZ",
-              "availableLanguage": ["ru"]
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://edudev.kz/#website",
-            "url": "https://edudev.kz/",
-            "name": "EduDev",
-            "inLanguage": "ru-KZ",
-            "publisher": {
-              "@id": "https://edudev.kz/#organization"
-            }
-          },
-          {
-            "@type": "Service",
-            "@id": "https://edudev.kz/#service",
-            "name": "CRM и учет для пункта замены масла",
-            "provider": {
-              "@id": "https://edudev.kz/#organization"
-            },
-            "areaServed": {
-              "@type": "Country",
-              "name": "Kazakhstan"
-            },
-            "serviceType": "Внедрение CRM для пункта замены масла",
-            "description": "Настройка учета клиентов, автомобилей, истории замен, масел, фильтров, склада, оплат, сотрудников, отчетов и повторных визитов для ПЗМ.",
-            "offers": {
-              "@type": "Offer",
-              "name": "EduDev PZM — партнёрский запуск",
-              "url": "https://edudev.kz/#pricing",
-              "price": "79000",
-              "priceCurrency": "KZT",
-              "description": "Внедрение одной точки ПЗМ за 79 000 ₸. Первый месяц включён, со второго по двенадцатый месяц — 14 900 ₸ в месяц, после первого года — 24 900 ₸ в месяц.",
-              "availability": "https://schema.org/LimitedAvailability"
-            }
-          },
-          {
-            "@type": "FAQPage",
-            "@id": "https://edudev.kz/#faq",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "Это просто программа для клиентов?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Нет. В EduDev ведутся клиенты, автомобили, заказы, склад, деньги и повторные визиты."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Если у нас маленький сервис?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Для небольших точек есть простой старт: учет заказов, клиентов, оплат и отчетов без лишней сложности."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Сотрудники будут пользоваться?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Экраны настраиваются под реальный процесс, а запуск включает обучение владельца, администратора и мастеров."
-                }
-              }
-            ]
-          }
-        ]
+        "@type": "Organization",
+        "name": "EduDev",
+        "url": "https://edudev.kz/",
+        "logo": "https://edudev.kz/assets/favicon.svg",
+        "telephone": "+77782508349",
+        "areaServed": { "@type": "Country", "name": "Kazakhstan" },
+        "description": "Разработка сайтов, автоматизированных систем, CRM, личных кабинетов и контента для бизнеса."
       }
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="styles.css?v=21" />
   </head>
   <body>
-    <header class="site-header" data-header>
-      <a class="brand" href="#top" aria-label="EduDev">
-        <span class="brand-mark" aria-hidden="true">e›</span>
-        <span>
-          <strong>EduDev</strong>
-          <small>Учет сервиса</small>
-        </span>
-      </a>
-      <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" data-nav-toggle>
-        <span></span>
-        <span></span>
-      </button>
-      <nav class="main-nav" data-nav>
-        <a class="nav-pzm-link" href="#pzm-focus">Для замены масла</a>
-        <a href="#suite">Возможности</a>
-        <a href="#solution">Разделы</a>
-        <a href="#segments">Для кого</a>
-        <details class="nav-menu-group">
-          <summary>Направления</summary>
-          <div class="nav-submenu">
-            <a href="/crm-dlya-punkta-zameny-masla/">
-              <span>ПЗМ</span>
-              <small>Масла, фильтры, склад, повторные визиты</small>
-            </a>
-            <a href="/crm-dlya-shinomontazha/">
-              <span>Шиномонтаж</span>
-              <small>Запись, сезон, хранение шин, оплаты</small>
-            </a>
-            <a href="/crm-dlya-sto/">
-              <span>СТО</span>
-              <small>Заказ-наряды, запчасти, мастера</small>
-            </a>
-            <a href="/crm-dlya-avtomoiki/">
-              <span>Автомойка</span>
-              <small>Боксы, смены, услуги, возврат клиентов</small>
-            </a>
-          </div>
-        </details>
-        <a href="#seo-pages">Ниши</a>
-        <a href="#implementation">Внедрение</a>
-        <a href="#pricing">Тарифы</a>
-        <details class="nav-menu-group nav-faq-group">
-          <summary>FAQ</summary>
-          <div class="nav-submenu nav-faq-submenu">
-            <a href="#faq">
-              <span>Это просто программа для клиентов?</span>
-              <small>Нет, внутри клиенты, авто, заказы, склад и деньги.</small>
-            </a>
-            <a href="#faq">
-              <span>Если у нас маленький сервис?</span>
-              <small>Можно начать с простого учета без лишних разделов.</small>
-            </a>
-            <a href="#faq">
-              <span>Сотрудники будут пользоваться?</span>
-              <small>Запуск включает обучение команды под ваш процесс.</small>
-            </a>
-          </div>
-        </details>
-        <a class="nav-cta" href="#contact" data-callback-open>Разобрать учет</a>
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+    <header class="header wrap">
+      <a class="brand" href="#top" aria-label="EduDev — на главную"
+        ><svg viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            d="M5 3h23l-5 6H11v5h13l-5 6h-8v5h17l-5 6H5z"
+            fill="currentColor"
+          /></svg
+        >edu<span>dev</span><span class="brand-dot">↗</span></a
+      >
+      <nav class="nav" id="navigation" aria-label="Основная навигация">
+        <a href="#services">Что делаем</a><a href="#projects">Проекты</a
+        ><a href="#approach">Подход</a><a href="#contact">Контакты</a>
       </nav>
-      <button class="nav-backdrop" type="button" aria-label="Закрыть меню" data-nav-backdrop hidden></button>
+      <a class="header-cta" href="#contact"
+        >Обсудим проект <span aria-hidden="true">↗</span></a
+      >
+      <button
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="navigation"
+        aria-label="Открыть меню"
+        type="button"
+      >
+        <span></span><span></span>
+      </button>
     </header>
-
-    <main id="top">
-      <section class="hero">
-        <div class="rolling-wheel hero-wheel-one" aria-hidden="true"><span></span></div>
-        <div class="rolling-wheel hero-wheel-two" aria-hidden="true"><span></span></div>
+    <main id="main">
+      <section class="hero wrap" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow hero-focus-label"><span>Главное направление</span> CRM для ПЗМ · Казахстан</p>
-          <div class="hero-brand hero-brand-compact" aria-label="EduDev CRM для ПЗМ">
-            <span class="brand-mark hero-mark" aria-hidden="true">e›</span>
-            <span><b>EduDev</b><strong>CRM для ПЗМ</strong></span>
-          </div>
-          <h1>CRM для пункта замены масла: склад, заказы и возврат клиентов</h1>
-          <p class="hero-lead">
-            Система запоминает автомобиль, пробег, залитое масло и установленный
-            фильтр, списывает товары со склада, фиксирует оплату и вовремя
-            возвращает клиента на следующую замену.
+          <p class="eyebrow">
+            <span class="status-dot"></span> Цифровизация бизнеса · Казахстан
+          </p>
+          <h1 id="hero-title">
+            Ваш бизнес.<br />В цифровой<br /><span class="accent">форме.</span
+            ><span class="hero-asterisk" aria-hidden="true">✳</span>
+          </h1>
+          <p class="hero-description">
+            Создаём сайты, автоматизируем процессы<br class="desktop-br" />
+            и наполняем их смыслом. Всё, что нужно<br class="desktop-br" />
+            вашему бизнесу для следующего шага.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#contact" data-callback-open>Получить демонстрацию ПЗМ</a>
-            <button class="button accent" type="button" data-quiz-open>Проверить учет ПЗМ</button>
-            <a class="button secondary" href="/crm-dlya-punkta-zameny-masla/">Посмотреть решение</a>
-          </div>
-          <div class="proof-row" aria-label="Ключевые преимущества">
-            <span>Масла и фильтры на складе</span>
-            <span>История авто и пробега</span>
-            <span>Повторный визит по сроку или пробегу</span>
+            <a class="button button-lime" href="#contact"
+              >Обсудить задачу <span aria-hidden="true">↗</span></a
+            ><a class="text-link" href="#projects"
+              >Смотреть проекты <span aria-hidden="true">↓</span></a
+            >
           </div>
         </div>
-        <div class="hero-visual" aria-label="EduDev в пункте замены масла">
-          <div class="hero-image-card hero-pzm-card">
+        <div
+          class="hero-visual"
+          aria-label="Примеры проектов EduDev: Pacman и Istanbul Doner"
+        >
+          <div class="orbit orbit-one" aria-hidden="true"></div>
+          <div class="orbit orbit-two" aria-hidden="true"></div>
+          <div class="visual-caption">
+            <span class="tiny-cross" aria-hidden="true">+</span> Сделано в
+            EduDev <span>01 — 05</span>
+          </div>
+          <div class="hero-window window-pacman">
+            <div class="window-chrome">
+              <span class="window-dots" aria-hidden="true">● ● ●</span
+              ><span>pacman / digital experience</span
+              ><span aria-hidden="true">↗</span>
+            </div>
             <img
-              src="assets/pzm-crm-workflow.jpg"
-              alt="Мастер, масла, фильтры и планшет с CRM в пункте замены масла"
-              width="1672"
-              height="941"
-              decoding="async"
+              src="assets/projects/pacman.jpg"
+              alt="Первый экран сайта сети компьютерных клубов Pacman"
+              width="1360"
+              height="900"
               fetchpriority="high"
             />
-            <div class="hero-image-badge">
-              <strong>Пункт замены масла под контролем</strong>
-              <span>масло · фильтр · пробег · следующий визит</span>
+          </div>
+          <div class="hero-window window-istanbul">
+            <div class="window-chrome">
+              <span class="window-dots" aria-hidden="true">● ● ●</span
+              ><span>istanbul / online menu</span>
             </div>
-            <div class="hero-pzm-metrics" aria-label="Пример показателей ПЗМ">
-              <span><small>Следующая замена</small><b>через 7 000 км</b></span>
-              <span><small>Склад сегодня</small><b>масла и фильтры</b></span>
-            </div>
+            <img
+              src="assets/projects/istanbul.jpg"
+              alt="Сайт и онлайн-меню Istanbul Doner"
+              width="1360"
+              height="900"
+            />
+          </div>
+          <div class="made-badge">
+            <span aria-hidden="true">↗</span
+            ><span>От идеи<br />до запуска</span>
+          </div>
+          <div class="visual-footer">
+            <span>Дизайн × Разработка × Контент</span
+            ><span aria-hidden="true">[ ed. ]</span>
           </div>
         </div>
-      </section>
-
-      <section class="metrics-strip" aria-label="Ключевые условия и результаты">
-        <article>
-          <strong>1 заказ</strong>
-          <span>связывает авто, пробег, масло, фильтр и оплату</span>
-        </article>
-        <article>
-          <strong>Склад</strong>
-          <span>масла и фильтры списываются прямо из заказа</span>
-        </article>
-        <article>
-          <strong>Повтор</strong>
-          <span>напоминание по дате или следующему пробегу</span>
-        </article>
-        <article>
-          <strong>1 экран</strong>
-          <span>для смены, кассы, остатков и отчета владельцу</span>
-        </article>
-      </section>
-
-      <section class="oil-focus-section" id="pzm-focus">
-        <div class="oil-focus-copy">
-          <p class="eyebrow">Основное решение EduDev</p>
-          <h2>Всё, что происходит в ПЗМ, связано в один быстрый рабочий процесс</h2>
-          <p>
-            Администратор не заполняет пять таблиц. Он открывает автомобиль,
-            фиксирует пробег, добавляет масло и фильтр, принимает оплату — всё
-            остальное система сохраняет для склада, отчета и следующего визита.
-          </p>
-          <div class="oil-focus-actions">
-            <a class="button accent" href="#demo">Посмотреть путь заказа</a>
-            <a class="oil-text-link" href="/crm-dlya-punkta-zameny-masla/">Подробнее о CRM для ПЗМ <span>→</span></a>
-          </div>
-        </div>
-        <div class="oil-focus-flow" aria-label="Рабочий процесс пункта замены масла">
-          <article>
-            <span>01</span>
-            <div><strong>Авто и пробег</strong><small>Клиент и история обслуживания найдены за секунды.</small></div>
-          </article>
-          <article>
-            <span>02</span>
-            <div><strong>Масло и фильтр</strong><small>Товары добавлены в заказ и списаны с остатков.</small></div>
-          </article>
-          <article>
-            <span>03</span>
-            <div><strong>Оплата и смена</strong><small>Выручка, скидка и мастер видны владельцу.</small></div>
-          </article>
-          <article>
-            <span>04</span>
-            <div><strong>Следующая замена</strong><small>Напоминание создано по сроку или пробегу.</small></div>
-          </article>
+        <div class="hero-bottom">
+          <span>Одна команда. Весь путь.</span>
+          <p>От первого впечатления клиента<br />до порядка внутри компании.</p>
+          <a href="#services" aria-label="Перейти к услугам">↓</a>
         </div>
       </section>
-
-      <section class="conversion-lab" aria-label="Быстрый аудит учета">
-        <div class="rolling-wheel conversion-wheel" aria-hidden="true"><span></span></div>
-        <div class="conversion-copy">
-          <p class="eyebrow">Аудит ПЗМ за 40 секунд</p>
-          <h2>Узнайте, где пункт замены масла теряет склад, деньги и повторных клиентов</h2>
-          <p>
-            Отметьте пару симптомов, и мы покажем, с чего начать: история авто,
-            склад масел и фильтров, касса или возврат клиентов на следующую замену.
-          </p>
-          <div class="conversion-actions">
-            <button class="button primary" type="button" data-quiz-open>Запустить аудит</button>
-            <a class="button whatsapp-inline" href="#" data-whatsapp-link>Написать в WhatsApp</a>
-          </div>
-        </div>
-        <div class="conversion-board" data-live-board>
-          <div class="board-pulse">
-            <span></span>
-            <strong>Сейчас смотрим</strong>
-          </div>
-          <div class="conversion-score">
-            <span>Стартовый контур</span>
-            <strong>3 шага</strong>
-            <small>заказ, склад и следующий визит клиента</small>
-          </div>
-          <div class="conversion-tasks">
-            <article class="active">
-              <span>01</span>
-              <strong>Собрать автомобили и историю замен</strong>
-            </article>
-            <article>
-              <span>02</span>
-              <strong>Связать масло и фильтр со складом</strong>
-            </article>
-            <article>
-              <span>03</span>
-              <strong>Вернуть клиента на следующую замену</strong>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="before-after-section" aria-label="Сравнение ручного учета и EduDev CRM">
-        <div class="section-head narrow">
-          <p class="eyebrow">До и после внедрения</p>
-          <h2>От тетрадки, чеков и усталости к чистому рабочему экрану</h2>
-          <p>
-            Слева привычный хаос ручного учета в сервисе. Справа тот же процесс,
-            но уже через EduDev CRM: заказы, склад, оплаты и напоминания в одном месте.
-          </p>
-        </div>
-        <figure class="before-after-visual">
-          <img
-            src="assets/service-before-after-crm.jpg"
-            alt="Сравнение ручного учета в тетрадке и работы с EduDev CRM на планшете в автосервисе"
-            loading="lazy"
-            decoding="async"
-            width="1672"
-            height="941"
-          />
-          <div class="before-after-motion" aria-hidden="true">
-            <span class="paper-chip paper-one"></span>
-            <span class="paper-chip paper-two"></span>
-            <span class="paper-chip paper-three"></span>
-            <span class="crm-glow glow-one"></span>
-            <span class="crm-glow glow-two"></span>
-            <span class="divider-light"></span>
-          </div>
-          <figcaption>
-            <span>Ручной учет</span>
-            <strong>EduDev CRM</strong>
-          </figcaption>
-        </figure>
-      </section>
-
-      <section class="suite-section" id="suite">
-        <div class="section-head">
-          <p class="eyebrow">Все процессы сервиса</p>
-          <h2>От записи клиента до отчета владельца — в одной рабочей системе</h2>
-          <p>
-            Система должна быть понятной администратору, полезной мастеру и
-            достаточно прозрачной для владельца. Поэтому показываем не “много
-            кнопок”, а ежедневные рабочие экраны.
-          </p>
-        </div>
-        <div class="suite-grid">
-          <article class="suite-card large">
-            <div>
-              <span class="suite-kicker">Администратор</span>
-              <h3>Оформляет визит без тетради и лишних сообщений</h3>
-              <p>Клиент, автомобиль, услуги, товары, мастер, скидка и оплата собираются в один заказ.</p>
-            </div>
-            <div class="ui-mock order-mock" aria-label="Макет экрана заказа">
-              <div class="ui-top">
-                <strong>Заказ #1842</strong>
-                <span>В работе</span>
-              </div>
-              <div class="order-client">
-                <b>Toyota Camry · А 777 КЗ</b>
-                <small>Клиент: Ерлан · пробег 84 200 км</small>
-              </div>
-              <div class="ui-columns">
-                <span><b>Мастер</b><small>Азамат</small></span>
-                <span><b>Оплата</b><small>24 500 ₸</small></span>
-                <span><b>Скидка</b><small>0 ₸</small></span>
-              </div>
-              <div class="ui-table">
-                <div><span>Замена масла</span><b>8 000 ₸</b></div>
-                <div><span>Масло 5W-30 · 4 л</span><b>14 000 ₸</b></div>
-                <div><span>Фильтр масляный</span><b>2 500 ₸</b></div>
-                <div><span>Напоминание через 4 месяца</span><b class="ok">создано</b></div>
-              </div>
-            </div>
-          </article>
-          <article class="suite-card">
-            <span class="suite-kicker">Склад</span>
-            <h3>Масла и фильтры списываются из заказа</h3>
-            <p>Продажа, фактический расход и остаток каждой позиции остаются в одном движении.</p>
-            <div class="stock-widget">
-              <div><span>Масло 5W-30</span><b>18 л</b></div>
-              <div><span>Фильтр Toyota</span><b>7 шт</b></div>
-              <div><span>Масло 0W-20</span><b>12 л</b></div>
-              <div class="low"><span>Фильтр Hyundai</span><b>мало</b></div>
-            </div>
-          </article>
-          <article class="suite-card">
-            <span class="suite-kicker">Повторные визиты</span>
-            <h3>Следующая замена не теряется</h3>
-            <p>После закрытия заказа система сохраняет пробег и ставит задачу связаться с клиентом по сроку или километражу.</p>
-            <div class="reminder-stack">
-              <b><span>Замена масла</span><small>через 4 месяца</small></b>
-              <b><span>Следующий пробег</span><small>91 200 км</small></b>
-              <b><span>Связаться с клиентом</span><small>за 7 дней</small></b>
-            </div>
-          </article>
-          <article class="suite-card wide">
-            <div>
-              <span class="suite-kicker">Владелец</span>
-              <h3>Видит деньги, склад и работу сотрудников</h3>
-              <p>Выручка, скидки, средний чек, популярные услуги, товары и действия команды доступны без ручных сводок.</p>
-            </div>
-            <div class="ui-mock analytics-mock" aria-label="Макет экрана отчетов">
-              <div class="donut"><strong>72%</strong><small>план</small></div>
-              <div>
-                <div class="analytics-numbers">
-                  <span><b>1.8 млн ₸</b><small>выручка</small></span>
-                  <span><b>128</b><small>заказов</small></span>
-                </div>
-                <div class="line-chart"><span></span><span></span><span></span><span></span><span></span></div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="pain-band" id="problems">
-        <div class="section-head">
-          <p class="eyebrow">Почему владельцу трудно расти</p>
-          <h2>Когда учет держится в тетради, таблицах и переписках, бизнес теряет деньги незаметно</h2>
-        </div>
-        <div class="pain-grid">
-          <article>
-            <span class="icon">₸</span>
-            <h3>Не видно реальную прибыль</h3>
-            <p>Выручка есть, но непонятно, какие услуги, товары, мастера и смены действительно приносят деньги.</p>
-          </article>
-          <article>
-            <span class="icon">▦</span>
-            <h3>Склад живет отдельно</h3>
-            <p>Масла и фильтры считаются “на глаз”, поэтому фактический расход не сходится с продажами и остатками.</p>
-          </article>
-          <article>
-            <span class="icon">↻</span>
-            <h3>Клиенты не возвращаются</h3>
-            <p>Пробег следующей замены остается в тетради, и клиенту никто вовремя не напоминает о визите.</p>
-          </article>
-          <article>
-            <span class="icon">✓</span>
-            <h3>Сотрудники работают по памяти</h3>
-            <p>Скидки, отмены, изменения цен и задачи остаются без прозрачной истории действий.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="solution-section" id="solution">
-        <div class="section-head narrow">
-          <p class="eyebrow">Система под ваш процесс</p>
-          <h2>Сначала закрываем главные проблемы, потом расширяем систему по мере роста</h2>
-          <p>
-            Мы не продаем абстрактную программу и не грузим вас лишними возможностями.
-            Сначала разбираем, где теряются клиенты, склад, деньги и время
-            сотрудников, а затем настраиваем понятный порядок работы под ваш сервис.
-          </p>
-        </div>
-        <div class="module-builder">
-          <div class="builder-summary">
-            <span class="summary-label">Выбор разделов</span>
-            <h3>Начинаем с того, что реально нужно вашему сервису</h3>
-            <p>
-              На разборе учета мы не продаем “все сразу”. Сначала выбираем
-              рабочий набор под ваш формат, команду и текущие проблемы.
+      <div class="project-strip wrap" aria-label="Проекты EduDev">
+        <span class="strip-label"
+          >Бизнесы, с которыми<br />работаем в цифре</span
+        ><span class="wordmark pacman-word"
+          >PACMAN<small>GAME CENTER</small></span
+        ><span class="wordmark istanbul-word">ISTANBUL<small>DONER</small></span
+        ><span class="wordmark alim-word">Alim<small>SERVICE</small></span
+        ><span class="wordmark maestro-word"
+          >maestro<small>MUSIC SCHOOL</small></span
+        ><span class="wordmark edudev-word"
+          >edudev<small>CRM FOR BUSINESS</small></span
+        >
+      </div>
+      <section
+        class="section wrap services"
+        id="services"
+        aria-labelledby="services-title"
+      >
+        <div class="section-heading">
+          <p class="eyebrow section-index">01 / Что делаем</p>
+          <div>
+            <h2 id="services-title">
+              Красиво снаружи.<br /><span class="muted">Продумано внутри.</span>
+            </h2>
+            <p class="section-description">
+              Клиенту — удобно выбрать и заказать.<br />Команде — понятно, что
+              делать дальше.<br />Владельцу — видно, как работает бизнес.
             </p>
-            <div class="package-stack">
-              <article>
-                <strong>Легкий старт</strong>
-                <span>клиенты · авто · заказы · оплата</span>
-              </article>
-              <article>
-                <strong>Сервис со складом</strong>
-                <span>остатки · списания · закупки · отчеты</span>
-              </article>
-              <article>
-                <strong>Рост и контроль</strong>
-                <span>напоминания · отчеты · доступы · 2+ точки</span>
-              </article>
-            </div>
-          </div>
-          <div class="module-picker" aria-label="Разделы системы" data-module-picker>
-            <article class="module-card selected locked" data-module="Клиенты, авто и заказы">
-              <span>База</span>
-              <h3>Клиенты, авто и заказы</h3>
-              <p>Чтобы администратор быстро оформлял визит, а история клиента и автомобиля не терялась.</p>
-            </article>
-            <article class="module-card" data-module="Склад и остатки">
-              <span>Товары</span>
-              <h3>Склад и остатки</h3>
-              <p>Чтобы масла, фильтры, запчасти, химия и расходники списывались из заказов и сходились по остаткам.</p>
-            </article>
-            <article class="module-card" data-module="Напоминания клиентам">
-              <span>Возврат</span>
-              <h3>Напоминания клиентам</h3>
-              <p>Чтобы следующая замена рассчитывалась по сроку или пробегу и не зависела от памяти администратора.</p>
-            </article>
-            <article class="module-card" data-module="Деньги и отчеты">
-              <span>Контроль</span>
-              <h3>Деньги и отчеты</h3>
-              <p>Чтобы владелец видел выручку, средний чек, скидки, сотрудников, популярные услуги и товары.</p>
-            </article>
-            <article class="module-card" data-module="Замена масла, СТО, шины или мойка">
-              <span>Отрасль</span>
-              <h3>Замена масла, СТО, шины или мойка</h3>
-              <p>Подбор масла, заказ-наряды, хранение шин, запись по боксам и другой порядок работы под ваш сервис.</p>
-            </article>
-            <article class="module-card quiet" data-module="Расширение позже">
-              <span>Позже</span>
-              <h3>Расширение</h3>
-              <p>Запись через сайт, сообщения клиентам, перенос таблиц, фото до/после, несколько точек и дополнительные отчеты.</p>
-            </article>
-            <div class="module-request">
-              <div>
-                <span>Выбранный набор</span>
-                <strong data-selected-modules>Клиенты, авто и заказы</strong>
-              </div>
-              <a class="button primary" href="#contact" data-module-cta data-callback-open>Оставить заявку с этим набором</a>
-            </div>
           </div>
         </div>
-      </section>
-
-      <section class="segments-section" id="segments">
-        <div class="section-head">
-          <p class="eyebrow">Главный фокус — замена масла</p>
-          <h2>ПЗМ получает специализированный процесс, другие направления подключаем по запросу</h2>
-          <p>Основной сценарий EduDev сейчас строится вокруг масел, фильтров, пробега, склада и повторных замен.</p>
-        </div>
-        <div class="tabs" data-tabs>
-          <div class="tab-buttons" role="tablist" aria-label="Типы бизнеса">
-            <button class="active" type="button" data-tab="oil">Замена масла</button>
-            <button type="button" data-tab="tires">Шиномонтаж</button>
-            <button type="button" data-tab="repair">СТО</button>
-            <button type="button" data-tab="wash">Автомойка</button>
-          </div>
-          <div class="tab-panel active" data-panel="oil">
-            <div>
-              <h3>Пункт замены масла</h3>
-              <p>Система запоминает автомобиль, масло, фильтры, пробег, сумму и дату следующего визита.</p>
-              <ul>
-                <li>Склад масел, фильтров и расходников</li>
-                <li>Подбор товара под автомобиль</li>
-                <li>Напоминания клиенту о повторной замене</li>
-              </ul>
+        <div class="services-grid">
+          <article class="service">
+            <div class="service-top">
+              <span>01</span
+              ><svg viewBox="0 0 48 48" aria-hidden="true">
+                <rect x="5" y="8" width="38" height="30" rx="3" />
+                <path d="M5 17h38M12 12h1m5 0h1M12 24h14m-14 6h8" />
+              </svg>
             </div>
-            <div class="niche-screen oil-screen" aria-label="Экран пункта замены масла">
-              <div class="screen-bar"><strong>Замена масла · Быстрый заказ</strong><span>Повторный визит</span></div>
-              <div class="screen-body">
-                <div class="vehicle-card">
-                  <span>Toyota Camry</span>
-                  <strong>5W-30 · 4 л</strong>
-                  <small>следующая замена через 4 месяца</small>
-                </div>
-                <div class="product-list">
-                  <div><span>Масло Shell 5W-30</span><b>18 л</b></div>
-                  <div><span>Фильтр Toyota</span><b>7 шт</b></div>
-                  <div><span>Работа мастера</span><b>8 000 ₸</b></div>
-                </div>
-              </div>
+            <h3>Сайты и дизайн</h3>
+            <p>
+              Первое впечатление, которое ведёт к действию. От лендинга до
+              каталога и онлайн-заказа.
+            </p>
+            <div class="service-tags">
+              Сайты · Интерфейсы · Интернет-магазины
             </div>
-          </div>
-          <div class="tab-panel" data-panel="tires">
-            <div>
-              <h3>Шиномонтаж и шинный центр</h3>
-              <p>Удобная сезонная запись, история комплектов, хранение шин и напоминания о переобувке.</p>
-              <ul>
-                <li>Размеры шин и комплекты клиентов</li>
-                <li>Учет хранения и расходников</li>
-                <li>Загрузка мастеров и постов</li>
-              </ul>
-            </div>
-            <div class="niche-screen tires-screen" aria-label="Экран шиномонтажа">
-              <div class="screen-bar"><strong>Шиномонтаж · Сезонная запись</strong><span>12 постов</span></div>
-              <div class="calendar-grid">
-                <div><b>09:00</b><span>R17 · хранение</span></div>
-                <div><b>10:30</b><span>R16 · переобувка</span></div>
-                <div><b>12:00</b><span>R18 · балансировка</span></div>
-                <div><b>14:00</b><span>R15 · ремонт</span></div>
-              </div>
-              <div class="tire-storage">
-                <span>Комплект клиента</span>
-                <strong>205/55 R16 · склад A-12</strong>
-              </div>
-            </div>
-          </div>
-          <div class="tab-panel" data-panel="repair">
-            <div>
-              <h3>СТО и смешанный сервис</h3>
-              <p>Заказ-наряд ведет клиента от жалобы и диагностики до работ, запчастей, оплаты и отчета владельцу.</p>
-              <ul>
-                <li>Работы и запчасти отдельно</li>
-                <li>Статусы ремонта и ответственные мастера</li>
-                <li>Прибыль по заказам, работам и товарам</li>
-              </ul>
-            </div>
-            <div class="niche-screen repair-screen" aria-label="Экран СТО">
-              <div class="screen-bar"><strong>СТО · Заказ-наряд</strong><span>Диагностика</span></div>
-              <div class="repair-layout">
-                <div class="status-rail">
-                  <span class="done">Принят</span>
-                  <span class="active">В ремонте</span>
-                  <span>Готов</span>
-                </div>
-                <div class="work-list">
-                  <div><span>Жалоба клиента</span><b>стук подвески</b></div>
-                  <div><span>Работа</span><b>замена стойки</b></div>
-                  <div><span>Запчасть</span><b>2 шт · склад</b></div>
-                  <div><span>Итого</span><b>46 000 ₸</b></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="tab-panel" data-panel="wash">
-            <div>
-              <h3>Автомойка и детейлинг</h3>
-              <p>Запись по времени, боксы, услуги, абонементы, постоянные клиенты и контроль смен.</p>
-              <ul>
-                <li>Календарь записей и загрузка боксов</li>
-                <li>Пакеты, абонементы и акции</li>
-                <li>Отчеты по услугам и сотрудникам</li>
-              </ul>
-            </div>
-            <div class="niche-screen wash-screen" aria-label="Экран автомойки">
-              <div class="screen-bar"><strong>Автомойка · Запись по боксам</strong><span>сегодня</span></div>
-              <div class="wash-lanes">
-                <div><b>Бокс 1</b><span>10:00 комплекс</span><span>11:00 свободно</span></div>
-                <div><b>Бокс 2</b><span>10:30 детейлинг</span><span>12:00 химчистка</span></div>
-                <div><b>Бокс 3</b><span>09:30 экспресс</span><span>11:30 абонемент</span></div>
-              </div>
-              <div class="wash-total"><span>Выручка смены</span><strong>185 000 ₸</strong></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="workflow-section" id="demo">
-        <div class="section-head narrow">
-          <p class="eyebrow">Реальный день сервиса</p>
-          <h2>Один заказ проходит через клиента, склад, оплату и повторный визит</h2>
-        </div>
-        <div class="workflow-showcase">
-          <div class="timeline" aria-label="Как проходит заказ">
-          <article class="workflow-step">
-            <span class="step-number">01</span>
-            <span class="step-chip">Поиск</span>
-            <h3>Клиент приехал</h3>
-            <p>Администратор находит клиента по телефону или госномеру и сразу видит историю автомобиля.</p>
+            <a href="#contact" data-service="Сайт и дизайн"
+              >Нужен сайт <span aria-hidden="true">↗</span></a
+            >
           </article>
-          <article class="workflow-step">
-            <span class="step-number">02</span>
-            <span class="step-chip">Заказ</span>
-            <h3>Создан заказ</h3>
-            <p>В заказ добавляются услуги, товары, мастер, скидка и комментарии по работе.</p>
-          </article>
-          <article class="workflow-step">
-            <span class="step-number">03</span>
-            <span class="step-chip">Склад</span>
-            <h3>Склад списался</h3>
-            <p>Масло, фильтр, химия или запчасть уходят со склада без ручных пересчетов в конце дня.</p>
-          </article>
-          <article class="workflow-step">
-            <span class="step-number">04</span>
-            <span class="step-chip">Оплата</span>
-            <h3>Оплата и напоминание</h3>
-            <p>Система фиксирует оплату и ставит задачу вернуть клиента в нужный срок.</p>
-          </article>
-          <article class="workflow-step">
-            <span class="step-number">05</span>
-            <span class="step-chip">Отчет</span>
-            <h3>Владелец видит отчет</h3>
-            <p>Выручка, прибыль, склад, сотрудники, скидки и повторные клиенты доступны в одном кабинете.</p>
-          </article>
-          </div>
-          <div class="service-day-board" aria-label="Пример рабочего экрана сервиса">
-            <div class="board-top">
-              <strong>Сегодня · Замена масла</strong>
-              <span>12 заказов</span>
+          <article class="service">
+            <div class="service-top">
+              <span>02</span
+              ><svg viewBox="0 0 48 48" aria-hidden="true">
+                <rect x="18" y="3" width="12" height="12" rx="2" />
+                <rect x="3" y="33" width="12" height="12" rx="2" />
+                <rect x="33" y="33" width="12" height="12" rx="2" />
+                <path d="M24 15v10M9 33v-8h30v8" />
+              </svg>
             </div>
-            <div class="board-client">
-              <span>Toyota Camry · Ерлан</span>
-              <strong>Заказ #1842 · В работе</strong>
+            <h3>Системы и CRM</h3>
+            <p>
+              Заявки, клиенты, задачи и учёт — в рабочем пространстве, собранном
+              под ваши процессы.
+            </p>
+            <div class="service-tags">
+              Автоматизация · Кабинеты · Интеграции
             </div>
-            <div class="board-status">
-              <span class="done">Принят</span>
-              <span class="active">Работа идет</span>
-              <span>Оплата</span>
-              <span>Напомнить</span>
-            </div>
-            <div class="board-grid">
-              <div><span>Услуги</span><b>8 000 ₸</b></div>
-              <div><span>Товары</span><b>16 500 ₸</b></div>
-              <div><span>Склад</span><b>списано</b></div>
-              <div><span>Следующий визит</span><b>через 4 месяца</b></div>
-            </div>
-            <div class="board-reminder">
-              <span>Задача администратору</span>
-              <strong>Напомнить клиенту о следующей замене масла 3 ноября</strong>
-            </div>
-            <div class="board-total">
-              <span>Итого по заказу</span>
-              <strong>24 500 ₸</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="implementation-section" id="implementation">
-        <div class="section-head">
-          <p class="eyebrow">Личный запуск</p>
-          <h2>Помогаем не просто подключить систему, а довести ее до ежедневного использования</h2>
-          <p>Партнёрский запуск включает сопровождение первых двух смен и контрольные встречи на 14-й и 30-й день, чтобы команда уверенно перешла на новый порядок.</p>
-        </div>
-        <div class="steps-grid launch-roadmap">
-          <article>
-            <span class="launch-number">01</span>
-            <span class="launch-icon">Учет</span>
-            <h3>Разбор учета</h3>
-            <p>Смотрим, как сейчас идут клиенты, заказы, склад, оплаты, ответственность сотрудников и отчеты.</p>
+            <a href="#contact" data-service="Система и CRM"
+              >Навести порядок <span aria-hidden="true">↗</span></a
+            >
           </article>
-          <article>
-            <span class="launch-number">02</span>
-            <span class="launch-icon">Набор</span>
-            <h3>Выбор разделов</h3>
-            <p>Определяем, какие разделы нужны на старте, а что можно спокойно подключить позже.</p>
+          <article class="service">
+            <div class="service-top">
+              <span>03</span
+              ><svg viewBox="0 0 48 48" aria-hidden="true">
+                <path
+                  d="M9 42V6h25l6 6v30H9Zm24-36v9h7M16 23h17M16 30h17M16 36h10"
+                />
+              </svg>
+            </div>
+            <h3>Контент и подача</h3>
+            <p>
+              Помогаем объяснить ценность бизнеса. Готовим тексты, визуалы,
+              карточки и материалы для запуска.
+            </p>
+            <div class="service-tags">Тексты · Визуалы · Наполнение</div>
+            <a href="#contact" data-service="Контент"
+              >Рассказать о бизнесе <span aria-hidden="true">↗</span></a
+            >
           </article>
-          <article>
-            <span class="launch-number">03</span>
-            <span class="launch-icon">Порядок</span>
-            <h3>Настройка</h3>
-            <p>Загружаем услуги, товары, сотрудников, доступы, пробные заказы и оформление компании.</p>
-          </article>
-          <article>
-            <span class="launch-number">04</span>
-            <span class="launch-icon">Команда</span>
-            <h3>Обучение</h3>
-            <p>Показываем владельцу, администратору и мастерам их ежедневный порядок работы.</p>
-          </article>
-          <article>
-            <span class="launch-number">05</span>
-            <span class="launch-icon">Запуск</span>
-            <h3>Запуск</h3>
-            <p>Сопровождаем первые смены, поправляем неудобные места и остаемся на поддержке.</p>
+          <article class="service">
+            <div class="service-top">
+              <span>04</span
+              ><svg viewBox="0 0 48 48" aria-hidden="true">
+                <path d="m9 39 30-30M14 9h25v25M6 24v18h18" />
+              </svg>
+            </div>
+            <h3>Запуск и развитие</h3>
+            <p>
+              Подключаем, проверяем сценарии, знакомим команду с системой и
+              развиваем её вместе с бизнесом.
+            </p>
+            <div class="service-tags">Внедрение · Обучение · Поддержка</div>
+            <a href="#contact" data-service="Запуск и развитие"
+              >Обсудить развитие <span aria-hidden="true">↗</span></a
+            >
           </article>
         </div>
       </section>
-
-      <section class="pricing-section" id="pricing">
-        <div class="section-head">
-          <p class="eyebrow">Первые 10 клиентов</p>
-          <h2>EduDev PZM — партнёрский запуск</h2>
-          <p>Запускаем первые пункты замены масла на специальных условиях и лично сопровождаем переход команды на новый учет.</p>
-        </div>
-        <div class="support-offer partner-offer-bar">
-          <span>Лимит предложения</span>
-          <strong>Только 10 партнёрских запусков</strong>
-          <p>79 000 ₸ за внедрение, первый месяц включён. Льготная абонентская плата действует весь первый год.</p>
-        </div>
-        <div class="partner-pricing">
-          <div class="partner-offer-main">
-            <span class="partner-badge">Партнёрская цена</span>
-            <h3>Полный запуск одной точки ПЗМ</h3>
-            <p>Не самостоятельная настройка, а внедрение под ключ с обучением и сопровождением первых смен.</p>
-            <div class="partner-launch-price">
-              <strong>79 000 ₸</strong>
-              <span>за внедрение</span>
-            </div>
-            <div class="partner-price-schedule">
-              <div><span>Первый месяц</span><strong>включён</strong></div>
-              <div><span>Со 2-го по 12-й месяц</span><strong>14 900 ₸/мес</strong></div>
-              <div><span>После первого года</span><strong>24 900 ₸/мес</strong></div>
-            </div>
-            <div class="partner-year-total">
-              <span>Полная стоимость первого года</span>
-              <strong>242 900 ₸</strong>
-              <small>79 000 + 11 × 14 900</small>
-            </div>
-            <a class="button accent" href="#contact" data-callback-open>Стать партнёром EduDev PZM</a>
-          </div>
-          <div class="partner-includes-panel">
-            <p class="eyebrow">Всё включено</p>
-            <h3>Что получает пункт замены масла</h3>
-            <ul class="partner-includes-list">
-              <li>Одна точка</li>
-              <li>До пяти сотрудников</li>
-              <li>Клиенты и автомобили</li>
-              <li>Быстрый заказ</li>
-              <li>Услуги и товары</li>
-              <li>Склад и списание</li>
-              <li>Оплаты</li>
-              <li>Напоминание о следующей замене</li>
-              <li>Базовая аналитика</li>
-              <li>Один подготовленный импорт</li>
-              <li>Две обучающие встречи</li>
-              <li>Сопровождение первых двух смен</li>
-              <li>Контрольные встречи на 14-й и 30-й день</li>
-            </ul>
-          </div>
-        </div>
-        <div class="calculator partner-calculator" aria-label="Калькулятор стоимости EduDev PZM">
+      <section
+        class="section wrap projects"
+        id="projects"
+        aria-labelledby="projects-title"
+      >
+        <div class="projects-heading">
           <div>
-            <p class="eyebrow">Прозрачный расчёт</p>
-            <h3>Сколько стоит работа в EduDev PZM</h3>
-            <p>Выберите период. В расчёте уже учтены внедрение, включённый первый месяц и партнёрская цена первого года.</p>
+            <p class="eyebrow section-index">02 / Из нашей практики</p>
+            <h2 id="projects-title">Разные бизнесы.<br />Свои решения.</h2>
           </div>
-          <form data-calculator>
-            <label>
-              Период работы
-              <select name="period">
-                <option value="1">Первый месяц</option>
-                <option value="3">3 месяца</option>
-                <option value="6">6 месяцев</option>
-                <option value="12" selected>Первый год</option>
-                <option value="24">Два года</option>
-              </select>
-            </label>
-            <div class="calculator-included">
-              <span>Уже включено</span>
-              <strong>Внедрение, первый месяц и весь стартовый пакет</strong>
-            </div>
-            <output>
-              <strong data-total>242 900 ₸</strong>
-              <span data-total-period>за первый год</span>
-            </output>
-            <p class="calculator-formula" data-total-formula>79 000 + 11 × 14 900 = 242 900 ₸</p>
-          </form>
-        </div>
-        <div class="urgency-banner">
-          <div>
-            <span>Первые 10 клиентов</span>
-            <strong>Зафиксируйте партнёрскую цену на 12 месяцев</strong>
-            <p>Сначала покажем решение на вашем процессе, затем согласуем импорт, обучение и даты сопровождения первых смен.</p>
-          </div>
-          <button class="button accent" type="button" data-callback-open>Забронировать запуск</button>
-        </div>
-      </section>
-
-      <section class="trust-section">
-        <div class="section-head">
-          <p class="eyebrow">Надежный запуск</p>
-          <h2>Вы получаете не просто программу, а внедрение под ваш реальный сервис</h2>
-        </div>
-        <div class="trust-layout">
-          <div class="launch-plan" aria-label="Пример плана запуска">
-            <span class="brand-mark launch-plan-mark" aria-hidden="true">e›</span>
-            <div class="launch-plan-top">
-              <span>План запуска</span>
-              <strong>14 дней до рабочего учета</strong>
-            </div>
-            <div class="launch-progress">
-              <span style="width: 68%"></span>
-            </div>
-            <div class="launch-calendar">
-              <article>
-                <span>День 1</span>
-                <strong>Разбор текущего учета</strong>
-                <small>клиенты · заказы · склад · деньги</small>
-              </article>
-              <article>
-                <span>День 3</span>
-                <strong>Загрузка услуг и товаров</strong>
-                <small>цены · остатки · сотрудники</small>
-              </article>
-              <article>
-                <span>День 7</span>
-                <strong>Обучение команды</strong>
-                <small>администратор · мастера · владелец</small>
-              </article>
-              <article>
-                <span>День 14</span>
-                <strong>Первые смены в системе</strong>
-                <small>проверка заказов и отчетов</small>
-              </article>
-            </div>
-            <div class="launch-owner">
-              <div>
-                <span>Ответственный</span>
-                <strong>Внедренец EduDev</strong>
-              </div>
-              <div>
-                <span>После запуска</span>
-                <strong>Контроль на 14-й и 30-й день</strong>
-              </div>
-            </div>
-          </div>
-          <div class="trust-points">
-            <article>
-              <h3>Локальное внедрение</h3>
-              <p>Можно созвониться, приехать, обучить команду и разобрать процесс на месте.</p>
-            </article>
-            <article>
-              <h3>Показ на вашем процессе</h3>
-              <p>Перед запуском показываем путь ПЗМ: автомобиль, пробег, масло, фильтр, оплата, склад и следующий визит.</p>
-            </article>
-            <article>
-              <h3>Контроль сотрудников</h3>
-              <p>Владелец видит заказы, оплаты, скидки, изменения склада и действия команды.</p>
-            </article>
-            <article>
-              <h3>Поддержка после запуска</h3>
-              <p>После внедрения остаемся на связи: помогаем с вопросами, настройками и доработками.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="seo-pages-section" id="seo-pages">
-        <div class="section-head">
-          <p class="eyebrow">Основное и дополнительные направления</p>
-          <h2>Начинаем с глубокой CRM для пункта замены масла</h2>
           <p>
-            ПЗМ — главное направление разработки и внедрения EduDev. Решения для
-            шиномонтажа, СТО и автомойки сохраняются как дополнительные сценарии.
+            Игровой клуб, кафе, сервисный центр<br />или школа. Начинаем с
+            того,<br />как устроен именно ваш бизнес.
           </p>
         </div>
-        <div class="seo-pages-grid">
-          <a class="pzm-feature" href="/crm-dlya-punkta-zameny-masla/">
-            <span>Главное направление · ПЗМ</span>
-            <strong>CRM для пункта замены масла</strong>
-            <small>Автомобили, пробег, масла, фильтры, склад, оплаты, смены и повторные визиты — в одном рабочем процессе.</small>
-          </a>
-          <a href="/crm-dlya-shinomontazha/">
-            <span>Шины</span>
-            <strong>CRM для шиномонтажа</strong>
-            <small>Запись, сезонная очередь, хранение шин, напоминания и оплаты.</small>
-          </a>
-          <a href="/crm-dlya-sto/">
-            <span>СТО</span>
-            <strong>CRM для СТО</strong>
-            <small>Заказ-наряды, диагностика, работы, запчасти, мастера и прибыль.</small>
-          </a>
-          <a href="/crm-dlya-avtomoiki/">
-            <span>Мойка</span>
-            <strong>CRM для автомойки</strong>
-            <small>Боксы, запись, услуги, загрузка смены и возврат клиентов.</small>
-          </a>
+        <div class="project-filters" role="group" aria-label="Фильтр проектов">
+          <button type="button" aria-pressed="true" data-filter="all">
+            Все проекты <span>05</span></button
+          ><button type="button" aria-pressed="false" data-filter="web">
+            Сайты и контент</button
+          ><button type="button" aria-pressed="false" data-filter="systems">
+            Системы и CRM
+          </button>
+        </div>
+        <p class="sr-only" id="filter-status" role="status"></p>
+        <div class="project-grid">
+          <article class="project-card" data-category="web">
+            <button
+              type="button"
+              class="project-cover cover-pacman"
+              data-project="pacman"
+              aria-label="Подробнее о проекте Pacman"
+            >
+              <span class="project-type">Игровые клубы</span
+              ><img
+                src="assets/projects/pacman.jpg"
+                width="1360"
+                height="900"
+                alt="Сайт Pacman: игровые зоны, филиалы и выбор клуба"
+                loading="lazy"
+              /><span class="project-open" aria-hidden="true">↗</span>
+            </button>
+            <div class="project-meta">
+              <h3>Pacman</h3>
+              <span>Сайт / Визуальная подача</span>
+            </div>
+            <p>Атмосфера клуба — ещё до первого визита.</p>
+          </article>
+          <article class="project-card" data-category="web">
+            <button
+              type="button"
+              class="project-cover cover-istanbul"
+              data-project="istanbul"
+              aria-label="Подробнее о проекте Istanbul"
+            >
+              <span class="project-type">Рестораны и кафе</span
+              ><img
+                src="assets/projects/istanbul.jpg"
+                width="1360"
+                height="900"
+                alt="Сайт Istanbul Doner с выбором блюд и онлайн-заказом"
+                loading="lazy"
+              /><span class="project-open" aria-hidden="true">↗</span>
+            </button>
+            <div class="project-meta">
+              <h3>Istanbul Doner</h3>
+              <span>Сайт / Онлайн-меню</span>
+            </div>
+            <p>От аппетитного первого экрана до готового заказа.</p>
+          </article>
+          <article class="project-card" data-category="web systems">
+            <button
+              type="button"
+              class="project-cover cover-alim"
+              data-project="alim"
+              aria-label="Подробнее о проекте Alim Service"
+            >
+              <span class="project-type">Сервисные центры · Прототип CRM</span
+              ><img
+                src="assets/projects/alim.jpg"
+                width="1360"
+                height="900"
+                alt="Сайт Alim Service: ремонт техники и выбор услуги"
+                loading="lazy"
+              /><span class="project-open" aria-hidden="true">↗</span>
+            </button>
+            <div class="project-meta">
+              <h3>Alim Service</h3>
+              <span>Сайт / Заявки / CRM</span>
+            </div>
+            <p>Понятный путь от поломки до обращения в сервис.</p>
+          </article>
+          <article class="project-card" data-category="web systems">
+            <button
+              type="button"
+              class="project-cover cover-maestro"
+              data-project="maestro"
+              aria-label="Подробнее о проекте Maestro"
+            >
+              <span class="project-type">Образование</span
+              ><img
+                src="assets/projects/maestro.jpg"
+                width="1360"
+                height="900"
+                alt="Сайт музыкальной школы Maestro: направления и запись на занятие"
+                loading="lazy"
+              /><span class="project-open" aria-hidden="true">↗</span>
+            </button>
+            <div class="project-meta">
+              <h3>Maestro</h3>
+              <span>Сайт / Учебная платформа</span>
+            </div>
+            <p>Музыка, занятия и цифровая среда школы.</p>
+          </article>
+          <article class="project-card project-own" data-category="systems">
+            <div class="own-copy">
+              <p class="eyebrow">Собственный продукт / В развитии</p>
+              <h3>EduDev CRM</h3>
+              <p>
+                Отраслевые системы, которые понимают<br />ваш рабочий день.
+                Начинаем с ПЗМ.
+              </p>
+              <button class="text-link" type="button" data-project="edudev">
+                О продукте <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <div
+              class="own-diagram"
+              aria-label="Клиент, заказ и команда связаны в одной CRM"
+            >
+              <span class="diagram-label">Один процесс. Связанные данные.</span>
+              <div class="diagram-path">
+                <span>Клиент</span><span aria-hidden="true">→</span
+                ><span class="diagram-center">ed.<small>CRM</small></span
+                ><span aria-hidden="true">→</span><span>Команда</span>
+              </div>
+              <div class="diagram-bottom">
+                <span>Заказы</span><span>Склад</span><span>Оплаты</span>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
-
-      <section class="faq-section" id="faq">
-        <div class="section-head narrow">
-          <p class="eyebrow">Вопросы</p>
-          <h2>Коротко о том, что обычно спрашивают</h2>
+      <section class="connection">
+        <div class="wrap connection-inner">
+          <p class="eyebrow">Смотрим на бизнес целиком</p>
+          <h2>
+            Сайт привлекает.<br />Система помогает работать.<br /><span
+              >Вместе — больше смысла.</span
+            >
+          </h2>
+          <div class="connection-bottom">
+            <p>
+              Соединяем внешний образ и внутренние процессы.<br />Чтобы обещание
+              на сайте продолжалось<br />в хорошем клиентском опыте.
+            </p>
+            <a class="button button-dark" href="#contact"
+              >Собрать своё решение <span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <span class="connection-mark" aria-hidden="true">✳</span>
+        </div>
+      </section>
+      <section
+        class="section wrap approach"
+        id="approach"
+        aria-labelledby="approach-title"
+      >
+        <div class="section-heading">
+          <p class="eyebrow section-index">03 / Как работаем</p>
+          <div>
+            <h2 id="approach-title">
+              От «есть идея»<br /><span class="muted">до «мы работаем».</span>
+            </h2>
+            <p class="section-description">
+              Готовое техническое задание не обязательно.<br />Достаточно
+              рассказать о своей задаче.
+            </p>
+          </div>
+        </div>
+        <ol class="steps">
+          <li>
+            <span>01</span>
+            <h3>Разбираемся</h3>
+            <p>
+              Обсуждаем бизнес, клиентов и то, что сейчас мешает. Находим
+              задачу, с которой стоит начать.
+            </p>
+            <small>На выходе: приоритеты</small>
+          </li>
+          <li>
+            <span>02</span>
+            <h3>Проектируем</h3>
+            <p>
+              Предлагаем структуру, сценарии и визуальное направление. Согласуем
+              объём, стоимость и этапы.
+            </p>
+            <small>На выходе: понятный план</small>
+          </li>
+          <li>
+            <span>03</span>
+            <h3>Создаём</h3>
+            <p>
+              Собираем дизайн, тексты и рабочие функции. Показываем
+              промежуточные версии и проверяем детали.
+            </p>
+            <small>На выходе: готовое решение</small>
+          </li>
+          <li>
+            <span>04</span>
+            <h3>Запускаем</h3>
+            <p>
+              Проверяем путь клиента, подключаем сервисы и показываем команде,
+              как всё устроено.
+            </p>
+            <small>На выходе: инструмент в работе</small>
+          </li>
+        </ol>
+      </section>
+      <section class="section wrap faq" id="faq" aria-labelledby="faq-title">
+        <div>
+          <p class="eyebrow section-index">04 / По делу</p>
+          <h2 id="faq-title">До первого<br />разговора.</h2>
         </div>
         <div class="faq-list">
-          <details open>
-            <summary>Это просто программа для клиентов?</summary>
-            <p>Нет. Здесь ведутся клиенты, автомобили, заказы, склад, деньги и повторные визиты.</p>
+          <details>
+            <summary>
+              Можно заказать только сайт?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Да. Можно начать с лендинга, корпоративного сайта, каталога или
+              онлайн-меню. CRM и интеграции добавим, если они нужны вашему
+              бизнесу.
+            </p>
           </details>
           <details>
-            <summary>Если у нас маленький сервис?</summary>
-            <p>Для небольших точек есть простой старт: учет заказов, клиентов, оплат и отчетов без лишней сложности.</p>
+            <summary>
+              У нас уже есть сайт или система. Всё переделывать?<span
+                aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              Сначала изучим то, что уже работает. Иногда достаточно обновить
+              структуру, добавить нужные функции или связать существующие
+              инструменты.
+            </p>
           </details>
           <details>
-            <summary>Сотрудники будут пользоваться?</summary>
-            <p>Экраны настраиваются под реальный процесс, а запуск включает обучение владельца, администратора и мастеров.</p>
+            <summary>
+              Кто подготовит тексты и наполнение?<span aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              Можем взять это на себя: собрать информацию о бизнесе, написать
+              тексты и подготовить визуальные материалы. Состав контента
+              согласуем до начала работы.
+            </p>
           </details>
           <details>
-            <summary>Сообщения клиентам входят в стоимость?</summary>
-            <p>Тексты и порядок отправки можно подготовить сразу, а подключение мессенджеров считается отдельно после выбора сервиса отправки.</p>
+            <summary>
+              Сколько стоит проект и какие сроки?<span aria-hidden="true"
+                >+</span
+              >
+            </summary>
+            <p>
+              Это зависит от объёма страниц, функций, контента и интеграций.
+              После обсуждения задачи предложим этапы с понятными результатами,
+              сроками и стоимостью.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Что происходит после запуска?<span aria-hidden="true">+</span>
+            </summary>
+            <p>
+              Показываем, как пользоваться решением. Поддержку, доработки,
+              доступы и передачу материалов заранее фиксируем в условиях
+              проекта.
+            </p>
           </details>
         </div>
       </section>
-
-      <section class="contact-section" id="contact">
+      <section
+        class="contact section wrap"
+        id="contact"
+        aria-labelledby="contact-title"
+      >
         <div class="contact-copy">
-          <p class="eyebrow">Демонстрация для ПЗМ</p>
-          <h2>Разберем ваш пункт замены масла и покажем рабочий маршрут заказа</h2>
-          <p>
-            Оставьте контакты и город. Мы уточним, как вы ведете автомобили,
-            пробег, масла, фильтры, склад, оплаты и повторные визиты, а затем
-            покажем понятный план запуска.
+          <p class="eyebrow">
+            <span class="status-dot"></span> Начнём с разговора
           </p>
+          <h2 id="contact-title">
+            Что сделаем<br /><span class="accent">для вас?</span>
+          </h2>
+          <p>
+            Расскажите, чем занимаетесь и что хотите изменить.<br />Поможем
+            определить следующий шаг.
+          </p>
+          <a class="contact-phone" href="tel:+77782508349"
+            >+7 778 250 83 49 <span aria-hidden="true">↗</span></a
+          ><span class="contact-location">Казахстан · Работаем онлайн</span>
         </div>
-        <form class="lead-form" data-lead-form>
-          <input type="hidden" name="selected_modules" data-selected-modules-input value="Клиенты, авто и заказы" />
-          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
-          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
-          <label>
-            Тип бизнеса
-            <select name="business">
-              <option>Пункт замены масла</option>
-              <option>Шиномонтаж</option>
-              <option>СТО</option>
-              <option>Автомойка</option>
-              <option>Смешанный сервис</option>
-            </select>
-          </label>
-          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
-          <label class="wide">Что хотите навести в порядок?
-            <textarea name="message" rows="4" placeholder="Например: склад, заказы, записи, касса, сотрудники или повторные клиенты"></textarea>
-          </label>
-          <label class="form-consent wide">
-            <input type="checkbox" name="privacy_consent" required />
-            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
-          </label>
-          <button class="button primary wide" type="submit" data-form-button>Получить демонстрацию ПЗМ</button>
-          <p class="form-note wide" data-form-note aria-live="polite"></p>
+        <form class="brief-form" id="brief-form">
+          <fieldset>
+            <legend>Что вам нужно?</legend>
+            <div class="brief-choices">
+              <label
+                ><input
+                  type="checkbox"
+                  name="service"
+                  value="Сайт и дизайн"
+                /><span>Сайт и дизайн</span></label
+              ><label
+                ><input
+                  type="checkbox"
+                  name="service"
+                  value="Система и CRM"
+                /><span>Система и CRM</span></label
+              ><label
+                ><input type="checkbox" name="service" value="Контент" /><span
+                  >Контент</span
+                ></label
+              ><label
+                ><input
+                  type="checkbox"
+                  name="service"
+                  value="Запуск и развитие"
+                /><span>Запуск и развитие</span></label
+              ><label
+                ><input
+                  type="checkbox"
+                  name="service"
+                  value="Нужна консультация"
+                /><span>Пока не знаю</span></label
+              >
+            </div>
+          </fieldset>
+          <label class="form-field" for="brief-name"
+            >Как к вам обращаться?<input
+              id="brief-name"
+              name="name"
+              autocomplete="given-name"
+              maxlength="80"
+              placeholder="Ваше имя"
+              required /></label
+          ><label class="form-field" for="brief-message"
+            >Пара слов о задаче<textarea
+              id="brief-message"
+              name="message"
+              rows="2"
+              maxlength="2000"
+              placeholder="Например: открываем кафе, нужны сайт и онлайн-заказ"
+              required
+            ></textarea></label
+          ><button type="submit" class="button button-lime">
+            Обсудить в WhatsApp <span aria-hidden="true">↗</span>
+          </button>
+          <p class="form-note">
+            Откроется WhatsApp с вашим текстом.<br />Вы сможете проверить его
+            перед отправкой.
+          </p>
+          <p class="form-feedback" role="status" hidden></p>
+          <a
+            class="form-fallback"
+            href="https://wa.me/77782508349"
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+            >Открыть сообщение в WhatsApp ↗</a
+          ><noscript
+            ><p>
+              Для подготовки сообщения включите JavaScript или
+              <a href="https://wa.me/77782508349">напишите нам напрямую</a>.
+            </p></noscript
+          >
         </form>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <div>
-        <strong>EduDev</strong>
-        <p>CRM и учет для пунктов замены масла и автобизнеса.</p>
+    <footer class="footer wrap">
+      <div class="footer-top">
+        <a class="brand" href="#top"
+          >edu<span>dev</span><span class="brand-dot">↗</span></a
+        >
+        <p>Дизайн. Технологии.<br />Ваш следующий шаг.</p>
+        <a class="text-link" href="#top"
+          >Наверх <span aria-hidden="true">↑</span></a
+        >
       </div>
-      <div class="footer-links">
-        <a href="tel:+77782750874">+7 778 275 0874</a>
-        <a href="/privacy/">Политика данных</a>
-        <a href="#top">Наверх</a>
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> EduDev</span
+        ><a href="/crm-dlya-punkta-zameny-masla/">CRM для ПЗМ ↗</a
+        ><a href="/privacy/">Политика данных</a
+        ><span>Сделано в EduDev, конечно.</span>
       </div>
     </footer>
-
-    <button class="callback-float" type="button" data-callback-open aria-label="Заказать обратный звонок">
-      <span>Звонок</span>
-    </button>
-
-    <a class="whatsapp-float" href="#" data-whatsapp-link aria-label="Написать в WhatsApp">
-      <span>WhatsApp</span>
-    </a>
-
-    <div class="sticky-cta" data-sticky-cta>
-      <div>
-        <strong>Где ваш ПЗМ теряет деньги?</strong>
-        <span>Мини-аудит проверит склад, заказы и возврат клиентов.</span>
+    <dialog class="project-dialog" aria-labelledby="project-dialog-title">
+      <div class="dialog-top">
+        <span class="eyebrow" data-case-type></span
+        ><button class="dialog-close" type="button" aria-label="Закрыть проект">
+          ×
+        </button>
       </div>
-      <button class="button primary" type="button" data-quiz-open>Проверить ПЗМ</button>
-    </div>
-
-    <div class="callback-modal" data-callback-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="callback-title">
-      <div class="callback-backdrop" data-callback-close></div>
-      <div class="callback-panel" role="document">
-        <button class="callback-close" type="button" data-callback-close aria-label="Закрыть окно">×</button>
-        <p class="eyebrow">Демонстрация ПЗМ</p>
-        <h2 id="callback-title">Покажем учет пункта замены масла на вашем процессе</h2>
-        <p>
-          Оставьте имя, телефон и удобное время. Мы уточним, как сейчас ведутся
-          автомобили, масла, фильтры, склад и повторные визиты.
-        </p>
-        <form class="callback-form" data-callback-form>
-          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
-          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
-          <label>
-            Когда удобно
-            <select name="time">
-              <option>Сегодня</option>
-              <option>Завтра</option>
-              <option>В первой половине дня</option>
-              <option>После обеда</option>
-            </select>
-          </label>
-          <label>
-            Тип сервиса
-            <select name="business">
-              <option>Пункт замены масла</option>
-              <option>Шиномонтаж</option>
-              <option>СТО</option>
-              <option>Автомойка</option>
-              <option>Смешанный сервис</option>
-            </select>
-          </label>
-          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
-          <label class="form-consent wide">
-            <input type="checkbox" name="privacy_consent" required />
-            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
-          </label>
-          <button class="button primary wide" type="submit">Жду звонка</button>
-          <p class="form-note wide" data-callback-note aria-live="polite"></p>
-        </form>
-      </div>
-    </div>
-
-    <div class="callback-modal quiz-modal" data-quiz-modal aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
-      <div class="callback-backdrop" data-quiz-close></div>
-      <div class="callback-panel quiz-panel" role="document">
-        <button class="callback-close" type="button" data-quiz-close aria-label="Закрыть окно">×</button>
-        <p class="eyebrow">Мини-аудит ПЗМ</p>
-        <h2 id="quiz-title">Что сейчас мешает пункту замены масла расти?</h2>
-        <p>Отметьте главные проблемы учета. Мы получим контекст и сразу разберем ваш рабочий процесс.</p>
-        <form class="quiz-form" data-quiz-form>
-          <label>
-            Формат бизнеса
-            <select name="business">
-              <option>Пункт замены масла</option>
-              <option>Шиномонтаж</option>
-              <option>СТО</option>
-              <option>Автомойка</option>
-              <option>Смешанный сервис</option>
-            </select>
-          </label>
-          <div class="quiz-options" aria-label="Главные проблемы">
-            <label><input type="checkbox" name="pain" value="теряется склад" checked /> Теряется склад</label>
-            <label><input type="checkbox" name="pain" value="нет повторных визитов" checked /> Нет повторных визитов</label>
-            <label><input type="checkbox" name="pain" value="не видно прибыль" /> Не видно прибыль</label>
-            <label><input type="checkbox" name="pain" value="сотрудники работают по памяти" /> Команда работает по памяти</label>
+      <img
+        class="dialog-image"
+        data-case-image
+        src="assets/projects/pacman.jpg"
+        alt=""
+        width="1360"
+        height="900"
+      />
+      <div class="dialog-content">
+        <h2 id="project-dialog-title"></h2>
+        <p class="case-intro" data-case-intro></p>
+        <div class="case-columns">
+          <div>
+            <h3>Задача</h3>
+            <p data-case-task></p>
           </div>
-          <div class="quiz-result" data-quiz-result>
-            <span>Рекомендуемый старт</span>
-            <strong>Заказы + склад + напоминания</strong>
-            <small>Обычно это дает владельцу контроль и быстрый возврат клиентов.</small>
+          <div>
+            <h3>Что сделали</h3>
+            <ul data-case-features></ul>
           </div>
-          <label>Имя <input type="text" name="name" placeholder="Как к вам обращаться" required /></label>
-          <label>Телефон <input type="tel" name="phone" placeholder="+7 ___ ___ __ __" required /></label>
-          <label>Город <input type="text" name="city" placeholder="Ваш город" required /></label>
-          <label class="form-consent wide">
-            <input type="checkbox" name="privacy_consent" required />
-            <span>Согласен(на) на сбор и обработку данных по <a href="/privacy/" target="_blank" rel="noopener">политике EduDev</a>.</span>
-          </label>
-          <button class="button primary wide" type="submit">Получить план запуска</button>
-          <p class="form-note wide" data-quiz-note aria-live="polite"></p>
-        </form>
+        </div>
+        <div class="dialog-actions">
+          <a class="button button-lime" href="#contact" data-case-contact
+            >Хочу похожее решение <span aria-hidden="true">↗</span></a
+          ><a
+            class="text-link"
+            data-case-link
+            target="_blank"
+            rel="noopener noreferrer"
+            hidden
+            >Открыть сайт ↗</a
+          >
+        </div>
       </div>
-    </div>
-
-    <script src="script.js?v=15"></script>
+    </dialog>
   </body>
 </html>
