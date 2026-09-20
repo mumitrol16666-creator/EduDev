@@ -1,2 +1,3 @@
 # playwright-cli evaluates this file as a function expression, not a script.
 tests/browser-smoke.js
+tests/seo-browser.js

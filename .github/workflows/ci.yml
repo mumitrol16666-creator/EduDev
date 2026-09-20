@@ -43,6 +43,9 @@ jobs:
       - name: Check deploy shell scripts
         run: bash -n deploy/deploy.sh deploy/backup-postgres.sh deploy/baseline-prisma-migration.sh
 
+      - name: Check static site SEO contracts
+        run: node tests/seo-check.mjs
+
       - name: Validate Prisma schema
         run: npm run prisma:validate --prefix backend
 

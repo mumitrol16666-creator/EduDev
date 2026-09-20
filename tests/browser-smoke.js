@@ -22,6 +22,28 @@ async (page) => {
     )
   }
   await page.setViewportSize({ width: 1360, height: 900 })
+  check((await page.locator('.service').count()) === 8, 'Eight service cards')
+  for (const [service, price, monthly] of [
+    ['Сайт и дизайн', 'от 20 000 ₸', 'от 4 000 ₸ / месяц'],
+    ['Система и CRM', 'от 100 000 ₸', 'от 10 000 ₸ / месяц'],
+    ['Приложение', 'от 100 000 ₸', 'от 20 000 ₸ / месяц'],
+    ['Консалтинг: сервис и маркетинг', 'от 50 000 ₸', 'за сессию'],
+  ]) {
+    const card = page.locator('.service').filter({ has: page.locator(`[data-service="${service}"]`) })
+    const text = await card.innerText()
+    check(text.includes(price) && text.includes(monthly), `Approved pricing: ${service}`)
+  }
+  for (const service of ['Приложение', 'Дизайн полиграфии', 'Интеграции и боты', 'Консалтинг: сервис и маркетинг']) {
+    await page.locator(`[data-service="${service}"]`).click()
+    const choice = page.getByRole('checkbox', { name: service, exact: true })
+    check(await choice.isChecked(), `New service selection: ${service}`)
+  }
+  await page.locator('#brief-name').fill('Тест консультации')
+  await page.locator('#brief-message').fill('Нужен разбор клиентского сервиса')
+  await page.evaluate(() => { window.open = (url) => { window.__testWhatsAppUrl = url; return null } })
+  await page.getByRole('button', { name: 'Обсудить в WhatsApp' }).click()
+  check(await page.evaluate(() => new URL(window.__testWhatsAppUrl).searchParams.get('text').includes('Консалтинг: сервис и маркетинг')), 'Consulting in WhatsApp message')
+  await page.goto(base)
   await page.getByRole("button", { name: "Системы и CRM", exact: true }).click()
   check(
     (await page.locator(".project-card:visible").count()) === 3,
@@ -168,6 +190,8 @@ async (page) => {
   return {
     passed: [
       "six viewport widths",
+      "approved prices and four new service choices",
+      "consulting WhatsApp message without sending",
       "portfolio filters",
       "five case dialogs",
       "keyboard dismissal",
